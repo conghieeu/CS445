@@ -178,8 +178,9 @@ namespace Core
             }
             else
             {
-                _isExistsSaveFile = false;
                 Debug.LogWarning("Save file not found in: " + _filePath);
+                SaveData();
+                _isExistsSaveFile = false;
             }
         }
 
