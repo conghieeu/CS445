@@ -51,8 +51,7 @@ namespace CuaHang.AI
 
         public override void LoadData<T>(T data)
         {
-            _customerData = data as CustomerData;
-            if (CustomerPooler.Instance.IsContentID(_customerData._id)) return;
+            _customerData = data as CustomerData; 
 
             // set du lieu
             _customer = GetComponent<Customer>();

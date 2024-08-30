@@ -15,7 +15,7 @@ namespace CuaHang.Pooler
         [Header("BoolingObjects")]
         public TypePool _poolType;
         [SerializeField] protected List<Transform> _prefabs;
-        [SerializeField] private List<ObjectPool> _objectPools; 
+        [SerializeField] private List<ObjectPool> _objectPools;
 
         public List<ObjectPool> _ObjectPools { get => _objectPools; private set => _objectPools = value; }
 
@@ -44,6 +44,15 @@ namespace CuaHang.Pooler
             return false;
         }
 
+        public virtual ObjectPool GetObjectID(string id)
+        {
+            foreach (var obj in _ObjectPools)
+            {
+                if (obj._ID == id) return obj;
+            }
+            return null;
+        }
+
         public ObjectPool GetObjectPool(TypeID typeID)
         {
             ObjectPool objectPool = GetHider(typeID);
@@ -68,7 +77,7 @@ namespace CuaHang.Pooler
             }
 
             if (objectPool) objectPool.CreateID();
-            else  Debug.LogWarning($"Item {typeID} Này Tạo từ pool không thành công");
+            else Debug.LogWarning($"Item {typeID} Này Tạo từ pool không thành công");
 
             return objectPool;
         }

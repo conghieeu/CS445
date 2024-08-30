@@ -34,8 +34,7 @@ namespace CuaHang.AI
 
         public override void LoadData<T>(T data)
         {
-            _staffData = data as StaffData;
-            if (StaffPooler.Instance.IsContentID(_staffData._id)) return;
+            _staffData = data as StaffData; 
 
             _staff = GetComponent<Staff>();
             _staff.SetProperties(_staffData);

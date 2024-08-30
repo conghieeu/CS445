@@ -26,14 +26,18 @@ namespace CuaHang
             // tái tạo items data
             foreach (var staffData in staffsData)
             {
-                // ngăn tạo item đã có ID
-                if (_staffPooler.IsContentID(staffData._id)) continue;
-
-                // tạo
-                ObjectPool staff = _staffPooler.GetObjectPool(staffData._typeID);
-                staff.GetComponent<StaffStats>().LoadData(staffData);
+                // load data những đối tượng đã tồn tại
+                if (_staffPooler.GetObjectID(staffData._id))
+                {
+                    _staffPooler.GetObjectID(staffData._id).GetComponent<StaffStats>().LoadData(staffData);
+                }
+                else
+                {
+                    // tạo
+                    ObjectPool staff = _staffPooler.GetObjectPool(staffData._typeID);
+                    staff.GetComponent<StaffStats>().LoadData(staffData);
+                }
             }
-
         }
 
         protected override void SaveData()

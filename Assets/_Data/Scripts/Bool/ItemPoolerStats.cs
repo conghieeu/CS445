@@ -16,7 +16,7 @@ namespace CuaHang.Pooler
 
         }
 
-        // tạo các root đầu tiên
+        /// <summary> tạo các root đầu tiên </summary>
         public override void LoadData<T>(T data)
         {
             _itemPooler = GetComponent<ItemPooler>();
@@ -25,12 +25,17 @@ namespace CuaHang.Pooler
             // tái tạo items data
             foreach (var itemData in itemsData)
             {
-                // ngăn tạo item đã có ID
-                if (_itemPooler.IsContentID(itemData._id)) continue;
-
-                // tạo
-                ObjectPool item = _itemPooler.GetObjectPool(itemData._typeID);
-                item.GetComponent<ItemStats>().LoadData(itemData);
+                // load data những đối tượng đã tồn tại
+                if (_itemPooler.GetObjectID(itemData._id))
+                { 
+                    _itemPooler.GetObjectID(itemData._id).GetComponent<ItemStats>().LoadData(itemData);
+                }
+                else
+                {
+                    // // tạo
+                    ObjectPool item = _itemPooler.GetObjectPool(itemData._typeID);
+                    item.GetComponent<ItemStats>().LoadData(itemData);
+                }
             }
         }
 

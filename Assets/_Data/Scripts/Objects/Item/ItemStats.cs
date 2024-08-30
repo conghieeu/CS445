@@ -1,5 +1,5 @@
-
 using System.Collections.Generic;
+using Core;
 using CuaHang.Pooler;
 using UnityEngine;
 
@@ -10,12 +10,13 @@ namespace CuaHang
         [Header("ITEM STATS")]
         [SerializeField] Item _item;
         [SerializeField] ItemSlot _itemSlot;
-        [SerializeField] ItemData _itemData; 
+        [SerializeField] ItemData _itemData;
 
         protected override void Start()
         {
             _item = GetComponent<Item>();
             _itemSlot = GetComponentInChildren<ItemSlot>();
+
         }
 
         // Lay du lieu cua chinh cai nay de save
@@ -30,7 +31,7 @@ namespace CuaHang
             List<ItemData> itemsDataChild = new();
 
             if (_itemSlot)
-            { 
+            {
                 foreach (var item in _itemSlot._itemsSlots)
                 {
                     if (item._item)
@@ -49,16 +50,16 @@ namespace CuaHang
                 itemsDataChild);
         }
 
+        // call pool recreate this then pool call this
         public override void LoadData<T>(T data)
         {
             _itemData = data as ItemData;
-            if (ItemPooler.Instance.IsContentID(_itemData._id)) return;
 
             // set du lieu
             _item = GetComponent<Item>();
             _item.SetProperties(_itemData);
         }
 
-        
+
     }
 }
