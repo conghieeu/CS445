@@ -19,7 +19,7 @@ namespace CuaHang.Pooler
 
         public List<ObjectPool> _ObjectPools { get => _objectPools; private set => _objectPools = value; }
 
-        protected virtual void Start()
+        protected virtual void Awake()
         {
             // load childen item
             foreach (Transform child in transform)
@@ -47,7 +47,7 @@ namespace CuaHang.Pooler
         public virtual ObjectPool GetObjectID(string id)
         {
             foreach (var obj in _ObjectPools)
-            {
+            { 
                 if (obj._ID == id) return obj;
             }
             return null;

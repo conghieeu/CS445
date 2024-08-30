@@ -1,4 +1,3 @@
-using Core;
 using UnityEngine;
 
 namespace CuaHang
@@ -23,7 +22,7 @@ namespace CuaHang
         }
 
         protected override void SaveData()
-        { 
+        {
             // save value
             GetGameData()._playerData = new PlayerData(
                 _playerData._name, _playerData._money, transform.rotation, transform.position);

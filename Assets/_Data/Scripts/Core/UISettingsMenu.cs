@@ -25,11 +25,7 @@ namespace Core
         {
             SetResolution();
 
-            // bat event gamesettingstats
-            GameSettingStats._OnDataChange += gameSettingsData =>
-            {
-                LoadSettings(gameSettingsData);
-            };
+            LoadSettings(SerializationAndEncryption.Instance.GameData._gameSettingsData);
 
             // tắt menu setting khi mới bắt đầu 
             _enableMenuSettings = false;
@@ -43,10 +39,10 @@ namespace Core
             SetFullscreen(data._isFullScreen);
             SetResolution(data._currentResolutionIndex);
 
-            // UI
-            if (_toggleFullScreen) _toggleFullScreen.isOn = data._isFullScreen;
-            if (_sliderVolume) _sliderVolume.value = data._masterVolume;
-            if (_dropDownGraphics) _dropDownGraphics.value = data._qualityIndex;
+            // set UI
+            _toggleFullScreen.isOn = data._isFullScreen;
+            _sliderVolume.value = data._masterVolume;
+            _dropDownGraphics.value = data._qualityIndex;
         }
 
         private void SetResolution()

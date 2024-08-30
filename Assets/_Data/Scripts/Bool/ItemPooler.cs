@@ -8,9 +8,18 @@ namespace CuaHang.Pooler
         public TypePool _typePool;
         public static ItemPooler Instance;
 
-        private void Awake()
+        protected override void Awake()
         {
-            if (Instance) Destroy(this); else { Instance = this; }
+            base.Awake();
+
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject); 
+            }
+            else
+            {
+                Instance = this;
+            }
         }
 
         /// <summary> Tìm item có item Slot và còn chỗ trống </summary>

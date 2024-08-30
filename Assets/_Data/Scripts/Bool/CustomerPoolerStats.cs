@@ -18,18 +18,18 @@ namespace CuaHang
         }
 
         protected override void SaveData()
-        {
-            List<CustomerData> cussData = new List<CustomerData>();
+        { 
+            List<CustomerData> customersData = new List<CustomerData>();
 
             foreach (var pool in _cusPooler._ObjectPools)
             {
                 if (pool && pool._ID != "" && pool.gameObject.activeInHierarchy)
                 {
-                    cussData.Add(pool.GetComponent<CustomerStats>().GetData());
+                    customersData.Add(pool.GetComponent<CustomerStats>().GetData());
                 }
             }
 
-            GetGameData()._customersData = cussData;
+            GetGameData()._customersData = customersData;
         }
 
         public override void LoadData<T>(T data)
@@ -39,16 +39,18 @@ namespace CuaHang
             // tái tạo items data
             foreach (var cusData in customersData)
             {
+                ObjectPool customer = GetComponent<CustomerPooler>().GetObjectID(cusData._id);
+
                 // load data những đối tượng đã tồn tại
-                if (_cusPooler.GetObjectID(cusData._id))
+                if (customer)
                 {
-                    _cusPooler.GetObjectID(cusData._id).GetComponent<CustomerStats>().LoadData(cusData);
+                    customer.GetComponent<CustomerStats>().LoadData(cusData);
                 }
                 else
                 {
-                    // tạo
-                    ObjectPool customer = _cusPooler.GetObjectPool(cusData._typeID);
-                    customer.GetComponent<CustomerStats>().LoadData(cusData);
+                    // tạo mới
+                    ObjectPool newCustomer = GetComponent<CustomerPooler>().GetObjectPool(cusData._typeID);
+                    newCustomer.GetComponent<CustomerStats>().LoadData(cusData);
                 }
             }
         }

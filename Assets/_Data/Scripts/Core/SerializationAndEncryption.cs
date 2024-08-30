@@ -5,7 +5,8 @@ using System.IO;
 using System;
 using System.Security.Cryptography;
 using System.Text;
-using System.Xml; 
+using System.Xml;
+using UnityEngine.SceneManagement;
 
 [Serializable]
 public class ItemData
@@ -146,7 +147,7 @@ namespace Core
         {
             _filePath = Application.persistentDataPath + _saveName;
             SetDontDestroyOnLoad(true);
-            LoadData();
+            LoadData(); 
         }
 
         private void Update()

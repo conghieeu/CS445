@@ -9,9 +9,18 @@ namespace CuaHang.Pooler
     {
         public static CustomerPooler Instance { get; private set; }
 
-        private void Awake()
+        protected override void Awake()
         {
-            if (Instance) Destroy(this); else { Instance = this; }
+            base.Awake();
+            
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                Instance = this;
+            }
         }
 
 

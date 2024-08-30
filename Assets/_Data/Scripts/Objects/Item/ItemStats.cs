@@ -53,13 +53,11 @@ namespace CuaHang
         // call pool recreate this then pool call this
         public override void LoadData<T>(T data)
         {
-            _itemData = data as ItemData;
+            _itemData = data as ItemData; 
 
             // set du lieu
             _item = GetComponent<Item>();
-            _item.SetProperties(_itemData);
+            _item.SetProperties(_itemData);  
         }
-
-
     }
 }

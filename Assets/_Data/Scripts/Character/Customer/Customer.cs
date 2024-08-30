@@ -109,7 +109,7 @@ namespace CuaHang.AI
 
         /// <summary> Set Properties with Item Data </summary>
         public void SetProperties(CustomerData data)
-        {
+        { 
             _ID = data._id;
             _isNotNeedBuy = data._isNotNeedBuy;
             _isPay = data._isPay;

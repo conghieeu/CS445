@@ -20,22 +20,23 @@ namespace CuaHang
         /// <summary> Load dữ liệu theo GameData </summary>
         public override void LoadData<T>(T data)
         {
-            _staffPooler = GetComponent<StaffPooler>();
             List<StaffData> staffsData = (data as GameData)._staffsData;
 
             // tái tạo items data
             foreach (var staffData in staffsData)
             {
+                ObjectPool staff = GetComponent<StaffPooler>().GetObjectID(staffData._id);
+
                 // load data những đối tượng đã tồn tại
-                if (_staffPooler.GetObjectID(staffData._id))
+                if (staff)
                 {
-                    _staffPooler.GetObjectID(staffData._id).GetComponent<StaffStats>().LoadData(staffData);
+                    staff.GetComponent<StaffStats>().LoadData(staffData);
                 }
                 else
                 {
                     // tạo
-                    ObjectPool staff = _staffPooler.GetObjectPool(staffData._typeID);
-                    staff.GetComponent<StaffStats>().LoadData(staffData);
+                    ObjectPool newStaff = GetComponent<StaffPooler>().GetObjectPool(staffData._typeID);
+                    newStaff.GetComponent<StaffStats>().LoadData(staffData);
                 }
             }
         }

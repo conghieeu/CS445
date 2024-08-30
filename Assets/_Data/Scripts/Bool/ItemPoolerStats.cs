@@ -13,7 +13,6 @@ namespace CuaHang.Pooler
         {
             base.Start();
             _itemPooler = GetComponent<ItemPooler>();
-
         }
 
         /// <summary> tạo các root đầu tiên </summary>
@@ -25,14 +24,14 @@ namespace CuaHang.Pooler
             // tái tạo items data
             foreach (var itemData in itemsData)
             {
+                ObjectPool objectPool = _itemPooler.GetObjectID(itemData._id);
                 // load data những đối tượng đã tồn tại
-                if (_itemPooler.GetObjectID(itemData._id))
-                { 
-                    _itemPooler.GetObjectID(itemData._id).GetComponent<ItemStats>().LoadData(itemData);
+                if (objectPool)
+                {
+                    objectPool.GetComponent<ItemStats>().LoadData(itemData);
                 }
                 else
                 {
-                    // // tạo
                     ObjectPool item = _itemPooler.GetObjectPool(itemData._typeID);
                     item.GetComponent<ItemStats>().LoadData(itemData);
                 }
