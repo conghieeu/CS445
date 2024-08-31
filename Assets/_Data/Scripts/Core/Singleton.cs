@@ -18,9 +18,9 @@ public abstract class Singleton<T> : HieuBehavior where T : MonoBehaviour
 
                 if (instance == null)
                 {
-                    GameObject gameObject = new GameObject("Controller");
-                    instance = gameObject.AddComponent<T>();
-                    Debug.LogWarning("Lỗi singleton: intance không tồn tại, controller được khởi tạo", gameObject);
+                    //GameObject gameObject = new GameObject("Controller");
+                    // instance = gameObject.AddComponent<T>();
+                    Debug.LogWarning("Lỗi singleton: intance không tồn tại");
                 }
             }
             return instance;

@@ -1,4 +1,5 @@
 using System;
+using CuaHang;
 using UnityEngine;
 
 public class GameSettingStats : ObjectStats
@@ -22,7 +23,7 @@ public class GameSettingStats : ObjectStats
     }
 
     protected override void SaveData()
-    {  
+    {
         GetGameData()._gameSettingsData = _gameSettingData;
     }
 }

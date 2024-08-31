@@ -5,8 +5,7 @@ using System.IO;
 using System;
 using System.Security.Cryptography;
 using System.Text;
-using System.Xml;
-using UnityEngine.SceneManagement;
+using System.Xml; 
 
 [Serializable]
 public class ItemData
@@ -84,18 +83,20 @@ public class GameSettingsData
     public int _qualityIndex;
     public float _masterVolume;
     public int _currentResolutionIndex;
+    public Quaternion _camRotation;
 
     public GameSettingsData()
     {
 
     }
 
-    public GameSettingsData(bool fullScreen, int quality, float masterVolume, int currentResolutionIndex)
+    public GameSettingsData(bool fullScreen, int quality, float masterVolume, int currentResolutionIndex, Quaternion camRotation)
     {
         _isFullScreen = fullScreen;
         _qualityIndex = quality;
         _masterVolume = masterVolume;
         _currentResolutionIndex = currentResolutionIndex;
+        _camRotation = camRotation;
     }
 }
 

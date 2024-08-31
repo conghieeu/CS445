@@ -1,11 +1,12 @@
 using System;
 using System.Collections;
-using System.Collections.Generic; 
+using System.Collections.Generic;
+using Core;
 using UnityEngine;
 
 namespace CuaHang
 {
-    public class CameraControl : MonoBehaviour
+    public class CameraControl : Singleton<CameraControl>
     {
         public float _camSizeDefault = 5;
         public float _rotationSpeed;
@@ -25,6 +26,8 @@ namespace CuaHang
         {
             _characterFollow = PlayerCtrl.Instance.transform;
             _cam = Camera.main;
+
+            _objectFollow.rotation = SerializationAndEncryption.Instance.GameData._gameSettingsData._camRotation;
         }
 
         private void Update()
@@ -33,7 +36,12 @@ namespace CuaHang
 
             SetCamFocus(_raycastCursor._itemFocus);
             CamForcusShelf(_raycastCursor._itemFocus);
+        }
 
+        private void FixedUpdate()
+        {
+            // save cam rotation
+            GameSettings.Instance._gameSettingStats._gameSettingData._camRotation = _objectFollow.rotation;
         }
 
         private void CamCtrl()

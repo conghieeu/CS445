@@ -13,18 +13,12 @@ namespace CuaHang.AI
         [SerializeField] CustomerData _customerData;
 
         protected override void Start()
-        { 
+        {
             _customer = GetComponent<Customer>();
         }
 
         // Lay du lieu cua chinh cai nay de save
         public CustomerData GetData()
-        {
-            SaveData();
-            return _customerData;
-        }
-
-        protected override void SaveData()
         {
             List<ItemData> itemsCard = new();
 
@@ -47,12 +41,16 @@ namespace CuaHang.AI
                 _customer.transform.position,
                 _customer.transform.rotation,
                 itemsCard);
+
+            return _customerData;
         }
+
+        protected override void SaveData() { }
 
         public override void LoadData<T>(T data)
         {
-            _customerData = data as CustomerData; 
-            
+            _customerData = data as CustomerData;
+
             // set du lieu
             _customer = GetComponent<Customer>();
             _customer.SetProperties(_customerData);

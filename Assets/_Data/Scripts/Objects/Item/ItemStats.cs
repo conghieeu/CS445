@@ -21,13 +21,7 @@ namespace CuaHang
 
         // Lay du lieu cua chinh cai nay de save
         public ItemData GetData()
-        {
-            SaveData();
-            return _itemData;
-        }
-
-        protected override void SaveData()
-        {
+        { 
             List<ItemData> itemsDataChild = new();
 
             if (_itemSlot)
@@ -48,16 +42,20 @@ namespace CuaHang
                 _item.transform.position,
                 _item.transform.rotation,
                 itemsDataChild);
+
+            return _itemData;
         }
+
+        protected override void SaveData() { }
 
         // call pool recreate this then pool call this
         public override void LoadData<T>(T data)
         {
-            _itemData = data as ItemData; 
+            _itemData = data as ItemData;
 
             // set du lieu
             _item = GetComponent<Item>();
-            _item.SetProperties(_itemData);  
+            _item.SetProperties(_itemData);
         }
     }
 }
