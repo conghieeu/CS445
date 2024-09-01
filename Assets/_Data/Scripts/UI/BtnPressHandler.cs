@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
 
+/// <summary> Delay khi an </summary>
 public class BtnPressHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     public event Action OnButtonDown;

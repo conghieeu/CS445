@@ -4,6 +4,7 @@ using CuaHang.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace Core
@@ -18,31 +19,43 @@ namespace Core
         [SerializeField] Slider _sliderVolume;
         [SerializeField] Resolution[] resolutions; // Array to store available screen resolutions
 
-        private GameSettingsData _gameSettingsData = new GameSettingsData();
+        private GameSettings _gameSettings;
+        private GamePCInput _gamePCInput;
 
-
-        void Start()
+        private void Awake()
         {
-            SetResolution();
-
-            LoadSettings(SerializationAndEncryption.Instance.GameData._gameSettingsData);
+            _gamePCInput = new();
 
             // tắt menu setting khi mới bắt đầu 
             _enableMenuSettings = false;
             _panelContent.gameObject.SetActive(_enableMenuSettings);
+
+            _gameSettings = GameSettings.Instance;
+            SetResolution();
         }
 
-        private void LoadSettings(GameSettingsData data)
+        private void OnEnable()
         {
-            SetVolume(data._masterVolume);
-            SetQuality(data._qualityIndex);
-            SetFullscreen(data._isFullScreen);
-            SetResolution(data._currentResolutionIndex);
+            GameSettingStats._OnDataChange += OnGameSettingLoad;
+            _gamePCInput.MenuSettings += SetActiveMenuSettings;
+        }
 
-            // set UI
+        private void OnDisable()
+        {
+            GameSettingStats._OnDataChange -= OnGameSettingLoad;
+        }
+
+        private void OnGameSettingLoad(GameSettingsData data)
+        {
+            // Load UI
             _toggleFullScreen.isOn = data._isFullScreen;
             _sliderVolume.value = data._masterVolume;
             _dropDownGraphics.value = data._qualityIndex;
+
+            SetVolume(data._masterVolume);
+            SetQuality(data._qualityIndex);
+            SetFullscreen(data._isFullScreen);
+            SetResolutionCurrent(data._currentResolutionIndex);
         }
 
         private void SetResolution()
@@ -69,48 +82,40 @@ namespace Core
             resolutionDropdown.AddOptions(options); // Add the resolution options to the dropdown
         }
 
-        public void SetResolution(int currentResolutionIndex)
-        {
-            resolutionDropdown.value = currentResolutionIndex;
-            resolutionDropdown.RefreshShownValue();
-
-            _gameSettingsData._currentResolutionIndex = currentResolutionIndex;
-            SaveSettingsData();
-        }
-
-        public void SetActiveMenuSettings()
+        /// <summary> Được sử dụng để bật tắt khi nhấn phím </summary>
+        public void SetActiveMenuSettings(InputAction.CallbackContext context)
         {
             _enableMenuSettings = !_enableMenuSettings;
             _panelContent.gameObject.SetActive(_enableMenuSettings);
         }
 
+        public void SetResolutionCurrent(int current)
+        {
+            resolutionDropdown.value = current;
+            resolutionDropdown.RefreshShownValue();
+
+            Debug.Log(current);
+            _gameSettings._CurrentResolutionIndex = current;
+        }
+
         public void SetVolume(float volume)
         {
             audioMixer.SetFloat("volume", volume);
-
-            _gameSettingsData._masterVolume = volume;
-            SaveSettingsData();
+            _gameSettings._MasterVolume = volume;
         }
 
         public void SetQuality(int qualityIndex)
         {
             QualitySettings.SetQualityLevel(qualityIndex);
-
-            _gameSettingsData._qualityIndex = qualityIndex;
-            SaveSettingsData();
+            _gameSettings._QualityIndex = qualityIndex;
         }
 
         public void SetFullscreen(bool isFullscreen)
         {
             Screen.fullScreen = isFullscreen;
-
-            _gameSettingsData._isFullScreen = isFullscreen;
-            SaveSettingsData();
+            _gameSettings._IsFullScreen = isFullscreen;
         }
 
-        private void SaveSettingsData()
-        {
-            GameSettings.Instance._gameSettingStats.SetGameSettingsData(_gameSettingsData);
-        }
+
     }
 }

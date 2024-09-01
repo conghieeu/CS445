@@ -63,17 +63,12 @@ public class EmailPassLogin : MonoBehaviour
             else
             {
                 showLogMsg("Please verify your email!!");
-                SendEmailVerification();
+                StartCoroutine(SendEmailForVerificationAsync());
             }
 
         });
     }
-
-    public void SendEmailVerification()
-    {
-        StartCoroutine(SendEmailForVerificationAsync());
-    }
-
+    
     IEnumerator SendEmailForVerificationAsync()
     {
         FirebaseUser user = FirebaseAuth.DefaultInstance.CurrentUser;

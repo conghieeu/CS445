@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 namespace CuaHang
 {
@@ -8,7 +9,7 @@ namespace CuaHang
     {
         [Header("RaycastCursor")]
         public ItemDrag _objectDrag;
-        [SerializeField] Camera cam;
+        [SerializeField] Camera _cam;
 
         [Space]
         public bool _enableSnapping; // bật chế độ snapping
@@ -24,12 +25,35 @@ namespace CuaHang
         public RaycastHit _hit;
         public RaycastHit[] _hits;
 
-        private void Start()
+        private GamePCInput _input;
+
+        private void Awake()
         {
-            cam = Camera.main;
+            _cam = Camera.main;
             _enableRaycast = true;
             _enableOutline = true;
+            _input = new();
+        }
+
+        private void Start()
+        {
             _objectDrag = SingleModuleManager.Instance._objectDrag;
+        }
+
+        private void OnEnable()
+        {
+
+            _input.SnapPerformed += SetSnap;
+        }
+
+        private void OnDisable()
+        {
+            _input.SnapPerformed -= SetSnap;
+        }
+
+        void FixedUpdate()
+        {
+            CanNotPlant();
         }
 
         void Update()
@@ -40,16 +64,11 @@ namespace CuaHang
 
             MoveItemDrag();
             RotationItemDrag();
-
-            if (Input.GetKeyDown(KeyCode.N))
-            {
-                _enableSnapping = !_enableSnapping;
-            }
         }
 
-        void FixedUpdate()
+        private void SetSnap(InputAction.CallbackContext context)
         {
-            CanNotPlant();
+            _enableSnapping = !_enableSnapping;
         }
 
         /// <summary> Chiếu tia raycast lấy dữ liệu cho _Hit </summary>
@@ -57,7 +76,7 @@ namespace CuaHang
         {
             if (_enableRaycast == false) return;
 
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            Ray ray = _cam.ScreenPointToRay(Input.mousePosition);
             Physics.Raycast(ray, out _hit, 100, _layerMask);
             _hits = Physics.RaycastAll(ray, 100f, _layerMask);
             In($"You Hit {_hit.transform}");
@@ -101,7 +120,7 @@ namespace CuaHang
             if (!_objectDrag) return;
 
             // khoảng cách bị quá dài
-            if (Vector3.Distance(cam.transform.position, _hit.point) < _snapDistance)
+            if (Vector3.Distance(_cam.transform.position, _hit.point) < _snapDistance)
             {
                 _objectDrag.GetComponent<ItemDrag>()._isDistance = true;
             }

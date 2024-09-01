@@ -22,15 +22,23 @@ namespace CuaHang
 
         public static event Action<Item> _EventOnEditItem;
 
-        private void Start()
+        void Start()
         {
             _characterFollow = PlayerCtrl.Instance.transform;
             _cam = Camera.main;
-
-            _objectFollow.rotation = SerializationAndEncryption.Instance.GameData._gameSettingsData._camRotation;
         }
 
-        private void Update()
+        private void OnEnable()
+        {
+            GameSettingStats._OnDataChange += OnSettingLoad;
+        }
+
+        private void OnDisable()
+        {
+            GameSettingStats._OnDataChange -= OnSettingLoad;
+        }
+
+        void Update()
         {
             if (_isTargetToCamHere == false) CamCtrl();
 
@@ -38,10 +46,15 @@ namespace CuaHang
             CamForcusShelf(_raycastCursor._itemFocus);
         }
 
-        private void FixedUpdate()
+        void FixedUpdate()
         {
             // save cam rotation
-            GameSettings.Instance._gameSettingStats._gameSettingData._camRotation = _objectFollow.rotation;
+            GameSettings.Instance._CamRotation = _objectFollow.rotation;
+        }
+
+        private void OnSettingLoad(GameSettingsData data)
+        {
+            _objectFollow.rotation = data._camRotation;
         }
 
         private void CamCtrl()

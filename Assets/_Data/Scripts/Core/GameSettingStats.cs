@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameSettingStats : ObjectStats
 {
     [Header("GAME SETTING STATS")]
-    public GameSettingsData _gameSettingData;
+    [SerializeField] GameSettingsData _gameSettingData;
 
     public static event Action<GameSettingsData> _OnDataChange;
 
@@ -14,16 +14,22 @@ public class GameSettingStats : ObjectStats
         _gameSettingData = (data as GameData)._gameSettingsData;
 
         // set properties
-        _OnDataChange?.Invoke(_gameSettingData);
-    }
+        GameSettings gameSettings = GetComponent<GameSettings>();
+        gameSettings.SetProperties(_gameSettingData);
 
-    public void SetGameSettingsData(GameSettingsData gameSettingData)
-    {
-        _gameSettingData = gameSettingData;
+        // Thong bao
+        _OnDataChange?.Invoke(_gameSettingData);
     }
 
     protected override void SaveData()
     {
+        GameSettings gameSetting = GetComponent<GameSettings>();
+        _gameSettingData._camRotation = gameSetting._CamRotation;
+        _gameSettingData._currentResolutionIndex = gameSetting._CurrentResolutionIndex;
+        _gameSettingData._isFullScreen = gameSetting._IsFullScreen;
+        _gameSettingData._qualityIndex = gameSetting._QualityIndex;
+        _gameSettingData._masterVolume = gameSetting._MasterVolume;
+
         GetGameData()._gameSettingsData = _gameSettingData;
     }
 }
