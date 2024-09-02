@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 namespace CuaHang
 {
     /// <summary> Dùng raycast và drag các item </summary>
-    public class RaycastCursor : HieuBehavior
+    public class RaycastCursor : Singleton<RaycastCursor>
     {
         [Header("RaycastCursor")]
         public ItemDrag _objectDrag;
@@ -23,16 +23,14 @@ namespace CuaHang
         public LayerMask _layerMask;
 
         public RaycastHit _hit;
-        public RaycastHit[] _hits;
+        public RaycastHit[] _hits; 
 
-        private GamePCInput _input;
-
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake(); 
             _cam = Camera.main;
             _enableRaycast = true;
-            _enableOutline = true;
-            _input = new();
+            _enableOutline = true; 
         }
 
         private void Start()
@@ -42,13 +40,14 @@ namespace CuaHang
 
         private void OnEnable()
         {
-
-            _input.SnapPerformed += SetSnap;
+            InputImprove.DragPerformed += SetItemDrag;
+            InputImprove.SnapPerformed += SetSnap;
         }
 
         private void OnDisable()
         {
-            _input.SnapPerformed -= SetSnap;
+            InputImprove.DragPerformed -= SetItemDrag;
+            InputImprove.SnapPerformed -= SetSnap;
         }
 
         void FixedUpdate()
@@ -60,7 +59,6 @@ namespace CuaHang
         {
             SetRayHit();
             SetItemFocus();
-            SetItemDrag();
 
             MoveItemDrag();
             RotationItemDrag();
@@ -131,9 +129,9 @@ namespace CuaHang
         }
 
         /// <summary> Bật item drag với item được _Hit chiếu</summary>
-        private void SetItemDrag()
+        private void SetItemDrag(InputAction.CallbackContext context)
         {
-            if (!_itemFocus || !Input.GetKeyDown(KeyCode.E) || _objectDrag._isDragging) return;
+            if (!_itemFocus || _objectDrag._isDragging) return;
 
             Item item = _itemFocus.transform.GetComponent<Item>();
 

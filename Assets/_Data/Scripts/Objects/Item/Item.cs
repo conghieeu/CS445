@@ -19,9 +19,9 @@ namespace CuaHang
         [Header("Variables")]
         public string _interactionPrompt;
         public bool _isCanDrag = true;  // có thằng nhân vật nào đó đang bưng bê cái này
-        public bool _isCanSell;
-        public bool _isOnEditMode;
-        public bool _isSamePrice; // muốn đặt giá tiền các item trong kệ sẽ ngan item
+        public bool _isCanSell; // có thể bán được không
+        public bool _isOnEditMode; // có đang ở chế độ edit không
+        public bool _isSamePrice; // muốn đặt giá tiền các item trong kệ sẽ ngan item cha không
         public Transform _thisParent; // là cha của item này
         public ItemSlot _itemSlot; // Có cái này sẽ là item có khả năng lưu trử các item khác
         public Item _itemParent; // item đang giữ item này

@@ -71,6 +71,24 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Drag"",
+                    ""type"": ""Button"",
+                    ""id"": ""cada6cde-0fe4-460c-b8e5-53fa0ae3da40"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShowInfo"",
+                    ""type"": ""Button"",
+                    ""id"": ""564f7a4a-366a-4fba-beaf-6ffe4ac98919"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -313,6 +331,28 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""MenuSettings"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3e587db4-74f8-4b36-9d82-2ee446aa5f39"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Drag"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""40e73dbc-0872-48e4-8ba2-09dd8a343fc5"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ShowInfo"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -905,6 +945,8 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
         m_Player_Snap = m_Player.FindAction("Snap", throwIfNotFound: true);
         m_Player_MenuSettings = m_Player.FindAction("MenuSettings", throwIfNotFound: true);
+        m_Player_Drag = m_Player.FindAction("Drag", throwIfNotFound: true);
+        m_Player_ShowInfo = m_Player.FindAction("ShowInfo", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -983,6 +1025,8 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Fire;
     private readonly InputAction m_Player_Snap;
     private readonly InputAction m_Player_MenuSettings;
+    private readonly InputAction m_Player_Drag;
+    private readonly InputAction m_Player_ShowInfo;
     public struct PlayerActions
     {
         private @GameActionInput m_Wrapper;
@@ -992,6 +1036,8 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputAction @Snap => m_Wrapper.m_Player_Snap;
         public InputAction @MenuSettings => m_Wrapper.m_Player_MenuSettings;
+        public InputAction @Drag => m_Wrapper.m_Player_Drag;
+        public InputAction @ShowInfo => m_Wrapper.m_Player_ShowInfo;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1016,6 +1062,12 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
             @MenuSettings.started += instance.OnMenuSettings;
             @MenuSettings.performed += instance.OnMenuSettings;
             @MenuSettings.canceled += instance.OnMenuSettings;
+            @Drag.started += instance.OnDrag;
+            @Drag.performed += instance.OnDrag;
+            @Drag.canceled += instance.OnDrag;
+            @ShowInfo.started += instance.OnShowInfo;
+            @ShowInfo.performed += instance.OnShowInfo;
+            @ShowInfo.canceled += instance.OnShowInfo;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1035,6 +1087,12 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
             @MenuSettings.started -= instance.OnMenuSettings;
             @MenuSettings.performed -= instance.OnMenuSettings;
             @MenuSettings.canceled -= instance.OnMenuSettings;
+            @Drag.started -= instance.OnDrag;
+            @Drag.performed -= instance.OnDrag;
+            @Drag.canceled -= instance.OnDrag;
+            @ShowInfo.started -= instance.OnShowInfo;
+            @ShowInfo.performed -= instance.OnShowInfo;
+            @ShowInfo.canceled -= instance.OnShowInfo;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1222,6 +1280,8 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
         void OnFire(InputAction.CallbackContext context);
         void OnSnap(InputAction.CallbackContext context);
         void OnMenuSettings(InputAction.CallbackContext context);
+        void OnDrag(InputAction.CallbackContext context);
+        void OnShowInfo(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

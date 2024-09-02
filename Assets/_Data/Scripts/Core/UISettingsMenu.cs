@@ -19,13 +19,11 @@ namespace Core
         [SerializeField] Slider _sliderVolume;
         [SerializeField] Resolution[] resolutions; // Array to store available screen resolutions
 
-        private GameSettings _gameSettings;
-        private GamePCInput _gamePCInput;
+        private GameSettings _gameSettings; 
 
         private void Awake()
-        {
-            _gamePCInput = new();
-
+        { 
+            
             // tắt menu setting khi mới bắt đầu 
             _enableMenuSettings = false;
             _panelContent.gameObject.SetActive(_enableMenuSettings);
@@ -37,7 +35,7 @@ namespace Core
         private void OnEnable()
         {
             GameSettingStats._OnDataChange += OnGameSettingLoad;
-            _gamePCInput.MenuSettings += SetActiveMenuSettings;
+            // InputImprove.MenuSettings += SetActiveMenuSettings;
         }
 
         private void OnDisable()
@@ -94,7 +92,6 @@ namespace Core
             resolutionDropdown.value = current;
             resolutionDropdown.RefreshShownValue();
 
-            Debug.Log(current);
             _gameSettings._CurrentResolutionIndex = current;
         }
 

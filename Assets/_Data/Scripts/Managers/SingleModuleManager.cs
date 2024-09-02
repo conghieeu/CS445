@@ -8,7 +8,6 @@ namespace CuaHang
     {
         public ItemDrag _objectDrag;
         public RaycastCursor _raycastCursor;
-        public PlayerCtrl _playerCtrl;
         public Transform _itemSpawnPos;
         public Transform _pointOutShop;
 
