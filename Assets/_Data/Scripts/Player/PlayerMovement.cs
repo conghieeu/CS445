@@ -16,12 +16,14 @@ namespace CuaHang.Player
         public bool _triggerDragging; // trigger player đang drag item
 
 
-        [SerializeField] Vector3 _moveDir; 
+        [SerializeField] Vector3 _moveDir;
         Rigidbody _rb;
         PlayerCtrl _ctrl;
+        InputImprove _input;
 
         private void Start()
-        { 
+        {
+            _input = new();
             _ctrl = GetComponent<PlayerCtrl>();
             _rb = GetComponent<Rigidbody>();
             _cam = Camera.main.transform;
@@ -37,8 +39,8 @@ namespace CuaHang.Player
         private void Movement()
         {
             // Input
-            float horInput = InputImprove.MovementInput().x;
-            float verInput = InputImprove.MovementInput().y;
+            float horInput = _input.MovementInput().x;
+            float verInput = _input.MovementInput().y;
 
             // camera dir
             Vector3 camForward = _cam.forward;

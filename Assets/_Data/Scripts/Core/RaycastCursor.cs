@@ -24,10 +24,12 @@ namespace CuaHang
 
         public RaycastHit _hit;
         public RaycastHit[] _hits; 
+        public InputImprove _input;
 
         protected override void Awake()
         {
             base.Awake(); 
+            _input = new();
             _cam = Camera.main;
             _enableRaycast = true;
             _enableOutline = true; 
@@ -40,14 +42,14 @@ namespace CuaHang
 
         private void OnEnable()
         {
-            InputImprove.DragPerformed += SetItemDrag;
-            InputImprove.SnapPerformed += SetSnap;
+            _input.DragPerformed += SetItemDrag;
+            _input.SnapPerformed += SetSnap;
         }
 
         private void OnDisable()
         {
-            InputImprove.DragPerformed -= SetItemDrag;
-            InputImprove.SnapPerformed -= SetSnap;
+            _input.DragPerformed -= SetItemDrag;
+            _input.SnapPerformed -= SetSnap;
         }
 
         void FixedUpdate()

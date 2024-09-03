@@ -2,17 +2,18 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputImprove : MonoBehaviour
+public class InputImprove
 {
-    private static GameActionInput _input;
+    private GameActionInput _input;
 
-    private void Awake()
+    public InputImprove()
     {
-        _input = new GameActionInput();
+        _input = new();
         _input.Enable();
     }
 
-    public static event Action<InputAction.CallbackContext> SnapPerformed
+    #region Input Action
+    public event Action<InputAction.CallbackContext> SnapPerformed
     {
         add
         {
@@ -24,7 +25,7 @@ public class InputImprove : MonoBehaviour
         }
     }
 
-    public static event Action<InputAction.CallbackContext> MenuSettings
+    public event Action<InputAction.CallbackContext> MenuSettings
     {
         add
         {
@@ -36,7 +37,7 @@ public class InputImprove : MonoBehaviour
         }
     }
 
-    public static event Action<InputAction.CallbackContext> DragPerformed
+    public event Action<InputAction.CallbackContext> DragPerformed
     {
         add
         {
@@ -50,7 +51,7 @@ public class InputImprove : MonoBehaviour
         }
     }
 
-    public static event Action<InputAction.CallbackContext> ShowInfo
+    public event Action<InputAction.CallbackContext> ShowInfo
     {
         add
         {
@@ -64,19 +65,23 @@ public class InputImprove : MonoBehaviour
         }
     }
 
+    public Vector2 MovementInput()
+    {
+        return _input.Player.Move.ReadValue<Vector2>();
+    }
+
+    #endregion
+
+    #region Call Input
     static event Action<InputAction.CallbackContext> AShowInfo;
     public static void CallShowInfo() => AShowInfo?.Invoke(new InputAction.CallbackContext());
 
     static event Action<InputAction.CallbackContext> CallDrag;
-    public static void CallDragPerformed()
-    {
-        CallDrag?.Invoke(new InputAction.CallbackContext());
-    }
+    public static void CallDragPerformed() => CallDrag?.Invoke(new InputAction.CallbackContext());
 
-    public static Vector2 MovementInput()
-    {
-        return _input.Player.Move.ReadValue<Vector2>();
-    }
+
+    #endregion
+
 
 }
 
