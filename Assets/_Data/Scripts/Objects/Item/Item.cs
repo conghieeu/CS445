@@ -19,8 +19,7 @@ namespace CuaHang
         [Header("Variables")]
         public string _interactionPrompt;
         public bool _isCanDrag = true;  // có thằng nhân vật nào đó đang bưng bê cái này
-        public bool _isCanSell; // có thể bán được không
-        public bool _isOnEditMode; // có đang ở chế độ edit không
+        public bool _isCanSell; // có thể bán được không 
         public bool _isSamePrice; // muốn đặt giá tiền các item trong kệ sẽ ngan item cha không
         public Transform _thisParent; // là cha của item này
         public ItemSlot _itemSlot; // Có cái này sẽ là item có khả năng lưu trử các item khác
@@ -190,13 +189,10 @@ namespace CuaHang
             {
                 _camHere.SetCamFocusHere();
                 _coll.enabled = false;
-                _isOnEditMode = true;
             }
             else
-            {
-
-                _coll.enabled = true;
-                _isOnEditMode = false;
+            { 
+                _coll.enabled = true; 
             }
         }
 

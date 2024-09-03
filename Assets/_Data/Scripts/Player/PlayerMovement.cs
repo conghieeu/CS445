@@ -61,7 +61,7 @@ namespace CuaHang.Player
             _rb.velocity = velocity;
 
             // Trường hợp đang kéo thả Item nào đó
-            if (_rb.velocity.magnitude > 0 && !_ctrl._objectDrag._isDragging)
+            if (_rb.velocity.magnitude > 0 && !_ctrl._itemDrag._isDragging)
             {
                 velocity.y = 0;
                 transform.forward = velocity;
@@ -70,7 +70,7 @@ namespace CuaHang.Player
 
         private void SetAnimator()
         {
-            bool _isDragItem = _ctrl._objectDrag.gameObject.activeInHierarchy;
+            bool _isDragItem = _ctrl._itemDrag.gameObject.activeInHierarchy;
 
             // Idle
             if (_moveDir == Vector3.zero && (_stageAnim != STATE_ANIM.Idle || _triggerDragging != _isDragItem))

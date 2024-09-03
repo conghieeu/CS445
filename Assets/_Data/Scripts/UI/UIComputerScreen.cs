@@ -53,14 +53,10 @@ namespace CuaHang.UI
         void FixedUpdate()
         {
             CreateBtnSlot(); 
-        }
-
-        // -----------BUY PANEL----------
-
-        // -----------PAYMENT PANEL----------
+        } 
 
         public void SetActiveContent(Item item)
-        { 
+        {  
             if (item && item.GetComponent<MayTinh>())
             {
                 if (_panelPayment) _panelPayment.gameObject.SetActive(true);

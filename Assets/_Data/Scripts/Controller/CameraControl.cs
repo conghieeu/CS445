@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Core;
+using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace CuaHang
 {
@@ -11,131 +13,145 @@ namespace CuaHang
         public float _camSizeDefault = 5;
         public float _rotationSpeed;
         public float _moveSpeed;
-        public Transform _characterFollow;
-        public Transform _objectFollow; // là đối tượng theo giỏi object forcus
-        public Transform _cameraHolder;
+        public Transform _itemFollow; // là đối tượng theo giỏi object forcus
         public Item _itemEditing;
-        public ItemDrag _objectDrag;
-        public RaycastCursor _raycastCursor;
-        public Camera _cam;
-        public bool _isTargetToCamHere;
+        public Transform _camshaft; // trục xoay của cam
+        public Transform _cameraHolder;
+        RaycastCursor _raycastCursor;
+        Camera _cam;
+        ItemDrag _itemDrag;
+        InputImprove _input;
 
         public static event Action<Item> _EventOnEditItem;
 
-        void Start()
+        protected override void Awake()
         {
-            _characterFollow = PlayerCtrl.Instance.transform;
+            base.Awake();
+            _raycastCursor = RaycastCursor.Instance;
+            _itemDrag = SingleModuleManager.Instance._itemDrag;
+            _input = new();
             _cam = Camera.main;
         }
 
         private void OnEnable()
         {
             GameSettingStats._OnDataChange += OnSettingLoad;
+            _input.EditItem += EditItem;
+            _input.Cancel += CancelFollowItem;
+            _input.FollowItem += CamFollowItem;
         }
 
         private void OnDisable()
         {
             GameSettingStats._OnDataChange -= OnSettingLoad;
-        }
-
-        void Update()
-        {
-            if (_isTargetToCamHere == false) CamCtrl();
-
-            SetCamFocus(_raycastCursor._itemFocus);
-            CamForcusShelf(_raycastCursor._itemFocus);
+            _input.EditItem -= EditItem;
+            _input.Cancel -= CancelFollowItem;
+            _input.FollowItem -= CamFollowItem;
         }
 
         void FixedUpdate()
         {
             // save cam rotation
-            GameSettings.Instance._CamRotation = _objectFollow.rotation;
+            GameSettings.Instance._CamRotation = _camshaft.rotation;
+            CamFollowPlayer();
         }
 
-        private void OnSettingLoad(GameSettingsData data)
+        void Update()
         {
-            _objectFollow.rotation = data._camRotation;
+            CamController();
         }
 
-        private void CamCtrl()
+        /// <summary> Điều khiển cam </summary>
+        private void CamController()
         {
-            // Move forward character follow
-            _objectFollow.position = Vector3.MoveTowards(_objectFollow.position, _characterFollow.position, _moveSpeed * Time.deltaTime);
-            _cam.transform.position = _cameraHolder.position;
-            _cam.transform.rotation = _cameraHolder.rotation;
-
-            // Kiểm tra nếu giữ chuột phải
-            if (Input.GetMouseButton(1))
+            if (_itemEditing == false)
             {
-                // Lấy giá trị delta của chuột (sự thay đổi vị trí chuột)
-                float mouseX = Input.GetAxis("Mouse X");
+                // Move follow Object
+                _camshaft.position = Vector3.MoveTowards(_camshaft.position, _itemFollow.position, _moveSpeed * Time.deltaTime);
+                _cam.transform.position = _cameraHolder.position;
+                _cam.transform.rotation = _cameraHolder.rotation;
 
-                // Xoay đối tượng quanh trục Y dựa trên giá trị delta của chuột
-                _objectFollow.Rotate(Vector3.up, mouseX * _rotationSpeed, Space.Self);
-            }
-        }
-
-        /// <summary> Cam tập trung vào đối tượng Item </summary>
-        private void SetCamFocus(Transform itemF)
-        {
-            // Thoát trạng thái tập trung của cam
-            if (Input.GetKeyDown(KeyCode.BackQuote) || _objectDrag.gameObject.activeInHierarchy)
-            {
-                ResetCharacterCamFocus(PlayerCtrl.Instance.transform);
-            }
-
-            // F để tập trung vào đối tượng
-            if (itemF && Input.GetKeyDown(KeyCode.F))
-            {
-                Item item = itemF.GetComponent<Item>();
-
-                if (item)
+                // Kiểm tra nếu giữ chuột phải
+                if (Input.GetMouseButton(1))
                 {
-                    _characterFollow = itemF;
+                    // Lấy giá trị delta của chuột (sự thay đổi vị trí chuột)
+                    float mouseX = Input.GetAxis("Mouse X");
+
+                    // Xoay đối tượng quanh trục Y dựa trên giá trị delta của chuột
+                    _camshaft.Rotate(Vector3.up, mouseX * _rotationSpeed, Space.Self);
                 }
             }
         }
 
-        private void ResetCharacterCamFocus(Transform chFocus)
+        private void OnSettingLoad(GameSettingsData data)
         {
-            _characterFollow = chFocus;
-            _isTargetToCamHere = false;
+            _camshaft.rotation = data._camRotation;
+        }
+
+        /// <summary> Nhìn vào player </summary>
+        private void CamFollowPlayer()
+        {
+            if (_itemDrag.gameObject.activeInHierarchy || !_itemFollow)
+            {
+                SetObjectFollow(PlayerCtrl.Instance.transform);
+            }
+        }
+
+        private void CancelFollowItem(InputAction.CallbackContext context)
+        {
+            if (_itemEditing)
+            {
+                _itemEditing.SetEditMode(false);
+                _itemEditing = null;
+            }
+
+            _EventOnEditItem?.Invoke(null);
+            SetObjectFollow(PlayerCtrl.Instance.transform);
+        }
+
+        /// <summary> Để cam nhìn vào character follow </summary>
+        private void CamFollowItem(InputAction.CallbackContext context)
+        {
+            Transform item = _raycastCursor._itemFocus;
+
+            // F để tập trung vào đối tượng
+            if (item && item.GetComponent<Item>())
+            {
+                _itemFollow = item;
+            }
+        }
+
+        /// <summary> cam sẽ nhìn vào cái gì </summary>
+        private void SetObjectFollow(Transform objectF)
+        {
+            _itemFollow = objectF;
+            _EventOnEditItem?.Invoke(null);
             _cam.orthographicSize = _camSizeDefault;
 
             if (_itemEditing)
             {
                 _itemEditing.SetEditMode(false);
                 _itemEditing = null;
-                _EventOnEditItem?.Invoke(null);
             }
         }
 
-        /// <summary> cam tập trung vào kệ hàng để điều chỉnh giá sản phẩm </summary>
-        private void CamForcusShelf(Transform itemF)
+        /// <summary> cam tập trung vaò item edit </summary>
+        private void EditItem(InputAction.CallbackContext context)
         {
-            if (itemF && Input.GetKeyDown(KeyCode.Z))
+            Item item = _raycastCursor._itemFocus.GetComponentInChildren<Item>();
+
+            if (item && item._camHere && !_itemEditing)
             {
-                Item item = itemF.GetComponentInChildren<Item>();
+                _itemEditing = item;
+                _itemEditing.SetEditMode(true);
+                _EventOnEditItem?.Invoke(item);
+                return;
+            }
 
-                if (item && !_isTargetToCamHere)
-                {
-                    if (!item._camHere)
-                    {
-                        Debug.LogWarning($"Đối tượng này không có _camHere");
-                        return;
-                    }
+            if (_itemEditing)
+            {
 
-                    _itemEditing = item;
-                    _isTargetToCamHere = true;
-                    item.SetEditMode(true);
-                    _EventOnEditItem?.Invoke(item);
-                    return;
-                }
-
-                if (_isTargetToCamHere && _itemEditing)
-                {
-                    ResetCharacterCamFocus(_itemEditing.transform);
-                }
+                SetObjectFollow(_itemFollow);
             }
         }
 

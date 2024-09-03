@@ -53,42 +53,6 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Snap"",
-                    ""type"": ""Button"",
-                    ""id"": ""ef73d234-7645-4169-b30e-c06f570c4420"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""MenuSettings"",
-                    ""type"": ""Button"",
-                    ""id"": ""dcada9d7-708a-4ac4-854e-9354e24abbe5"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Drag"",
-                    ""type"": ""Button"",
-                    ""id"": ""cada6cde-0fe4-460c-b8e5-53fa0ae3da40"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""ShowInfo"",
-                    ""type"": ""Button"",
-                    ""id"": ""564f7a4a-366a-4fba-beaf-6ffe4ac98919"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -311,50 +275,6 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
                     ""action"": ""Fire"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""53e7c950-baca-4c07-9bf5-8fbe3e95007d"",
-                    ""path"": ""<Keyboard>/n"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Snap"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""0597aa3a-acbd-4a8e-a5ec-17f3f8807ee3"",
-                    ""path"": ""<Keyboard>/escape"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""MenuSettings"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""3e587db4-74f8-4b36-9d82-2ee446aa5f39"",
-                    ""path"": ""<Keyboard>/e"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Drag"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""40e73dbc-0872-48e4-8ba2-09dd8a343fc5"",
-                    ""path"": ""<Keyboard>/i"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""ShowInfo"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -448,6 +368,69 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
                     ""type"": ""PassThrough"",
                     ""id"": ""8ac1c36f-400f-4fce-a7d8-51c75381ff5c"",
                     ""expectedControlType"": ""Quaternion"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""FollowItem"",
+                    ""type"": ""Button"",
+                    ""id"": ""745ddea2-0d1b-4e30-816c-8747f864815e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""EditItem"",
+                    ""type"": ""Button"",
+                    ""id"": ""fb29dd85-a864-46ee-a64e-1436cc1e52e4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShowInfo"",
+                    ""type"": ""Button"",
+                    ""id"": ""0edacf88-8d78-4453-a30f-cc8872f9edd3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Drag"",
+                    ""type"": ""Button"",
+                    ""id"": ""a48e0559-c7b0-44e3-8916-53bdbb9fd9df"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MenuSettings"",
+                    ""type"": ""Button"",
+                    ""id"": ""b73fadc2-90d9-44a1-81c2-6ade39e7b188"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Snap"",
+                    ""type"": ""Button"",
+                    ""id"": ""0c80ab8c-3d1c-4a66-9b30-c54397e44da1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SenderItem"",
+                    ""type"": ""Button"",
+                    ""id"": ""0327f3b8-2b8a-4f65-adba-a2cd235e6732"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -742,6 +725,17 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""cdd49300-2b84-40cb-97d1-f44519068579"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""c52c8e0b-8179-41d3-b8a1-d149033bbe86"",
                     ""path"": ""<Mouse>/position"",
                     ""interactions"": """",
@@ -871,6 +865,83 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
                     ""action"": ""TrackedDeviceOrientation"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""70cbbc55-41dc-440e-a6fe-d1578a6a300c"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""FollowItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4ffefe49-466d-4579-b916-460045f68a02"",
+                    ""path"": ""<Keyboard>/z"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""EditItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e157ffff-5669-487a-8d4b-1f1a9e82acad"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""ShowInfo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""de1339f6-28ab-4d80-b2b9-63751aeb58ee"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Drag"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c627b5b9-2108-4480-a3d1-a7bbf1d244bc"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""MenuSettings"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cf5df76a-8144-440b-8d3e-ac97bac3516c"",
+                    ""path"": ""<Keyboard>/n"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Snap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0e82ef5b-7038-4941-9f5c-71f26a7a8b28"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""SenderItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -943,10 +1014,6 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
-        m_Player_Snap = m_Player.FindAction("Snap", throwIfNotFound: true);
-        m_Player_MenuSettings = m_Player.FindAction("MenuSettings", throwIfNotFound: true);
-        m_Player_Drag = m_Player.FindAction("Drag", throwIfNotFound: true);
-        m_Player_ShowInfo = m_Player.FindAction("ShowInfo", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -959,6 +1026,13 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
         m_UI_RightClick = m_UI.FindAction("RightClick", throwIfNotFound: true);
         m_UI_TrackedDevicePosition = m_UI.FindAction("TrackedDevicePosition", throwIfNotFound: true);
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
+        m_UI_FollowItem = m_UI.FindAction("FollowItem", throwIfNotFound: true);
+        m_UI_EditItem = m_UI.FindAction("EditItem", throwIfNotFound: true);
+        m_UI_ShowInfo = m_UI.FindAction("ShowInfo", throwIfNotFound: true);
+        m_UI_Drag = m_UI.FindAction("Drag", throwIfNotFound: true);
+        m_UI_MenuSettings = m_UI.FindAction("MenuSettings", throwIfNotFound: true);
+        m_UI_Snap = m_UI.FindAction("Snap", throwIfNotFound: true);
+        m_UI_SenderItem = m_UI.FindAction("SenderItem", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1023,10 +1097,6 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_Fire;
-    private readonly InputAction m_Player_Snap;
-    private readonly InputAction m_Player_MenuSettings;
-    private readonly InputAction m_Player_Drag;
-    private readonly InputAction m_Player_ShowInfo;
     public struct PlayerActions
     {
         private @GameActionInput m_Wrapper;
@@ -1034,10 +1104,6 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Look => m_Wrapper.m_Player_Look;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
-        public InputAction @Snap => m_Wrapper.m_Player_Snap;
-        public InputAction @MenuSettings => m_Wrapper.m_Player_MenuSettings;
-        public InputAction @Drag => m_Wrapper.m_Player_Drag;
-        public InputAction @ShowInfo => m_Wrapper.m_Player_ShowInfo;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1056,18 +1122,6 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
             @Fire.started += instance.OnFire;
             @Fire.performed += instance.OnFire;
             @Fire.canceled += instance.OnFire;
-            @Snap.started += instance.OnSnap;
-            @Snap.performed += instance.OnSnap;
-            @Snap.canceled += instance.OnSnap;
-            @MenuSettings.started += instance.OnMenuSettings;
-            @MenuSettings.performed += instance.OnMenuSettings;
-            @MenuSettings.canceled += instance.OnMenuSettings;
-            @Drag.started += instance.OnDrag;
-            @Drag.performed += instance.OnDrag;
-            @Drag.canceled += instance.OnDrag;
-            @ShowInfo.started += instance.OnShowInfo;
-            @ShowInfo.performed += instance.OnShowInfo;
-            @ShowInfo.canceled += instance.OnShowInfo;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1081,18 +1135,6 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
             @Fire.started -= instance.OnFire;
             @Fire.performed -= instance.OnFire;
             @Fire.canceled -= instance.OnFire;
-            @Snap.started -= instance.OnSnap;
-            @Snap.performed -= instance.OnSnap;
-            @Snap.canceled -= instance.OnSnap;
-            @MenuSettings.started -= instance.OnMenuSettings;
-            @MenuSettings.performed -= instance.OnMenuSettings;
-            @MenuSettings.canceled -= instance.OnMenuSettings;
-            @Drag.started -= instance.OnDrag;
-            @Drag.performed -= instance.OnDrag;
-            @Drag.canceled -= instance.OnDrag;
-            @ShowInfo.started -= instance.OnShowInfo;
-            @ShowInfo.performed -= instance.OnShowInfo;
-            @ShowInfo.canceled -= instance.OnShowInfo;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1124,6 +1166,13 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_RightClick;
     private readonly InputAction m_UI_TrackedDevicePosition;
     private readonly InputAction m_UI_TrackedDeviceOrientation;
+    private readonly InputAction m_UI_FollowItem;
+    private readonly InputAction m_UI_EditItem;
+    private readonly InputAction m_UI_ShowInfo;
+    private readonly InputAction m_UI_Drag;
+    private readonly InputAction m_UI_MenuSettings;
+    private readonly InputAction m_UI_Snap;
+    private readonly InputAction m_UI_SenderItem;
     public struct UIActions
     {
         private @GameActionInput m_Wrapper;
@@ -1138,6 +1187,13 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
         public InputAction @RightClick => m_Wrapper.m_UI_RightClick;
         public InputAction @TrackedDevicePosition => m_Wrapper.m_UI_TrackedDevicePosition;
         public InputAction @TrackedDeviceOrientation => m_Wrapper.m_UI_TrackedDeviceOrientation;
+        public InputAction @FollowItem => m_Wrapper.m_UI_FollowItem;
+        public InputAction @EditItem => m_Wrapper.m_UI_EditItem;
+        public InputAction @ShowInfo => m_Wrapper.m_UI_ShowInfo;
+        public InputAction @Drag => m_Wrapper.m_UI_Drag;
+        public InputAction @MenuSettings => m_Wrapper.m_UI_MenuSettings;
+        public InputAction @Snap => m_Wrapper.m_UI_Snap;
+        public InputAction @SenderItem => m_Wrapper.m_UI_SenderItem;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1177,6 +1233,27 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
             @TrackedDeviceOrientation.started += instance.OnTrackedDeviceOrientation;
             @TrackedDeviceOrientation.performed += instance.OnTrackedDeviceOrientation;
             @TrackedDeviceOrientation.canceled += instance.OnTrackedDeviceOrientation;
+            @FollowItem.started += instance.OnFollowItem;
+            @FollowItem.performed += instance.OnFollowItem;
+            @FollowItem.canceled += instance.OnFollowItem;
+            @EditItem.started += instance.OnEditItem;
+            @EditItem.performed += instance.OnEditItem;
+            @EditItem.canceled += instance.OnEditItem;
+            @ShowInfo.started += instance.OnShowInfo;
+            @ShowInfo.performed += instance.OnShowInfo;
+            @ShowInfo.canceled += instance.OnShowInfo;
+            @Drag.started += instance.OnDrag;
+            @Drag.performed += instance.OnDrag;
+            @Drag.canceled += instance.OnDrag;
+            @MenuSettings.started += instance.OnMenuSettings;
+            @MenuSettings.performed += instance.OnMenuSettings;
+            @MenuSettings.canceled += instance.OnMenuSettings;
+            @Snap.started += instance.OnSnap;
+            @Snap.performed += instance.OnSnap;
+            @Snap.canceled += instance.OnSnap;
+            @SenderItem.started += instance.OnSenderItem;
+            @SenderItem.performed += instance.OnSenderItem;
+            @SenderItem.canceled += instance.OnSenderItem;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -1211,6 +1288,27 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
             @TrackedDeviceOrientation.started -= instance.OnTrackedDeviceOrientation;
             @TrackedDeviceOrientation.performed -= instance.OnTrackedDeviceOrientation;
             @TrackedDeviceOrientation.canceled -= instance.OnTrackedDeviceOrientation;
+            @FollowItem.started -= instance.OnFollowItem;
+            @FollowItem.performed -= instance.OnFollowItem;
+            @FollowItem.canceled -= instance.OnFollowItem;
+            @EditItem.started -= instance.OnEditItem;
+            @EditItem.performed -= instance.OnEditItem;
+            @EditItem.canceled -= instance.OnEditItem;
+            @ShowInfo.started -= instance.OnShowInfo;
+            @ShowInfo.performed -= instance.OnShowInfo;
+            @ShowInfo.canceled -= instance.OnShowInfo;
+            @Drag.started -= instance.OnDrag;
+            @Drag.performed -= instance.OnDrag;
+            @Drag.canceled -= instance.OnDrag;
+            @MenuSettings.started -= instance.OnMenuSettings;
+            @MenuSettings.performed -= instance.OnMenuSettings;
+            @MenuSettings.canceled -= instance.OnMenuSettings;
+            @Snap.started -= instance.OnSnap;
+            @Snap.performed -= instance.OnSnap;
+            @Snap.canceled -= instance.OnSnap;
+            @SenderItem.started -= instance.OnSenderItem;
+            @SenderItem.performed -= instance.OnSenderItem;
+            @SenderItem.canceled -= instance.OnSenderItem;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -1278,10 +1376,6 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
-        void OnSnap(InputAction.CallbackContext context);
-        void OnMenuSettings(InputAction.CallbackContext context);
-        void OnDrag(InputAction.CallbackContext context);
-        void OnShowInfo(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {
@@ -1295,5 +1389,12 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
         void OnRightClick(InputAction.CallbackContext context);
         void OnTrackedDevicePosition(InputAction.CallbackContext context);
         void OnTrackedDeviceOrientation(InputAction.CallbackContext context);
+        void OnFollowItem(InputAction.CallbackContext context);
+        void OnEditItem(InputAction.CallbackContext context);
+        void OnShowInfo(InputAction.CallbackContext context);
+        void OnDrag(InputAction.CallbackContext context);
+        void OnMenuSettings(InputAction.CallbackContext context);
+        void OnSnap(InputAction.CallbackContext context);
+        void OnSenderItem(InputAction.CallbackContext context);
     }
 }

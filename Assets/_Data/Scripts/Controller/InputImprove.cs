@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,11 +18,11 @@ public class InputImprove
     {
         add
         {
-            _input.Player.Snap.performed += value;
+            _input.UI.Snap.performed += value;
         }
         remove
         {
-            _input.Player.Snap.performed -= value;
+            _input.UI.Snap.performed -= value;
         }
     }
 
@@ -29,11 +30,11 @@ public class InputImprove
     {
         add
         {
-            _input.Player.MenuSettings.performed += value;
+            _input.UI.MenuSettings.performed += value;
         }
         remove
         {
-            _input.Player.MenuSettings.performed -= value;
+            _input.UI.MenuSettings.performed -= value;
         }
     }
 
@@ -41,13 +42,11 @@ public class InputImprove
     {
         add
         {
-            _input.Player.Drag.performed += value;
-            CallDrag += value;
+            _input.UI.Drag.performed += value;
         }
         remove
         {
-            _input.Player.Drag.performed -= value;
-            CallDrag -= value;
+            _input.UI.Drag.performed -= value;
         }
     }
 
@@ -55,33 +54,87 @@ public class InputImprove
     {
         add
         {
-            _input.Player.ShowInfo.performed += value;
-            AShowInfo += value;
+            _input.UI.ShowInfo.performed += value;
         }
         remove
         {
-            _input.Player.ShowInfo.performed -= value;
-            AShowInfo -= value;
+            _input.UI.ShowInfo.performed -= value;
         }
     }
+
+    public event Action<InputAction.CallbackContext> Cancel
+    {
+        add
+        {
+            _input.UI.Cancel.performed += value;
+        }
+        remove
+        {
+            _input.UI.Cancel.performed -= value;
+        }
+    }
+
+    public event Action<InputAction.CallbackContext> Click
+    {
+        add
+        {
+            _input.UI.Click.performed += value;
+        }
+        remove
+        {
+            _input.UI.Click.performed -= value;
+        }
+    }
+
+
+    public event Action<InputAction.CallbackContext> Sender
+    {
+        add
+        {
+            _input.UI.SenderItem.performed += value;
+        }
+        remove
+        {
+            _input.UI.SenderItem.performed -= value;
+        }
+    }
+
+    public event Action<InputAction.CallbackContext> EditItem
+    {
+        add
+        {
+            _input.UI.EditItem.performed += value;
+        }
+        remove
+        {
+            _input.UI.EditItem.performed -= value;
+        }
+    }
+
+    public event Action<InputAction.CallbackContext> FollowItem
+    {
+        add
+        {
+            _input.UI.FollowItem.performed += value;
+        }
+        remove
+        {
+            _input.UI.FollowItem.performed -= value;
+        }
+    }
+
 
     public Vector2 MovementInput()
     {
         return _input.Player.Move.ReadValue<Vector2>();
     }
 
-    #endregion
-
-    #region Call Input
-    static event Action<InputAction.CallbackContext> AShowInfo;
-    public static void CallShowInfo() => AShowInfo?.Invoke(new InputAction.CallbackContext());
-
-    static event Action<InputAction.CallbackContext> CallDrag;
-    public static void CallDragPerformed() => CallDrag?.Invoke(new InputAction.CallbackContext());
-
+    public Vector2 MousePosition()
+    {
+        return _input.UI.Point.ReadValue<Vector2>();
+    }
 
     #endregion
-
 
 }
 

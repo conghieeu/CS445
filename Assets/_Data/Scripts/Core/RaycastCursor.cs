@@ -23,33 +23,38 @@ namespace CuaHang
         public LayerMask _layerMask;
 
         public RaycastHit _hit;
-        public RaycastHit[] _hits; 
+        public RaycastHit[] _hits;
         public InputImprove _input;
 
         protected override void Awake()
         {
-            base.Awake(); 
+            base.Awake();
             _input = new();
             _cam = Camera.main;
             _enableRaycast = true;
-            _enableOutline = true; 
+            _enableOutline = true;
+
         }
 
         private void Start()
         {
-            _objectDrag = SingleModuleManager.Instance._objectDrag;
+            _objectDrag = SingleModuleManager.Instance._itemDrag;
         }
 
         private void OnEnable()
         {
             _input.DragPerformed += SetItemDrag;
             _input.SnapPerformed += SetSnap;
+            _input.Click += SetItemFocus;
+            _input.Cancel += CancelFocus;
         }
 
         private void OnDisable()
         {
             _input.DragPerformed -= SetItemDrag;
             _input.SnapPerformed -= SetSnap;
+            _input.Click -= SetItemFocus;
+            _input.Cancel -= CancelFocus;
         }
 
         void FixedUpdate()
@@ -60,8 +65,6 @@ namespace CuaHang
         void Update()
         {
             SetRayHit();
-            SetItemFocus();
-
             MoveItemDrag();
             RotationItemDrag();
         }
@@ -76,16 +79,16 @@ namespace CuaHang
         {
             if (_enableRaycast == false) return;
 
-            Ray ray = _cam.ScreenPointToRay(Input.mousePosition);
+            Ray ray = _cam.ScreenPointToRay(_input.MousePosition());
             Physics.Raycast(ray, out _hit, 100, _layerMask);
             _hits = Physics.RaycastAll(ray, 100f, _layerMask);
             In($"You Hit {_hit.transform}");
         }
 
         /// <summary> Tạo viền khi click vào đối tượng để nó focus </summary>
-        private void SetItemFocus()
+        private void SetItemFocus(InputAction.CallbackContext context)
         {
-            if (_hit.transform && !_objectDrag._itemDragging && Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
+            if (_hit.transform && !_objectDrag._itemDragging && !EventSystem.current.IsPointerOverGameObject())
             {
                 // chuyển đói tượng focus
                 if (_itemFocus != _hit.transform && _itemFocus != null)
@@ -96,8 +99,12 @@ namespace CuaHang
                 _itemFocus = _hit.transform;
                 SetOutlines(_itemFocus, true);
             }
+        }
 
-            if (_itemFocus && Input.GetKeyDown(KeyCode.Escape))
+        /// <summary> Thoát không muốn cam tập trung nhìn tối tượng item này nữa </summary>
+        private void CancelFocus(InputAction.CallbackContext context)
+        {
+            if (_itemFocus)
             {
                 SetOutlines(_itemFocus, false);
                 _itemFocus = null;

@@ -11,8 +11,8 @@ namespace CuaHang
         [Header("MayTinh")]
         public ItemSO _objectPlantSO;
         public Transform _spawnTrans;
-        public WaitingLine _waitingLine;
-
+        public WaitingLine _waitingLine; 
+ 
         protected override void Awake()
         {
             base.Awake();
