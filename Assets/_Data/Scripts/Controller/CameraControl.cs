@@ -71,14 +71,11 @@ namespace CuaHang
                 _cam.transform.position = _cameraHolder.position;
                 _cam.transform.rotation = _cameraHolder.rotation;
 
-                // Kiểm tra nếu giữ chuột phải
-                if (Input.GetMouseButton(1))
+                // Lấy giá trị delta của chuột (sự thay đổi vị trí chuột) 
+                if (_input.TwoPress())
                 {
-                    // Lấy giá trị delta của chuột (sự thay đổi vị trí chuột)
-                    float mouseX = Input.GetAxis("Mouse X");
-
                     // Xoay đối tượng quanh trục Y dựa trên giá trị delta của chuột
-                    _camshaft.Rotate(Vector3.up, mouseX * _rotationSpeed, Space.Self);
+                    _camshaft.Rotate(Vector3.up, _input.MouseAxisX() * _rotationSpeed, Space.Self);
                 }
             }
         }

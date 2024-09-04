@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 
 public class InputImprove
@@ -78,14 +79,13 @@ public class InputImprove
     {
         add
         {
-            _input.UI.Click.performed += value;
+            _input.UI.Click.started += value;
         }
         remove
         {
-            _input.UI.Click.performed -= value;
+            _input.UI.Click.started -= value;
         }
     }
-
 
     public event Action<InputAction.CallbackContext> Sender
     {
@@ -132,6 +132,38 @@ public class InputImprove
     public Vector2 MousePosition()
     {
         return _input.UI.Point.ReadValue<Vector2>();
+    }
+
+    public float MouseAxisX()
+    {
+        return _input.UI.MouseX.ReadValue<float>();
+    }
+
+    public float MouseScroll()
+    {
+        return _input.UI.MouseScroll.ReadValue<float>();
+    }
+
+    public bool RightPress()
+    {
+        return _input.UI.RightClick.IsPressed();
+    }
+
+    public bool TwoPress()
+    {
+        // Kiểm tra nếu có ít nhất hai điểm chạm
+        if (Touchscreen.current != null && Touchscreen.current.touches.Count >= 2)
+        {
+            var touch1 = Touchscreen.current.touches[0];
+            var touch2 = Touchscreen.current.touches[1];
+
+            // Kiểm tra nếu cả hai điểm chạm đều đang trong quá trình chạm
+            if (touch1.isInProgress && touch2.isInProgress)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     #endregion

@@ -188,7 +188,7 @@ namespace CuaHang.AI
 
         private TypeID GetRandomItemBuy()
         {
-            Debug.Log($"Chỗ này chưa xong");
+            Debug.LogWarning($"Chỗ này chưa xong");
             return TypeID.apple_1;
         }
 

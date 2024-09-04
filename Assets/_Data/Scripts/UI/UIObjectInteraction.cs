@@ -10,8 +10,7 @@ namespace CuaHang.UI
     {
         [SerializeField] Item _itemSelected;
 
-        [Header("Menu Context")]
-        [SerializeField] GameObject _editPanel;
+        [Header("Menu Context")] 
         [SerializeField] GameObject _menuContext;
         [SerializeField] Button _buttonDrag;
         [SerializeField] Button _buttonShowInfo;
@@ -74,6 +73,16 @@ namespace CuaHang.UI
                 _itemSelected = null;
             }
 
+
+            if (_cameraControl._itemEditing)
+            {
+                _buttonCancelEdit.gameObject.SetActive(true);
+            }
+            else
+            {
+                _buttonCancelEdit.gameObject.SetActive(false);
+            }
+
             ShowMenuContext();
             ShowObjectDetails();
         }
@@ -104,14 +113,6 @@ namespace CuaHang.UI
                 _menuContext.SetActive(false);
             }
 
-            if (_cameraControl._itemEditing)
-            {
-                _editPanel.gameObject.SetActive(true);
-            }
-            else
-            {
-                _editPanel.gameObject.SetActive(false);
-            }
         }
 
         void ShowObjectDetails()

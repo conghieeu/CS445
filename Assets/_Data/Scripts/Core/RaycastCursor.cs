@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -9,14 +10,14 @@ namespace CuaHang
     {
         [Header("RaycastCursor")]
         public ItemDrag _objectDrag;
-        [SerializeField] Camera _cam;
+        Camera _cam;
 
         [Space]
         public bool _enableSnapping; // bật chế độ snapping
         public bool _enableRaycast; // bat raycast
         public bool _enableOutline;
         public Transform _itemFocus;
-        public float _rotationSpeed = 10.0f; // Tốc độ xoay
+        public float _rotationSpeed;// Tốc độ xoay
         public float _snapDistance = 6f; // Khoảng cách cho phép đặt 
         public float _tileSize = 1; // ô snap tỷ lệ snap
         public Vector3 _tileOffset = Vector3.zero; // tỷ lệ snap + sai số này
@@ -24,7 +25,7 @@ namespace CuaHang
 
         public RaycastHit _hit;
         public RaycastHit[] _hits;
-        public InputImprove _input;
+        InputImprove _input;
 
         protected override void Awake()
         {
@@ -175,17 +176,26 @@ namespace CuaHang
         /// <summary> Xoay item </summary>
         private void RotationItemDrag()
         {
-            _objectDrag.transform.rotation = Quaternion.FromToRotation(Vector3.up, _hit.normal);
-
-            // rotate model
-            if (_objectDrag)
+            if (_objectDrag && _objectDrag._modelsHolding)
             {
-                if (_objectDrag._modelsHolding)
-                {
-                    float scrollValue = Input.mouseScrollDelta.y;
-                    float rotationAngle = scrollValue * _rotationSpeed;
-                    _objectDrag._modelsHolding.Rotate(Vector3.up, rotationAngle);
-                }
+                // để đối tượng vuông góc với bề mặt va chạm
+                _objectDrag.transform.rotation = Quaternion.FromToRotation(Vector3.up, _hit.normal);
+
+                // xoay theo roll chuột giữa 
+                // Lấy góc xoay hiện tại của vật thể
+                float currentAngle = _objectDrag._modelsHolding.eulerAngles.y;
+
+                // Làm tròn góc xoay hiện tại về hàng chục gần nhất
+                float roundedAngle = Mathf.Round(currentAngle / 10.0f) * 10.0f;
+
+                // Tính toán góc xoay mới dựa trên giá trị cuộn chuột
+                float rotationAngle = Mathf.Round(_input.MouseScroll() * _rotationSpeed / 10.0f) * 10.0f;
+
+                // Cộng góc xoay mới vào góc xoay đã làm tròn
+                float newAngle = roundedAngle + rotationAngle;
+
+                // Áp dụng góc xoay mới cho vật thể
+                _objectDrag._modelsHolding.rotation = Quaternion.Euler(0, newAngle, 0);
             }
         }
     }

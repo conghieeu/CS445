@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace CuaHang
@@ -17,7 +19,7 @@ namespace CuaHang
         [Space]
         public Transform _modelsHolding; // là model object temp có màu xanh đang kéo thả
         public Item _itemDragging;
-        [SerializeField] String _groundTag = "Ground";
+        [SerializeField] string _groundTag = "Ground";
         [SerializeField] Material _green, _red;
         [SerializeField] NavMeshSurface _navMeshSurface;
 
@@ -26,15 +28,26 @@ namespace CuaHang
         [SerializeField] SensorCast _sensorAround;
         [SerializeField] SensorCast _sensorGround;
 
+        InputImprove _input;
+
+        private void Awake()
+        {
+            _input = new();
+        }
+
+        private void OnEnable()
+        {
+            _input.Click += ClickToDropItem;
+        }
+
+        private void OnDisable()
+        {
+            _input.Click -= ClickToDropItem;
+        }
 
         private void FixedUpdate()
         {
             SetMaterial();
-        }
-
-        private void Update()
-        {
-            ClickToDropItem();
         }
 
 
@@ -55,9 +68,9 @@ namespace CuaHang
             _itemDragging = item;
         }
 
-        void ClickToDropItem()
-        {
-            if (Input.GetMouseButtonDown(0) && IsCanPlant() && _itemDragging)
+        void ClickToDropItem(InputAction.CallbackContext context)
+        { 
+            if (IsCanPlant() && _itemDragging && !EventSystem.current.IsPointerOverGameObject())
             {
                 OnDropItem();
                 _navMeshSurface.BuildNavMesh();
@@ -95,7 +108,7 @@ namespace CuaHang
         }
 
         bool IsCanPlant()
-        { 
+        {
             return _sensorAround._hits.Count == 0 && IsTouchGround() && _isDistance;
         }
 

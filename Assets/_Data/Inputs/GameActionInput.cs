@@ -320,12 +320,12 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Click"",
-                    ""type"": ""PassThrough"",
+                    ""type"": ""Button"",
                     ""id"": ""489b5c19-f1e7-4686-a2e4-f370f4f46c4f"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": true
+                    ""initialStateCheck"": false
                 },
                 {
                     ""name"": ""ScrollWheel"",
@@ -347,7 +347,7 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""RightClick"",
-                    ""type"": ""PassThrough"",
+                    ""type"": ""Button"",
                     ""id"": ""ab0c9b67-40c8-4f88-97ba-49b0ade9e183"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
@@ -434,6 +434,24 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MouseX"",
+                    ""type"": ""Value"",
+                    ""id"": ""327b640e-9fc1-4853-81c2-9a076d364c95"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""MouseScroll"",
+                    ""type"": ""Value"",
+                    ""id"": ""64166fe2-6f97-4589-b40c-b9b0a3fc24b4"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -835,17 +853,6 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""4c191405-5738-4d4b-a523-c6a301dbf754"",
-                    ""path"": ""<Mouse>/rightButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""RightClick"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""7236c0d9-6ca3-47cf-a6ee-a97f5b59ea77"",
                     ""path"": ""<XRController>/devicePosition"",
                     ""interactions"": """",
@@ -942,6 +949,61 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
                     ""action"": ""SenderItem"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5d428f7c-73db-4270-b15e-6b33c792cce5"",
+                    ""path"": ""<Mouse>/delta/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse;Touch"",
+                    ""action"": ""MouseX"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""db075e83-fe50-4cc6-adcd-f16b8f0d5cdd"",
+                    ""path"": ""<Touchscreen>/delta/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse;Touch"",
+                    ""action"": ""MouseX"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2dab3e7b-5eb6-4949-96d0-fffddb5c9d37"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse;Touch"",
+                    ""action"": ""RightClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4544145c-cc41-48ba-bc5b-49bd7b2c9d62"",
+                    ""path"": ""<Touchscreen>/Press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touch;Keyboard&Mouse"",
+                    ""action"": ""RightClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""77f3f941-8a56-4e86-88f5-fdc7704430c8"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""MouseScroll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1033,6 +1095,8 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
         m_UI_MenuSettings = m_UI.FindAction("MenuSettings", throwIfNotFound: true);
         m_UI_Snap = m_UI.FindAction("Snap", throwIfNotFound: true);
         m_UI_SenderItem = m_UI.FindAction("SenderItem", throwIfNotFound: true);
+        m_UI_MouseX = m_UI.FindAction("MouseX", throwIfNotFound: true);
+        m_UI_MouseScroll = m_UI.FindAction("MouseScroll", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1173,6 +1237,8 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_MenuSettings;
     private readonly InputAction m_UI_Snap;
     private readonly InputAction m_UI_SenderItem;
+    private readonly InputAction m_UI_MouseX;
+    private readonly InputAction m_UI_MouseScroll;
     public struct UIActions
     {
         private @GameActionInput m_Wrapper;
@@ -1194,6 +1260,8 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
         public InputAction @MenuSettings => m_Wrapper.m_UI_MenuSettings;
         public InputAction @Snap => m_Wrapper.m_UI_Snap;
         public InputAction @SenderItem => m_Wrapper.m_UI_SenderItem;
+        public InputAction @MouseX => m_Wrapper.m_UI_MouseX;
+        public InputAction @MouseScroll => m_Wrapper.m_UI_MouseScroll;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1254,6 +1322,12 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
             @SenderItem.started += instance.OnSenderItem;
             @SenderItem.performed += instance.OnSenderItem;
             @SenderItem.canceled += instance.OnSenderItem;
+            @MouseX.started += instance.OnMouseX;
+            @MouseX.performed += instance.OnMouseX;
+            @MouseX.canceled += instance.OnMouseX;
+            @MouseScroll.started += instance.OnMouseScroll;
+            @MouseScroll.performed += instance.OnMouseScroll;
+            @MouseScroll.canceled += instance.OnMouseScroll;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -1309,6 +1383,12 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
             @SenderItem.started -= instance.OnSenderItem;
             @SenderItem.performed -= instance.OnSenderItem;
             @SenderItem.canceled -= instance.OnSenderItem;
+            @MouseX.started -= instance.OnMouseX;
+            @MouseX.performed -= instance.OnMouseX;
+            @MouseX.canceled -= instance.OnMouseX;
+            @MouseScroll.started -= instance.OnMouseScroll;
+            @MouseScroll.performed -= instance.OnMouseScroll;
+            @MouseScroll.canceled -= instance.OnMouseScroll;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -1396,5 +1476,7 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
         void OnMenuSettings(InputAction.CallbackContext context);
         void OnSnap(InputAction.CallbackContext context);
         void OnSenderItem(InputAction.CallbackContext context);
+        void OnMouseX(InputAction.CallbackContext context);
+        void OnMouseScroll(InputAction.CallbackContext context);
     }
 }
