@@ -97,17 +97,11 @@ namespace CuaHang
             _isBlockPrice = _SO._isBlockPrice;
         }
 
-        #region -----------------INTERFACE---------------------
-
         /// <summary> dùng cái này cho việc truyền itemSlot </summary>
         public virtual bool Interact(Interactor interactor)
         {
             return true;
         }
-
-        #endregion
-
-        #region -------------------PUBLIC-----------------------
 
         /// <summary> Set Properties with Item Data </summary>
         public virtual void SetProperties(ItemData data)
@@ -232,8 +226,6 @@ namespace CuaHang
                 _itemSlot.SetItemsDrag(true);
             }
         }
-
-        #endregion
 
     }
 }

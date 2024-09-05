@@ -11,11 +11,13 @@ namespace CuaHang
     {
         PlayerCtrl _ctrl;
         InputImprove _input; 
+        ItemDrag _itemDrag;
 
         private void Awake()
         { 
             _input = new();
             _ctrl = GetComponent<PlayerCtrl>();
+            _itemDrag = SingleModuleManager.Instance._itemDrag;
         }
 
         private void OnEnable()
@@ -27,7 +29,7 @@ namespace CuaHang
 
         private void FixedUpdate()
         {
-            if (_ctrl._itemDrag._isDragging) TempAiming();
+            if (_itemDrag._isDragging) TempAiming();
         }
 
 
@@ -37,7 +39,7 @@ namespace CuaHang
         {
             // có item ở cảm biến
             Item shelf = _ctrl._sensorForward.GetItemTypeHit(Type.Shelf);
-            Item itemHold = _ctrl._itemDrag._itemDragging;
+            Item itemHold = _itemDrag._itemDragging;
 
             if (shelf && itemHold && !itemHold._isCanSell) // gửi các apple từ bưu kiện sang kệ
             {
@@ -46,23 +48,23 @@ namespace CuaHang
             else if (shelf && itemHold && itemHold._isCanSell) // để apple lênh kệ
             {
                 In($"Player để quá táo lênh kệ");
-                _ctrl._itemDrag.OnDropItem();
+                _itemDrag.OnDropItem();
                 shelf._itemSlot.TryAddItemToItemSlot(itemHold, false);
             }
         }
 
-        /// <summary> Parcel đưa parcel vào thùng rác </summary>
+        /// <summary> đưa parcel vào thùng rác </summary>
         private void SenderParcel(InputAction.CallbackContext context)
         {
             Item trash = _ctrl._sensorForward.GetItemTypeHit(Type.Storage);
-            Item parcel = _ctrl._itemDrag._itemDragging;
+            Item parcel = _itemDrag._itemDragging;
 
             if (trash && parcel)
             {
                 if (parcel._type == Type.Parcel)
                 {
                     In($"Player thêm item {parcel} vào trash  {trash}");
-                    _ctrl._itemDrag.OnDropItem();
+                    _itemDrag.OnDropItem();
                     trash._itemSlot.TryAddItemToItemSlot(parcel, true);
                 }
             }
@@ -71,7 +73,7 @@ namespace CuaHang
         /// <summary> Khi mà drag object Temp thì player sẽ hướng về object Temp </summary>
         private void TempAiming()
         {
-            var direction = _ctrl._itemDrag.transform.position - transform.position;
+            var direction = _itemDrag.transform.position - transform.position;
             direction.y = 0;
             transform.forward = direction;
         }

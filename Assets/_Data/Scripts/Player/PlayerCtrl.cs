@@ -7,8 +7,7 @@ namespace CuaHang
 {
     public class PlayerCtrl : Singleton<PlayerCtrl>
     {
-        public PlayerStats _playerStats;
-        public ItemDrag _itemDrag;
+        public PlayerStats _playerStats; 
         public Transform _posHoldParcel; // vị trí đặt cái parcel này trên tay
         public SensorCast _sensorForward; // cảm biến đằng trước
         public Animator _anim;
@@ -16,8 +15,7 @@ namespace CuaHang
 
         protected override void Awake()
         {
-            base.Awake();
-            _itemDrag = SingleModuleManager.Instance._itemDrag;
+            base.Awake(); 
             _anim = GetComponentInChildren<Animator>();
             _interactor = GetComponentInChildren<Interactor>();
         }

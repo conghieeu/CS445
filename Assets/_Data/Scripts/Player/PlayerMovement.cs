@@ -7,19 +7,18 @@ using UnityEngine;
 
 namespace CuaHang.Player
 {
-    public class PlayerMovement : MonoBehaviour
-    {
-        [Space]
-        public float _moveSpeed;
-        public Transform _cam;
-        public STATE_ANIM _stageAnim;
-        public bool _triggerDragging; // trigger player đang drag item
-
-
+    public class PlayerMovement : HieuBehavior
+    { 
+        [SerializeField] float _moveSpeed;
+        [SerializeField] Transform _cam;
+        [SerializeField] STATE_ANIM _stageAnim;
+        [SerializeField] bool _triggerDragging; // trigger player đang drag item
         [SerializeField] Vector3 _moveDir;
+
         Rigidbody _rb;
         PlayerCtrl _ctrl;
         InputImprove _input;
+        ItemDrag _itemDrag;
 
         private void Start()
         {
@@ -28,6 +27,7 @@ namespace CuaHang.Player
             _rb = GetComponent<Rigidbody>();
             _cam = Camera.main.transform;
             _rb.angularDrag = 0.0f; // lực cản khi xoay vật
+            _itemDrag = SingleModuleManager.Instance._itemDrag;
         }
 
         private void FixedUpdate()
@@ -61,7 +61,7 @@ namespace CuaHang.Player
             _rb.velocity = velocity;
 
             // Trường hợp đang kéo thả Item nào đó
-            if (_rb.velocity.magnitude > 0 && !_ctrl._itemDrag._isDragging)
+            if (_rb.velocity.magnitude > 0 && !_itemDrag._isDragging)
             {
                 velocity.y = 0;
                 transform.forward = velocity;
@@ -70,7 +70,7 @@ namespace CuaHang.Player
 
         private void SetAnimator()
         {
-            bool _isDragItem = _ctrl._itemDrag.gameObject.activeInHierarchy;
+            bool _isDragItem = _itemDrag.gameObject.activeInHierarchy;
 
             // Idle
             if (_moveDir == Vector3.zero && (_stageAnim != STATE_ANIM.Idle || _triggerDragging != _isDragItem))

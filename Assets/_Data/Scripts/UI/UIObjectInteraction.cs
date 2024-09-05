@@ -10,15 +10,16 @@ namespace CuaHang.UI
     {
         [SerializeField] Item _itemSelected;
 
-        [Header("Menu Context")] 
+        [Header("Menu Context")]
         [SerializeField] GameObject _menuContext;
         [SerializeField] Button _buttonDrag;
         [SerializeField] Button _buttonShowInfo;
         [SerializeField] Button _buttonEdit;
         [SerializeField] Button _buttonCancelEdit;
+        [SerializeField] Button _buttonRotation;
 
         [Header("Object Info Panel")]
-        [SerializeField] bool _isShowInfoPanel;
+        [SerializeField] bool _isShowInfo;
         [SerializeField] GameObject _infoPanel;
         [SerializeField] TextMeshProUGUI _tmp;
         [SerializeField] string _defaultTmp;
@@ -28,22 +29,24 @@ namespace CuaHang.UI
         CameraControl _cameraControl;
         RaycastCursor _raycastCursor;
         InputImprove _input;
+        ItemDrag _itemDrag;
 
         private void Awake()
         {
             _cameraControl = CameraControl.Instance;
             _input = new InputImprove();
+            _itemDrag = SingleModuleManager.Instance._itemDrag;
         }
 
-        void Start()
+        private void Start()
         {
             _defaultTmp = _tmp.text;
             _raycastCursor = SingleModuleManager.Instance._raycastCursor;
         }
 
-        void OnEnable()
+        private void OnEnable()
         {
-            _input.ShowInfo += ctx => { _isShowInfoPanel = !_isShowInfoPanel; };
+            _input.ShowInfo += ctx => ShowObjectDetails();
 
             _btnIncreasePrice.OnButtonDown += IncreasePrice;
             _btnDiscountPrice.OnButtonDown += DiscountPrice;
@@ -51,9 +54,9 @@ namespace CuaHang.UI
             _btnDiscountPrice.OnButtonHolding += DiscountPrice;
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
-            _input.ShowInfo -= ctx => { _isShowInfoPanel = false; };
+            _input.ShowInfo -= ctx => ShowObjectDetails();
 
             _btnIncreasePrice.OnButtonDown -= IncreasePrice;
             _btnDiscountPrice.OnButtonDown -= DiscountPrice;
@@ -61,20 +64,33 @@ namespace CuaHang.UI
             _btnDiscountPrice.OnButtonHolding -= DiscountPrice;
         }
 
-        void FixedUpdate()
+        private void FixedUpdate()
         {
             // Get Item selected
-            if (_raycastCursor._itemFocus && !SingleModuleManager.Instance._itemDrag._isDragging)
+            if (_raycastCursor._ItemSelect != null && _raycastCursor._ItemSelect != _itemSelected && !_itemDrag._isDragging)
             {
-                _itemSelected = _raycastCursor._itemFocus.GetComponentInChildren<Item>();
+                _itemSelected = _raycastCursor._ItemSelect.GetComponentInChildren<Item>();
             }
             else
             {
                 _itemSelected = null;
             }
 
+            OnEditItem();
+            OnDragItem();
+            OnSelectedItem();
 
-            if (_cameraControl._itemEditing)
+            if (!_buttonShowInfo.gameObject.activeSelf)
+            {
+                _infoPanel.SetActive(false);
+                _isShowInfo = false;
+            }
+        }
+
+        /// <summary> bật button cancel edit </summary>
+        private void OnEditItem()
+        {
+            if (_cameraControl._ItemEditing)
             {
                 _buttonCancelEdit.gameObject.SetActive(true);
             }
@@ -82,41 +98,56 @@ namespace CuaHang.UI
             {
                 _buttonCancelEdit.gameObject.SetActive(false);
             }
-
-            ShowMenuContext();
-            ShowObjectDetails();
         }
 
-        private void ShowMenuContext()
+        /// <summary> bật button rotation item drag </summary>
+        private void OnDragItem()
         {
-            if (_itemSelected && _itemSelected._isCanDrag && _cameraControl._itemEditing != _itemSelected)
+            if (_itemDrag.gameObject.activeInHierarchy)
             {
-                _menuContext.SetActive(true);
-
-                // dat panel lai vi tri item select
-                Vector3 worldPosition = _itemSelected.transform.position;
-                Vector3 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
-                _menuContext.transform.position = screenPosition;
-
-                // Hiện button Edit
-                if (_itemSelected._camHere)
-                {
-                    _buttonEdit.gameObject.SetActive(true);
-                }
-                else
-                {
-                    _buttonEdit.gameObject.SetActive(false);
-                }
+                _buttonRotation.gameObject.SetActive(true);
+                CamFollowObject(_itemDrag.transform);
             }
             else
             {
-                _menuContext.SetActive(false);
+                _buttonRotation.gameObject.SetActive(false);
             }
-
         }
 
-        void ShowObjectDetails()
+        private void CamFollowObject(Transform target)
         {
+            Vector3 worldPosition = target.position;
+            Vector3 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
+            _menuContext.transform.position = screenPosition;
+        }
+
+        /// <summary> Hiện option có thể chọn khi click đối tượng item </summary>
+        private void OnSelectedItem()
+        {
+            if (_itemSelected && _itemSelected._isCanDrag && _cameraControl._ItemEditing != _itemSelected)
+            {
+                _buttonDrag.gameObject.SetActive(true);
+                _buttonShowInfo.gameObject.SetActive(true);
+
+                // Trường hợp gặp select item khong the edit
+                if (_itemSelected._camHere) _buttonEdit.gameObject.SetActive(true);
+                else _buttonEdit.gameObject.SetActive(false);
+
+                // dat panel lai vi tri item select
+                CamFollowObject(_itemSelected.transform);
+            }
+            else
+            {
+                _buttonDrag.gameObject.SetActive(false);
+                _buttonEdit.gameObject.SetActive(false);
+                _buttonShowInfo.gameObject.SetActive(false);
+            }
+        }
+
+        private void ShowObjectDetails()
+        {
+            _isShowInfo = !_isShowInfo;
+
             // hiện thị stats
             if (_itemSelected && _itemSelected._SO)
             {
@@ -128,9 +159,7 @@ namespace CuaHang.UI
                 _tmp.text = _defaultTmp;
             }
 
-            // show info panel
-            if (!_itemSelected) _isShowInfoPanel = false;
-            _infoPanel.SetActive(_itemSelected && _isShowInfoPanel);
+            _infoPanel.SetActive(_isShowInfo);
         }
 
         // --------------BUTTON--------------

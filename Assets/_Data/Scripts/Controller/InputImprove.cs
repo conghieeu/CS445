@@ -1,7 +1,7 @@
 ﻿using System;
-using TMPro;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Animations;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class InputImprove
@@ -14,7 +14,6 @@ public class InputImprove
         _input.Enable();
     }
 
-    #region Input Action
     public event Action<InputAction.CallbackContext> SnapPerformed
     {
         add
@@ -144,12 +143,12 @@ public class InputImprove
         return _input.UI.MouseScroll.ReadValue<float>();
     }
 
-    public bool RightPress()
+    public bool MouseRightClick()
     {
         return _input.UI.RightClick.IsPressed();
     }
 
-    public bool TwoPress()
+    public bool DoubleTouchScreen()
     {
         // Kiểm tra nếu có ít nhất hai điểm chạm
         if (Touchscreen.current != null && Touchscreen.current.touches.Count >= 2)
@@ -165,8 +164,6 @@ public class InputImprove
         }
         return false;
     }
-
-    #endregion
 
 }
 

@@ -5,7 +5,7 @@ using System.IO;
 using System;
 using System.Security.Cryptography;
 using System.Text;
-using System.Xml; 
+using System.Xml;
 
 [Serializable]
 public class ItemData
@@ -148,7 +148,7 @@ namespace Core
         {
             _filePath = Application.persistentDataPath + _saveName;
             SetDontDestroyOnLoad(true);
-            LoadData(); 
+            LoadData();
         }
 
         private void Update()
@@ -159,11 +159,16 @@ namespace Core
             }
         }
 
+        private void OnApplicationQuit()
+        {
+            SaveData();
+        }
+
         public void SaveData()
         {
-            _OnDataSaved?.Invoke();
             File.WriteAllText(_filePath, SerializeAndEncrypt(GameData));
             Debug.Log("Game data saved to: " + _filePath);
+            _OnDataSaved?.Invoke();
         }
 
         public void LoadData()
@@ -181,7 +186,6 @@ namespace Core
             else
             {
                 Debug.LogWarning("Save file not found in: " + _filePath);
-                SaveData();
                 _isExistsSaveFile = false;
             }
         }

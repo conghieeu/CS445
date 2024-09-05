@@ -76,6 +76,7 @@ namespace CuaHang.AI
                 return;
             }
 
+            Debug.Log(ItemPooler.Instance);
             // Đặt ObjectPlant vào thùng rác 
             Trash trash = ItemPooler.Instance.GetItemEmptySlot(TypeID.trash_1).GetComponent<Trash>();
             if (!parcelHasItem && trash)
