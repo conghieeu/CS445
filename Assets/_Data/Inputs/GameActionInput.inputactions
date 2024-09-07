@@ -430,6 +430,33 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "PrimaryFingerPosition",
+                    "type": "Value",
+                    "id": "589b517f-6c96-4f75-843e-91e7fb29cc95",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "SecondFingerPosition",
+                    "type": "Value",
+                    "id": "0cb96c7c-0556-42cb-b622-2cd3c182480c",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "SecondTouchContact",
+                    "type": "Button",
+                    "id": "2a080ba1-e2ec-4d0b-8382-c222f2051edc",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -934,7 +961,7 @@
                     "path": "<Mouse>/delta/x",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse;Touch",
+                    "groups": "Keyboard&Mouse",
                     "action": "MouseX",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -945,7 +972,7 @@
                     "path": "<Touchscreen>/delta/x",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse;Touch",
+                    "groups": "Touch",
                     "action": "MouseX",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1004,6 +1031,39 @@
                     "action": "MouseScroll",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "f06dbfc0-f47a-4a98-ac67-5d297fa062fe",
+                    "path": "<Touchscreen>/touch0/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Touch",
+                    "action": "PrimaryFingerPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f074181a-85d2-480e-bca7-4b679cf8cbd6",
+                    "path": "<Touchscreen>/touch1/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Touch",
+                    "action": "SecondFingerPosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "24651aed-162e-4560-a3b6-5ee6808ef715",
+                    "path": "<Touchscreen>/touch1/press",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SecondTouchContact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

@@ -7,12 +7,27 @@ using UnityEngine.InputSystem;
 public class InputImprove
 {
     private GameActionInput _input;
-
-    public InputImprove()
+ 
+    private InputImprove()
     {
-        _input = new();
+        _input = new GameActionInput();
         _input.Enable();
     }
+
+    public static InputImprove Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = new InputImprove();
+            }
+            return _instance;
+        }
+    }
+
+    public void EnableActionInput() => _input.Enable();
+    public void DisableActionInput() => _input.Disable();
 
     public event Action<InputAction.CallbackContext> SnapPerformed
     {
@@ -38,7 +53,7 @@ public class InputImprove
         }
     }
 
-    public event Action<InputAction.CallbackContext> DragPerformed
+    public event Action<InputAction.CallbackContext> DragItem
     {
         add
         {
@@ -122,6 +137,39 @@ public class InputImprove
         }
     }
 
+    public event Action<InputAction.CallbackContext> SecondTouchContactStart
+    {
+        add
+        {
+            _input.UI.SecondTouchContact.started += value;
+        }
+        remove
+        {
+            _input.UI.SecondTouchContact.started -= value;
+        }
+    }
+
+    public event Action<InputAction.CallbackContext> SecondTouchContactCancel
+    {
+        add
+        {
+            _input.UI.SecondTouchContact.canceled += value;
+        }
+        remove
+        {
+            _input.UI.SecondTouchContact.canceled -= value;
+        }
+    }
+
+    public Vector2 PrimaryFingerPosition()
+    {
+        return _input.UI.PrimaryFingerPosition.ReadValue<Vector2>();
+    }
+
+    public Vector2 SecondFingerPosition()
+    {
+        return _input.UI.SecondFingerPosition.ReadValue<Vector2>();
+    }
 
     public Vector2 MovementInput()
     {

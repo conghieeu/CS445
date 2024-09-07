@@ -35,6 +35,8 @@ namespace CuaHang
 
         private void OnEnable()
         {
+            _input.EnableActionInput();
+            
             GameSettingStats._OnDataChange += OnSettingLoad;
             _input.EditItem += EditItem;
             _input.Cancel += CancelFollowItem;
@@ -43,6 +45,8 @@ namespace CuaHang
 
         private void OnDisable()
         {
+            _input.DisableActionInput();
+
             GameSettingStats._OnDataChange -= OnSettingLoad;
             _input.EditItem -= EditItem;
             _input.Cancel -= CancelFollowItem;
@@ -64,7 +68,7 @@ namespace CuaHang
         /// <summary> Điều khiển cam </summary>
         void CamController()
         {
-            if (_ItemEditing == false)
+            if (_ItemEditing == false && _ItemFollow != null)
             {
                 // Move follow Object
                 _camshaft.position = Vector3.MoveTowards(_camshaft.position, _ItemFollow.position, _moveSpeed * Time.deltaTime);

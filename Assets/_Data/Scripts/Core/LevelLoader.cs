@@ -10,18 +10,17 @@ namespace Core
     public class LevelLoader : MonoBehaviour
     {
         public Animator _anim;
-        public float transitionTime = 1f;
 
-        public void LoadNextLevel()
+        private void Start()
         {
-            StartCoroutine(LoadLevel(GameScene.Demo));
+            _anim = GetComponentInChildren<Animator>();
+            ScenesManager._OnLoadNextScene += LoadLevel;
         }
 
-        IEnumerator LoadLevel(String sceneName)
+        void LoadLevel()
         {
-            _anim.SetTrigger("Start");
-            yield return new WaitForSeconds(transitionTime);
-            SceneManager.LoadScene(sceneName);
+            if (_anim)
+                _anim.SetTrigger("Start");
         }
 
 

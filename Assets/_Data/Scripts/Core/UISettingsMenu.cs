@@ -68,13 +68,7 @@ namespace Core
             {
                 string option = resolutions[i].width + " x " + resolutions[i].height; // Format resolution as a string
 
-                options.Add(option); // Add the resolution string to the options list
-
-                // if (resolutions[i].width == Screen.currentResolution.width &&
-                //     resolutions[i].height == Screen.currentResolution.height)
-                // {
-                //     currentResolutionIndex = i; // Set the index of the current resolution
-                // }
+                options.Add(option);
             }
 
             resolutionDropdown.AddOptions(options); // Add the resolution options to the dropdown

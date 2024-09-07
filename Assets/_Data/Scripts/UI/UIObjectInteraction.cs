@@ -10,13 +10,20 @@ namespace CuaHang.UI
     {
         [SerializeField] Item _itemSelected;
 
+        [Header("On Item Drag")]
+        [SerializeField] Button _buttonOnDrag;
+        [SerializeField] Button _buttonRotationRight;
+        [SerializeField] Button _buttonRotationLeft;
+        [SerializeField] Button _buttonDropItem;
+
+        [Header("On Item Editing")]
+        [SerializeField] Button _buttonCancelEdit;
+
         [Header("Menu Context")]
         [SerializeField] GameObject _menuContext;
         [SerializeField] Button _buttonDrag;
         [SerializeField] Button _buttonShowInfo;
         [SerializeField] Button _buttonEdit;
-        [SerializeField] Button _buttonCancelEdit;
-        [SerializeField] Button _buttonRotation;
 
         [Header("Object Info Panel")]
         [SerializeField] bool _isShowInfo;
@@ -47,6 +54,7 @@ namespace CuaHang.UI
         private void OnEnable()
         {
             _input.ShowInfo += ctx => ShowObjectDetails();
+            _input.DragItem += ctx => OnClickButtonDrag();
 
             _btnIncreasePrice.OnButtonDown += IncreasePrice;
             _btnDiscountPrice.OnButtonDown += DiscountPrice;
@@ -57,6 +65,7 @@ namespace CuaHang.UI
         private void OnDisable()
         {
             _input.ShowInfo -= ctx => ShowObjectDetails();
+            _input.DragItem -= ctx => OnClickButtonDrag();
 
             _btnIncreasePrice.OnButtonDown -= IncreasePrice;
             _btnDiscountPrice.OnButtonDown -= DiscountPrice;
@@ -76,15 +85,15 @@ namespace CuaHang.UI
                 _itemSelected = null;
             }
 
-            OnEditItem();
-            OnDragItem();
-            OnSelectedItem();
-
             if (!_buttonShowInfo.gameObject.activeSelf)
             {
                 _infoPanel.SetActive(false);
                 _isShowInfo = false;
             }
+
+            OnEditItem();
+            OnDragItem();
+            OnSelectedItem();
         }
 
         /// <summary> bật button cancel edit </summary>
@@ -100,21 +109,30 @@ namespace CuaHang.UI
             }
         }
 
+        /// <summary> Khi click vao ngon tay yeu cau button drag item </summary>
+        private void OnClickButtonDrag()
+        {
+            _buttonOnDrag.transform.position = _input.MousePosition(); // chuot di chuyen voi chuot click 
+            _buttonOnDrag.gameObject.SetActive(true);
+            _buttonOnDrag.transform.position = _buttonDrag.transform.position;
+        }
+
         /// <summary> bật button rotation item drag </summary>
         private void OnDragItem()
         {
             if (_itemDrag.gameObject.activeInHierarchy)
             {
-                _buttonRotation.gameObject.SetActive(true);
-                CamFollowObject(_itemDrag.transform);
+                // button on drag sẽ theo trỏ chuột 
+                _itemDrag.MoveItemDragOnAndroid(); // di chuyen item theo point drag
+                MenuFollowItemTarget(_itemDrag.transform);
             }
             else
             {
-                _buttonRotation.gameObject.SetActive(false);
+                _buttonOnDrag.gameObject.SetActive(false);
             }
         }
 
-        private void CamFollowObject(Transform target)
+        private void MenuFollowItemTarget(Transform target)
         {
             Vector3 worldPosition = target.position;
             Vector3 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
@@ -126,15 +144,16 @@ namespace CuaHang.UI
         {
             if (_itemSelected && _itemSelected._isCanDrag && _cameraControl._ItemEditing != _itemSelected)
             {
-                _buttonDrag.gameObject.SetActive(true);
                 _buttonShowInfo.gameObject.SetActive(true);
 
                 // Trường hợp gặp select item khong the edit
                 if (_itemSelected._camHere) _buttonEdit.gameObject.SetActive(true);
                 else _buttonEdit.gameObject.SetActive(false);
 
+                _buttonDrag.gameObject.SetActive(true);
+
                 // dat panel lai vi tri item select
-                CamFollowObject(_itemSelected.transform);
+                MenuFollowItemTarget(_itemSelected.transform);
             }
             else
             {

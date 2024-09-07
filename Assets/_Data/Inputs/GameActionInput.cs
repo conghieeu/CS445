@@ -452,6 +452,33 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""PrimaryFingerPosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""589b517f-6c96-4f75-843e-91e7fb29cc95"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""SecondFingerPosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""0cb96c7c-0556-42cb-b622-2cd3c182480c"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""SecondTouchContact"",
+                    ""type"": ""Button"",
+                    ""id"": ""2a080ba1-e2ec-4d0b-8382-c222f2051edc"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -956,7 +983,7 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
                     ""path"": ""<Mouse>/delta/x"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse;Touch"",
+                    ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""MouseX"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -967,7 +994,7 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
                     ""path"": ""<Touchscreen>/delta/x"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse;Touch"",
+                    ""groups"": ""Touch"",
                     ""action"": ""MouseX"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -1026,6 +1053,39 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
                     ""action"": ""MouseScroll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f06dbfc0-f47a-4a98-ac67-5d297fa062fe"",
+                    ""path"": ""<Touchscreen>/touch0/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touch"",
+                    ""action"": ""PrimaryFingerPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f074181a-85d2-480e-bca7-4b679cf8cbd6"",
+                    ""path"": ""<Touchscreen>/touch1/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Touch"",
+                    ""action"": ""SecondFingerPosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""24651aed-162e-4560-a3b6-5ee6808ef715"",
+                    ""path"": ""<Touchscreen>/touch1/press"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SecondTouchContact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1119,6 +1179,9 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
         m_UI_SenderItem = m_UI.FindAction("SenderItem", throwIfNotFound: true);
         m_UI_MouseX = m_UI.FindAction("MouseX", throwIfNotFound: true);
         m_UI_MouseScroll = m_UI.FindAction("MouseScroll", throwIfNotFound: true);
+        m_UI_PrimaryFingerPosition = m_UI.FindAction("PrimaryFingerPosition", throwIfNotFound: true);
+        m_UI_SecondFingerPosition = m_UI.FindAction("SecondFingerPosition", throwIfNotFound: true);
+        m_UI_SecondTouchContact = m_UI.FindAction("SecondTouchContact", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -1261,6 +1324,9 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_UI_SenderItem;
     private readonly InputAction m_UI_MouseX;
     private readonly InputAction m_UI_MouseScroll;
+    private readonly InputAction m_UI_PrimaryFingerPosition;
+    private readonly InputAction m_UI_SecondFingerPosition;
+    private readonly InputAction m_UI_SecondTouchContact;
     public struct UIActions
     {
         private @GameActionInput m_Wrapper;
@@ -1284,6 +1350,9 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
         public InputAction @SenderItem => m_Wrapper.m_UI_SenderItem;
         public InputAction @MouseX => m_Wrapper.m_UI_MouseX;
         public InputAction @MouseScroll => m_Wrapper.m_UI_MouseScroll;
+        public InputAction @PrimaryFingerPosition => m_Wrapper.m_UI_PrimaryFingerPosition;
+        public InputAction @SecondFingerPosition => m_Wrapper.m_UI_SecondFingerPosition;
+        public InputAction @SecondTouchContact => m_Wrapper.m_UI_SecondTouchContact;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1350,6 +1419,15 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
             @MouseScroll.started += instance.OnMouseScroll;
             @MouseScroll.performed += instance.OnMouseScroll;
             @MouseScroll.canceled += instance.OnMouseScroll;
+            @PrimaryFingerPosition.started += instance.OnPrimaryFingerPosition;
+            @PrimaryFingerPosition.performed += instance.OnPrimaryFingerPosition;
+            @PrimaryFingerPosition.canceled += instance.OnPrimaryFingerPosition;
+            @SecondFingerPosition.started += instance.OnSecondFingerPosition;
+            @SecondFingerPosition.performed += instance.OnSecondFingerPosition;
+            @SecondFingerPosition.canceled += instance.OnSecondFingerPosition;
+            @SecondTouchContact.started += instance.OnSecondTouchContact;
+            @SecondTouchContact.performed += instance.OnSecondTouchContact;
+            @SecondTouchContact.canceled += instance.OnSecondTouchContact;
         }
 
         private void UnregisterCallbacks(IUIActions instance)
@@ -1411,6 +1489,15 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
             @MouseScroll.started -= instance.OnMouseScroll;
             @MouseScroll.performed -= instance.OnMouseScroll;
             @MouseScroll.canceled -= instance.OnMouseScroll;
+            @PrimaryFingerPosition.started -= instance.OnPrimaryFingerPosition;
+            @PrimaryFingerPosition.performed -= instance.OnPrimaryFingerPosition;
+            @PrimaryFingerPosition.canceled -= instance.OnPrimaryFingerPosition;
+            @SecondFingerPosition.started -= instance.OnSecondFingerPosition;
+            @SecondFingerPosition.performed -= instance.OnSecondFingerPosition;
+            @SecondFingerPosition.canceled -= instance.OnSecondFingerPosition;
+            @SecondTouchContact.started -= instance.OnSecondTouchContact;
+            @SecondTouchContact.performed -= instance.OnSecondTouchContact;
+            @SecondTouchContact.canceled -= instance.OnSecondTouchContact;
         }
 
         public void RemoveCallbacks(IUIActions instance)
@@ -1500,5 +1587,8 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
         void OnSenderItem(InputAction.CallbackContext context);
         void OnMouseX(InputAction.CallbackContext context);
         void OnMouseScroll(InputAction.CallbackContext context);
+        void OnPrimaryFingerPosition(InputAction.CallbackContext context);
+        void OnSecondFingerPosition(InputAction.CallbackContext context);
+        void OnSecondTouchContact(InputAction.CallbackContext context);
     }
 }

@@ -1,8 +1,5 @@
-using System;
 using CuaHang.UI;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 namespace CuaHang
@@ -15,7 +12,8 @@ namespace CuaHang
         [SerializeField] bool _enableOutline;
         [SerializeField] LayerMask _layerMask;
         [SerializeField] UIRaycastChecker _uIRaycastChecker;
-
+        [SerializeField] Transform _dragPoint; // là tâm của đối tượng giao diện
+ 
         InputImprove _input;
         ItemDrag _itemDrag;
         Camera _cam;
@@ -24,60 +22,55 @@ namespace CuaHang
 
         protected override void Awake()
         {
-            base.Awake(); 
+            base.Awake();
             _input = new();
             _cam = Camera.main;
             _enableOutline = true;
         }
 
         private void Start()
-        {
+        { 
             _itemDrag = SingleModuleManager.Instance._itemDrag;
         }
 
         private void OnEnable()
         {
-            _input.DragPerformed += SetItemDrag;
+            _input.DragItem += SetItemDrag;
             _input.Click += SetItemSelect;
             _input.Cancel += CancelFocus;
         }
 
         private void OnDisable()
         {
-            _input.DragPerformed -= SetItemDrag;
+            _input.DragItem -= SetItemDrag;
             _input.Click -= SetItemSelect;
             _input.Cancel -= CancelFocus;
         }
 
         /// <summary> Chiếu tia raycast lấy dữ liệu cho _Hit </summary>
-        public RaycastHit GetRayHit()
+        public RaycastHit GetRayMouseHit()
         {
             RaycastHit _hit;
-
             Ray ray = _cam.ScreenPointToRay(_input.MousePosition());
-            Physics.Raycast(ray, out _hit, 100, _layerMask);
-
+            Physics.Raycast(ray, out _hit, 100, _layerMask); 
             return _hit;
         }
 
-        public RaycastHit[] GetRayHits()
+        public RaycastHit GetRayDragPointHit()
         {
-            RaycastHit[] _hits;
-
-            Ray ray = _cam.ScreenPointToRay(_input.MousePosition());
-            _hits = Physics.RaycastAll(ray, 100f, _layerMask);
-
-            return _hits;
+            RaycastHit _hit = new();
+            Ray ray = _cam.ScreenPointToRay(_dragPoint.position);
+            Physics.Raycast(ray, out _hit, 100, _layerMask);
+            return _hit;
         }
 
         /// <summary> Tạo viền khi click vào item de select </summary>
         void SetItemSelect(InputAction.CallbackContext context)
         {
             if (!_itemDrag._itemDragging && !_uIRaycastChecker.IsPointerOverUI())
-            { 
-                Transform hit = GetRayHit().transform;
-
-                // hit new 
+            {
+                Transform hit = GetRayMouseHit().transform;
+ 
                 if (_ItemSelect != hit)
                 {
                     CancelFocus(context);

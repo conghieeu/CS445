@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        {
+            "name": "Unity",
+            "defines": [
+                "UNITY_STANDALONE",
+                "UNITY_ANDROID",
+                "UNITY_IOS"
+            ]
+        }
+    ]
+}
