@@ -1,3 +1,4 @@
+using System.Collections;
 using CuaHang;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -5,32 +6,42 @@ using UnityEngine.UI;
 
 public class PointDragItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    [SerializeField] bool isPointerDown = false;
-    ItemDrag _itemDrag;
+    [SerializeField] bool _isPointerDown = false;
+ 
     InputImprove _inputImprove;
+    Coroutine _movementCoroutine;
 
     private void Start()
-    {
-        _itemDrag = SingleModuleManager.Instance._itemDrag;
-        _inputImprove = new InputImprove();
+    { 
+        _inputImprove = InputImprove.Instance;
     }
 
-    private void Update()
+    private IEnumerator MoveWithMouse()
     {
-        if (isPointerDown)
+        while (_isPointerDown)
         {
             transform.position = _inputImprove.MousePosition(); // chuot di chuyen voi chuot click 
+            yield return null;
         }
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        isPointerDown = true;
+        _isPointerDown = true;
+        if (_movementCoroutine == null)
+        {
+            _movementCoroutine = StartCoroutine(MoveWithMouse());
+        }
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        isPointerDown = false;
+        _isPointerDown = false;
+        if (_movementCoroutine != null)
+        {
+            StopCoroutine(_movementCoroutine);
+            _movementCoroutine = null;
+        }
     }
 }
 

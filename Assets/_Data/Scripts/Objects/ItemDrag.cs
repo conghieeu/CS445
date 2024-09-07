@@ -37,7 +37,7 @@ namespace CuaHang
 
         private void Awake()
         {
-            _input = new();
+            _input = InputImprove.Instance;
             raycastCursor = RaycastCursor.Instance;
         }
 

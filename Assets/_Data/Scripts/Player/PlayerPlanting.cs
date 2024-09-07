@@ -15,7 +15,7 @@ namespace CuaHang
 
         private void Awake()
         { 
-            _input = new();
+            _input = InputImprove.Instance;
             _ctrl = GetComponent<PlayerCtrl>();
             _itemDrag = SingleModuleManager.Instance._itemDrag;
         }

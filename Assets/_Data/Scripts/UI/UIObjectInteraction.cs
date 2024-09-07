@@ -8,7 +8,7 @@ namespace CuaHang.UI
 {
     public class UIObjectInteraction : MonoBehaviour
     {
-        [SerializeField] Item _itemSelected;
+        [SerializeField] Item _itemSelected; 
 
         [Header("On Item Drag")]
         [SerializeField] Button _buttonOnDrag;
@@ -41,7 +41,7 @@ namespace CuaHang.UI
         private void Awake()
         {
             _cameraControl = CameraControl.Instance;
-            _input = new InputImprove();
+            _input = InputImprove.Instance;
             _itemDrag = SingleModuleManager.Instance._itemDrag;
         }
 
@@ -99,7 +99,7 @@ namespace CuaHang.UI
         /// <summary> bật button cancel edit </summary>
         private void OnEditItem()
         {
-            if (_cameraControl._ItemEditing)
+            if (_cameraControl.ItemEditing)
             {
                 _buttonCancelEdit.gameObject.SetActive(true);
             }
@@ -142,7 +142,7 @@ namespace CuaHang.UI
         /// <summary> Hiện option có thể chọn khi click đối tượng item </summary>
         private void OnSelectedItem()
         {
-            if (_itemSelected && _itemSelected._isCanDrag && _cameraControl._ItemEditing != _itemSelected)
+            if (_itemSelected && _itemSelected._isCanDrag && _cameraControl.ItemEditing != _itemSelected)
             {
                 _buttonShowInfo.gameObject.SetActive(true);
 

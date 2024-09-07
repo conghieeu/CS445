@@ -968,11 +968,11 @@
                 },
                 {
                     "name": "",
-                    "id": "db075e83-fe50-4cc6-adcd-f16b8f0d5cdd",
+                    "id": "e3fb7b2a-be65-4873-ba7b-fc37514bad22",
                     "path": "<Touchscreen>/delta/x",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Touch",
+                    "groups": "",
                     "action": "MouseX",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1016,7 +1016,7 @@
                     "path": "<Keyboard>/slash",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Touch;Keyboard&Mouse",
+                    "groups": "Touch",
                     "action": "MouseScroll",
                     "isComposite": false,
                     "isPartOfComposite": true

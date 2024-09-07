@@ -22,7 +22,7 @@ namespace CuaHang.Player
 
         private void Start()
         {
-            _input = new();
+            _input = InputImprove.Instance;
             _ctrl = GetComponent<PlayerCtrl>();
             _rb = GetComponent<Rigidbody>();
             _cam = Camera.main.transform;

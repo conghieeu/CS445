@@ -26,6 +26,8 @@ public class GameSystem : Singleton<GameSystem>
         
         StartCoroutine(CheckInternetConnection());
         CurrentPlatform = _platform;
+
+        InputImprove.ResetInstance();
     } 
 
     IEnumerator CheckInternetConnection()

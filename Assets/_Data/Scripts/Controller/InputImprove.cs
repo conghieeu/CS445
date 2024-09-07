@@ -6,8 +6,9 @@ using UnityEngine.InputSystem;
 
 public class InputImprove
 {
+    private static InputImprove _instance;
     private GameActionInput _input;
- 
+
     private InputImprove()
     {
         _input = new GameActionInput();
@@ -24,6 +25,11 @@ public class InputImprove
             }
             return _instance;
         }
+    }
+
+    public static void ResetInstance()
+    {
+        _instance = null;
     }
 
     public void EnableActionInput() => _input.Enable();
@@ -161,6 +167,18 @@ public class InputImprove
         }
     }
 
+    public event Action<InputAction.CallbackContext> OnMovement
+    {
+        add
+        {
+            _input.Player.Move.performed += value;
+        }
+        remove
+        {
+            _input.Player.Move.performed -= value;
+        }
+    }
+
     public Vector2 PrimaryFingerPosition()
     {
         return _input.UI.PrimaryFingerPosition.ReadValue<Vector2>();
@@ -194,6 +212,11 @@ public class InputImprove
     public bool MouseRightClick()
     {
         return _input.UI.RightClick.IsPressed();
+    }
+
+    public bool MouseLeftClick()
+    {
+        return _input.UI.Click.IsPressed();
     }
 
     public bool DoubleTouchScreen()

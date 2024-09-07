@@ -13,7 +13,7 @@ namespace CuaHang
         [SerializeField] LayerMask _layerMask;
         [SerializeField] UIRaycastChecker _uIRaycastChecker;
         [SerializeField] Transform _dragPoint; // là tâm của đối tượng giao diện
- 
+
         InputImprove _input;
         ItemDrag _itemDrag;
         Camera _cam;
@@ -23,13 +23,13 @@ namespace CuaHang
         protected override void Awake()
         {
             base.Awake();
-            _input = new();
+            _input = InputImprove.Instance;
             _cam = Camera.main;
             _enableOutline = true;
         }
 
         private void Start()
-        { 
+        {
             _itemDrag = SingleModuleManager.Instance._itemDrag;
         }
 
@@ -52,7 +52,7 @@ namespace CuaHang
         {
             RaycastHit _hit;
             Ray ray = _cam.ScreenPointToRay(_input.MousePosition());
-            Physics.Raycast(ray, out _hit, 100, _layerMask); 
+            Physics.Raycast(ray, out _hit, 100, _layerMask);
             return _hit;
         }
 
@@ -70,7 +70,7 @@ namespace CuaHang
             if (!_itemDrag._itemDragging && !_uIRaycastChecker.IsPointerOverUI())
             {
                 Transform hit = GetRayMouseHit().transform;
- 
+
                 if (_ItemSelect != hit)
                 {
                     CancelFocus(context);
