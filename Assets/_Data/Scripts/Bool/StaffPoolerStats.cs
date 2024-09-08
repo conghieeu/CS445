@@ -56,6 +56,9 @@ namespace CuaHang
             GetGameData()._staffsData = staffsData;
         }
 
-
+        protected override void LoadNoData()
+        {
+            // throw new System.NotImplementedException();
+        }
     }
 }

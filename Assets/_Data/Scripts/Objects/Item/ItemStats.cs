@@ -57,5 +57,10 @@ namespace CuaHang
             _item = GetComponent<Item>();
             _item.SetProperties(_itemData);
         }
+
+        protected override void LoadNoData()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -969,7 +969,18 @@
                 {
                     "name": "",
                     "id": "e3fb7b2a-be65-4873-ba7b-fc37514bad22",
-                    "path": "<Touchscreen>/delta/x",
+                    "path": "<Touchscreen>/touch0/delta/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseX",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a489f6a4-ba8b-487c-9f3b-ed591bc693e2",
+                    "path": "<Touchscreen>/touch1/delta/x",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

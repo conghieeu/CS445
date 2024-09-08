@@ -16,26 +16,31 @@ namespace CuaHang.UI
             public BtnBarCustomer _bar;
         }
 
-        public MayTinh _mayTinh;
+        [SerializeField] MayTinh _mayTinh;
 
         [Header("Buy Panel")]
-        public Button _btnGoPayPanel;
-        public RectTransform _panelBuyItem;
+        [SerializeField] Button _btnGoPayPanel;
+        [SerializeField] RectTransform _panelBuyItem;
 
         [Header("Payment Panel")]
-        public bool _isCanPay;
-        public Button _btnGoBuyPanel;
-        public Button _btnPay;
-        public RectTransform _panelPayment;
-        public RectTransform _panelSlotHolder;
-        public RectTransform _prefabBtnSlot;
-        public TextMeshProUGUI _txtCustomerValue;
-        public TextMeshProUGUI _txtReport;
-        public Customer _customerSelectMark;
-        public TMP_InputField _infRefund;
+        [SerializeField] bool _isCanPay;
+        [SerializeField] Button _btnGoBuyPanel;
+        [SerializeField] Button _btnPay;
+        [SerializeField] RectTransform _panelPayment;
+        [SerializeField] RectTransform _panelSlotHolder;
+        [SerializeField] RectTransform _prefabBtnSlot;
+        [SerializeField] TextMeshProUGUI _txtCustomerValue;
+        [SerializeField] TextMeshProUGUI _txtReport;
+        [SerializeField] Customer _customerSelectMark;
+        [SerializeField] TMP_InputField _infRefund;
         [SerializeField] float _tienThoi;
         [SerializeField] List<WaitingLine.WaitingSlot> _comSlot;
-        public List<SlotBar> _barSlots;
+        [SerializeField] List<SlotBar> _barSlots;
+
+        public static event Action<bool> e_IsOnEditComputer;
+
+        public Customer CustomerSelectMark { get => _customerSelectMark; set => _customerSelectMark = value; }
+        public TextMeshProUGUI TxtCustomerValue { get => _txtCustomerValue; set => _txtCustomerValue = value; }
 
         void Start()
         {
@@ -61,11 +66,13 @@ namespace CuaHang.UI
             {
                 if (_panelPayment) _panelPayment.gameObject.SetActive(true);
                 _mayTinh = item.GetComponent<MayTinh>();
+                e_IsOnEditComputer?.Invoke(true);
             }
             else
             {
                 if (_panelPayment) _panelPayment.gameObject.SetActive(false);
                 if (_panelBuyItem) _panelBuyItem.gameObject.SetActive(false);
+                e_IsOnEditComputer?.Invoke(false);
                 _mayTinh = null;
             }
         }
@@ -75,7 +82,7 @@ namespace CuaHang.UI
         {
             if (float.TryParse(input, out float tienThoi))
             {
-                if (_customerSelectMark && 300 - tienThoi <= _customerSelectMark._totalPay)
+                if (CustomerSelectMark && 300 - tienThoi <= CustomerSelectMark._totalPay)
                 {
                     if (GameManager._Coin < tienThoi)
                     {
@@ -133,7 +140,7 @@ namespace CuaHang.UI
 
         private void OnClickPayBtn()
         {
-            if (!_customerSelectMark) return;
+            if (!CustomerSelectMark) return;
 
             if (GameManager._Coin < _tienThoi)
             {
@@ -143,7 +150,7 @@ namespace CuaHang.UI
 
             if (_isCanPay)
             {
-                _customerSelectMark.PlayerConfirmPay();
+                CustomerSelectMark.PlayerConfirmPay();
 
                 float coinAdd = 300 - _tienThoi;
 
@@ -152,7 +159,7 @@ namespace CuaHang.UI
                     GameManager.AddCoin(coinAdd);
                 }
 
-                _customerSelectMark = null;
+                CustomerSelectMark = null;
             }
         }
 

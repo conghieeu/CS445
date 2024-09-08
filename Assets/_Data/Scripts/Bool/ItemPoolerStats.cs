@@ -60,6 +60,9 @@ namespace CuaHang.Pooler
             return itemsData;
         }
 
-
+        protected override void LoadNoData()
+        {
+            // throw new System.NotImplementedException();
+        }
     }
 }

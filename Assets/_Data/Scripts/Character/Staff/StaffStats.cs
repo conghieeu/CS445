@@ -39,6 +39,11 @@ namespace CuaHang.AI
             _staff = GetComponent<Staff>();
             _staff.SetProperties(_staffData);
         }
+
+        protected override void LoadNoData()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
 }

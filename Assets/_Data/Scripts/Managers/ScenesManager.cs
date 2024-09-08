@@ -15,11 +15,17 @@ public class ScenesManager : Singleton<ScenesManager>
         StartCoroutine(LoadLevel(GameScene.Demo));
     }
 
+    public void LoadSceneMenu()
+    {
+        StartCoroutine(LoadLevel(GameScene.Menu));
+    }
+
     IEnumerator LoadLevel(string sceneName)
     {
         _OnLoadNextScene?.Invoke();
         yield return new WaitForSeconds(_transitionTime);
         SceneManager.LoadScene(sceneName);
     }
+
 }
 

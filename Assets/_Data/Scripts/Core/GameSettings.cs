@@ -31,10 +31,10 @@ public class GameSettings : Singleton<GameSettings>
 
     public void SetProperties(GameSettingsData data)
     {
-        _isFullScreen = data._isFullScreen;
-        _qualityIndex = data._qualityIndex;
-        _masterVolume = data._masterVolume;
-        _currentResolutionIndex = data._currentResolutionIndex;
-        _camRotation = data._camRotation;
+        _isFullScreen = data.IsFullScreen;
+        _qualityIndex = data.QualityIndex;
+        _masterVolume = data.MasterVolume;
+        _currentResolutionIndex = data.CurrentResolutionIndex;
+        _camRotation = data.CamRotation;
     }
 }

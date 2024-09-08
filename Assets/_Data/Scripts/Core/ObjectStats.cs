@@ -9,10 +9,14 @@ public abstract class ObjectStats : HieuBehavior
 {
     protected virtual void Start() // root thì mới cần bắt sự kiện
     {
-        // có file save thì load
-        if (SerializationAndEncryption._isExistsSaveFile)
-        { 
+        // On start scene
+        if (SerializationAndEncryption.IsDataLoaded)
+        {
             LoadData(GetGameData());
+        }
+        else  // Trường hợp file save chưa từng được tạo ra
+        {
+            LoadNoData();
         }
 
         // load event
@@ -34,11 +38,12 @@ public abstract class ObjectStats : HieuBehavior
         };
     }
 
-    protected GameData GetGameData() => SerializationAndEncryption.Instance.GameData;
+    protected GameData GetGameData() => SerializationAndEncryption.Instance._gameData;
 
     //-----------ABSTRACT------------
     /// <summary> Truyền giá trị save vào _gameData </summary>
     protected abstract void SaveData();
+    protected abstract void LoadNoData(); // sẽ load với các setting được chuẩn bị sẵn
     public abstract void LoadData<T>(T data);
 
 }

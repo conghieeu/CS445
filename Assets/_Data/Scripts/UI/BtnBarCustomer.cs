@@ -7,13 +7,14 @@ using CuaHang.AI;
 
 namespace CuaHang.UI
 {
+    /// <summary> Khi có khách hàng muốn thanh toán, Đây là thanh hiển thị khách hàng ở trên máy tinh </summary>
     public class BtnBarCustomer : MonoBehaviour
     {
         public Customer _customerObserve; // là khách hàng mà cái này đang chứa
         public Image _image;
         public TextMeshProUGUI _txtTotal;
         public TextMeshProUGUI _txtGive;
-        public Button _btnBarCus; // chính cái button này
+        public Button _btnBarCus; 
         public UIComputerScreen _uIComputerScreen;
 
         private void Start()
@@ -27,8 +28,8 @@ namespace CuaHang.UI
         private void OnClickThisBtnBar()
         {
             Customer c = _customerObserve;
-            _uIComputerScreen._customerSelectMark = _customerObserve;
-            _uIComputerScreen._txtCustomerValue.text = $"{this.name}\nMua: {c._totalPay}\nTiền đưa bạn: 300";
+            _uIComputerScreen.CustomerSelectMark = _customerObserve;
+            _uIComputerScreen.TxtCustomerValue.text = $"{this.name}\nMua: {c._totalPay}\nTiền đưa bạn: 300";
         }
 
         /// <summary> Hiện những thống số của khách hàng lênh cái thanh này </summary>

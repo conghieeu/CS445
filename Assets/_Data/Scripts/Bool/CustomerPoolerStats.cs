@@ -54,5 +54,10 @@ namespace CuaHang
                 }
             }
         }
+
+        protected override void LoadNoData()
+        {
+            // throw new System.NotImplementedException();
+        }
     }
 }

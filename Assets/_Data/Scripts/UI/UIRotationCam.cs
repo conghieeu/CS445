@@ -2,14 +2,14 @@ using CuaHang;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UIRotationCam : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
-{
-    public void OnPointerEnter(PointerEventData eventData)
+public class UIRotationCam : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+{ 
+    public void OnPointerDown(PointerEventData eventData)
     {
         CameraControl.Instance.IsTouchRotationArea = true;
-    }
+    } 
 
-    public void OnPointerExit(PointerEventData eventData)
+    public void OnPointerUp(PointerEventData eventData)
     {
         CameraControl.Instance.IsTouchRotationArea = false;
     }

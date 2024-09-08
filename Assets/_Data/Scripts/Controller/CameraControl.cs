@@ -8,8 +8,8 @@ namespace CuaHang
     public class CameraControl : Singleton<CameraControl>
     {
         [SerializeField] bool _isTouchRotationArea;
-        [SerializeField] bool _isMoveStick; 
-        [SerializeField] float _camSizeDefault = 5; 
+        [SerializeField] bool _isMoveStick;
+        [SerializeField] float _camSizeDefault = 5;
         [SerializeField] float _moveSpeed;
         [SerializeField] Transform _itemFollow; // là đối tượng cam theo dỏi
         [SerializeField] Item _itemEditing; // item zoom vào
@@ -32,6 +32,7 @@ namespace CuaHang
         public Item ItemEditing { get => _itemEditing; private set => _itemEditing = value; }
         public bool IsMoveStick { get => _isMoveStick; set => _isMoveStick = value; }
         public bool IsTouchRotationArea { get => _isTouchRotationArea; set => _isTouchRotationArea = value; }
+        public Quaternion CamshaftRotation { get => _camshaft.rotation; }
 
         public static event Action<Item> _EventOnEditItem;
 
@@ -106,7 +107,7 @@ namespace CuaHang
 
         void PinchEnd()
         {
-            StopCoroutine(zoomCoroutine);
+            if (zoomCoroutine != null) StopCoroutine(zoomCoroutine);
         }
 
         IEnumerator ZoomDetection()
@@ -149,7 +150,7 @@ namespace CuaHang
 
         void OnSettingLoad(GameSettingsData data)
         {
-            _camshaft.rotation = data._camRotation;
+            _camshaft.rotation = data.CamRotation;
         }
 
         /// <summary> Nhìn vào player </summary>

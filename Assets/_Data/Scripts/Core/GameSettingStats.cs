@@ -7,11 +7,22 @@ public class GameSettingStats : ObjectStats
     [Header("GAME SETTING STATS")]
     [SerializeField] GameSettingsData _gameSettingData;
 
+    CameraControl _cameraControl;
+
     public static event Action<GameSettingsData> _OnDataChange;
+
+    protected override void Start()
+    {
+        base.Start();
+        _cameraControl = CameraControl.Instance;
+    }
 
     public override void LoadData<T>(T data)
     {
         _gameSettingData = (data as GameData)._gameSettingsData;
+
+        // save data chưa từng được khởi tạo
+        if (!_gameSettingData.IsInitialized) return;
 
         // set properties
         GameSettings gameSettings = GetComponent<GameSettings>();
@@ -23,13 +34,31 @@ public class GameSettingStats : ObjectStats
 
     protected override void SaveData()
     {
-        GameSettings gameSetting = GetComponent<GameSettings>();
-        _gameSettingData._camRotation = gameSetting._CamRotation;
-        _gameSettingData._currentResolutionIndex = gameSetting._CurrentResolutionIndex;
-        _gameSettingData._isFullScreen = gameSetting._IsFullScreen;
-        _gameSettingData._qualityIndex = gameSetting._QualityIndex;
-        _gameSettingData._masterVolume = gameSetting._MasterVolume;
-
+        _gameSettingData = GetData();
         GetGameData()._gameSettingsData = _gameSettingData;
     }
+
+    protected override void LoadNoData()
+    {
+        SaveData();
+    }
+
+    public GameSettingsData GetData()
+    {
+        GameSettings gSet = GetComponent<GameSettings>();
+
+        Quaternion camAngle = _gameSettingData.CamRotation;
+        if (_cameraControl) camAngle = _cameraControl.CamshaftRotation;
+
+        GameSettingsData data = new(
+            true,
+            gSet._IsFullScreen,
+            gSet._QualityIndex,
+            gSet._MasterVolume,
+            gSet._CurrentResolutionIndex,
+            camAngle);
+
+        return data;
+    }
+
 }

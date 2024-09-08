@@ -79,19 +79,23 @@ public class CustomerData
 [Serializable]
 public class GameSettingsData
 {
-    public bool _isFullScreen;
-    public int _qualityIndex;
-    public float _masterVolume;
-    public int _currentResolutionIndex;
-    public Quaternion _camRotation;
+    [SerializeField] bool _isInitialized;
+    [SerializeField] bool _isFullScreen;
+    [SerializeField] int _qualityIndex;
+    [SerializeField] float _masterVolume;
+    [SerializeField] int _currentResolutionIndex;
+    [SerializeField] Quaternion _camRotation;
 
-    public GameSettingsData()
+    public bool IsInitialized { get => _isInitialized; }
+    public bool IsFullScreen { get => _isFullScreen; }
+    public int QualityIndex { get => _qualityIndex; }
+    public float MasterVolume { get => _masterVolume; }
+    public int CurrentResolutionIndex { get => _currentResolutionIndex; }
+    public Quaternion CamRotation { get => _camRotation; }
+
+    public GameSettingsData(bool isInitialized, bool fullScreen, int quality, float masterVolume, int currentResolutionIndex, Quaternion camRotation)
     {
-
-    }
-
-    public GameSettingsData(bool fullScreen, int quality, float masterVolume, int currentResolutionIndex, Quaternion camRotation)
-    {
+        _isInitialized = isInitialized;
         _isFullScreen = fullScreen;
         _qualityIndex = quality;
         _masterVolume = masterVolume;
@@ -103,11 +107,11 @@ public class GameSettingsData
 [Serializable]
 public class PlayerData
 {
+    public bool _isInitialized; // kiểm tra đối tượng này được tạo ra chưa
     public string _name;
     public float _money;
     public Vector3 _position;
     public Quaternion _rotation;
-    public ItemData _itemHold;
 
     public PlayerData(string name, float money, Quaternion rotation, Vector3 position)
     {
@@ -135,28 +139,22 @@ namespace Core
     {
         public static event Action _OnDataSaved;
         public static event Action<GameData> _OnDataLoaded;
-        public static bool _isExistsSaveFile;
+        public GameData _gameData = new();
 
-        public GameData GameData = new();
+        [SerializeField] static bool _isDataLoaded; // có load được file save không
         [SerializeField] bool _serialize;
         [SerializeField] bool _usingXML;
         [SerializeField] bool _encrypt;
         [SerializeField] string _saveName = "/gameData.save";
         [SerializeField] string _filePath;
 
+        public static bool IsDataLoaded { get => _isDataLoaded; }
+
         void Start()
         {
             _filePath = Application.persistentDataPath + _saveName;
             SetDontDestroyOnLoad(true);
             LoadData();
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.S))
-            {
-                SaveData();
-            }
         }
 
         private void OnApplicationQuit()
@@ -166,9 +164,11 @@ namespace Core
 
         public void SaveData()
         {
-            File.WriteAllText(_filePath, SerializeAndEncrypt(GameData));
-            Debug.Log("Game data saved to: " + _filePath);
             _OnDataSaved?.Invoke();
+            File.WriteAllText(_filePath, SerializeAndEncrypt(_gameData));
+
+            Debug.Log("Game data saved to: " + _filePath);
+            _isDataLoaded = true;
         }
 
         public void LoadData()
@@ -177,16 +177,16 @@ namespace Core
             {
                 string stringData = File.ReadAllText(_filePath);
 
-                GameData = Deserialized(stringData);
-                _OnDataLoaded?.Invoke(GameData);
+                _gameData = Deserialized(stringData);
+                _OnDataLoaded?.Invoke(_gameData);
 
                 Debug.Log("Game data loaded from: " + _filePath);
-                _isExistsSaveFile = true;
+                _isDataLoaded = true;
             }
             else
             {
                 Debug.LogWarning("Save file not found in: " + _filePath);
-                _isExistsSaveFile = false;
+                _isDataLoaded = false;
             }
         }
 

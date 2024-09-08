@@ -85,7 +85,7 @@ namespace CuaHang.UI
                 _itemSelected = null;
             }
 
-            if (!_buttonShowInfo.gameObject.activeSelf)
+            if (_buttonShowInfo.GetComponent<Image>().enabled == false)
             {
                 _infoPanel.SetActive(false);
                 _isShowInfo = false;
@@ -144,7 +144,7 @@ namespace CuaHang.UI
         {
             if (_itemSelected && _itemSelected._isCanDrag && _cameraControl.ItemEditing != _itemSelected)
             {
-                _buttonShowInfo.gameObject.SetActive(true);
+                _buttonShowInfo.GetComponent<Image>().enabled = true;
 
                 // Trường hợp gặp select item khong the edit
                 if (_itemSelected._camHere) _buttonEdit.gameObject.SetActive(true);
@@ -159,7 +159,7 @@ namespace CuaHang.UI
             {
                 _buttonDrag.gameObject.SetActive(false);
                 _buttonEdit.gameObject.SetActive(false);
-                _buttonShowInfo.gameObject.SetActive(false);
+                _buttonShowInfo.GetComponent<Image>().enabled = false;
             }
         }
 

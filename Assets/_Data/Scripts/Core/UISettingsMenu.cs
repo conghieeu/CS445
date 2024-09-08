@@ -19,11 +19,10 @@ namespace Core
         [SerializeField] Slider _sliderVolume;
         [SerializeField] Resolution[] resolutions; // Array to store available screen resolutions
 
-        private GameSettings _gameSettings; 
+        GameSettings _gameSettings;
 
         private void Awake()
-        { 
-            
+        {
             // tắt menu setting khi mới bắt đầu 
             _enableMenuSettings = false;
             _panelContent.gameObject.SetActive(_enableMenuSettings);
@@ -35,7 +34,6 @@ namespace Core
         private void OnEnable()
         {
             GameSettingStats._OnDataChange += OnGameSettingLoad;
-            // InputImprove.MenuSettings += SetActiveMenuSettings;
         }
 
         private void OnDisable()
@@ -46,14 +44,14 @@ namespace Core
         private void OnGameSettingLoad(GameSettingsData data)
         {
             // Load UI
-            _toggleFullScreen.isOn = data._isFullScreen;
-            _sliderVolume.value = data._masterVolume;
-            _dropDownGraphics.value = data._qualityIndex;
+            _toggleFullScreen.isOn = data.IsFullScreen;
+            _sliderVolume.value = data.MasterVolume;
+            _dropDownGraphics.value = data.QualityIndex;
 
-            SetVolume(data._masterVolume);
-            SetQuality(data._qualityIndex);
-            SetFullscreen(data._isFullScreen);
-            SetResolutionCurrent(data._currentResolutionIndex);
+            SetVolume(data.MasterVolume);
+            SetQuality(data.QualityIndex);
+            SetFullscreen(data.IsFullScreen);
+            SetResolutionCurrent(data.CurrentResolutionIndex);
         }
 
         private void SetResolution()

@@ -56,6 +56,10 @@ namespace CuaHang.AI
             _customer.SetProperties(_customerData);
         }
 
+        protected override void LoadNoData()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
 }
