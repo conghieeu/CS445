@@ -1,26 +1,30 @@
 using System.Collections;
-using CuaHang;
+using CuaHang.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
-public class PointDragItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class PointDragItem : UIPanel, IPointerDownHandler, IPointerUpHandler
 {
     [SerializeField] bool _isPointerDown = false;
- 
+
     InputImprove _inputImprove;
     Coroutine _movementCoroutine;
 
-    private void Start()
-    { 
+    protected override void Start()
+    {
+        base.Start();
+
+        SetActiveCanvasGroup(GameSystem.CurrentPlatform == Platform.Android);
+
         _inputImprove = InputImprove.Instance;
     }
-
-    private IEnumerator MoveWithMouse()
+ 
+    /// <summary> di chuyển theo con trỏ </summary>
+    private IEnumerator FollowCursor()
     {
         while (_isPointerDown)
         {
-            transform.position = _inputImprove.MousePosition(); // chuot di chuyen voi chuot click 
+            transform.position = _inputImprove.MousePosition();
             yield return null;
         }
     }
@@ -30,7 +34,7 @@ public class PointDragItem : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
         _isPointerDown = true;
         if (_movementCoroutine == null)
         {
-            _movementCoroutine = StartCoroutine(MoveWithMouse());
+            _movementCoroutine = StartCoroutine(FollowCursor());
         }
     }
 

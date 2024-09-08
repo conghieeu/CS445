@@ -37,8 +37,6 @@ namespace CuaHang.UI
         [SerializeField] List<WaitingLine.WaitingSlot> _comSlot;
         [SerializeField] List<SlotBar> _barSlots;
 
-        public static event Action<bool> e_IsOnEditComputer;
-
         public Customer CustomerSelectMark { get => _customerSelectMark; set => _customerSelectMark = value; }
         public TextMeshProUGUI TxtCustomerValue { get => _txtCustomerValue; set => _txtCustomerValue = value; }
 
@@ -65,14 +63,12 @@ namespace CuaHang.UI
             if (item && item.GetComponent<MayTinh>())
             {
                 if (_panelPayment) _panelPayment.gameObject.SetActive(true);
-                _mayTinh = item.GetComponent<MayTinh>();
-                e_IsOnEditComputer?.Invoke(true);
+                _mayTinh = item.GetComponent<MayTinh>(); 
             }
             else
             {
                 if (_panelPayment) _panelPayment.gameObject.SetActive(false);
-                if (_panelBuyItem) _panelBuyItem.gameObject.SetActive(false);
-                e_IsOnEditComputer?.Invoke(false);
+                if (_panelBuyItem) _panelBuyItem.gameObject.SetActive(false); 
                 _mayTinh = null;
             }
         }

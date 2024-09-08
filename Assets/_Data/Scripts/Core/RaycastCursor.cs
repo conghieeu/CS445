@@ -13,11 +13,12 @@ namespace CuaHang
         [SerializeField] LayerMask _layerMask;
         [SerializeField] UIRaycastChecker _uIRaycastChecker;
         [SerializeField] Transform _dragPoint; // là tâm của đối tượng giao diện
+        [SerializeField] ItemDrag _itemDrag;
 
         InputImprove _input;
-        ItemDrag _itemDrag;
         Camera _cam;
 
+        public ItemDrag _ItemDrag { get => _itemDrag; }
         public Transform _ItemSelect { get => _itemSelect; private set => _itemSelect = value; }
 
         protected override void Awake()
@@ -26,11 +27,6 @@ namespace CuaHang
             _input = InputImprove.Instance;
             _cam = Camera.main;
             _enableOutline = true;
-        }
-
-        private void Start()
-        {
-            _itemDrag = SingleModuleManager.Instance._itemDrag;
         }
 
         private void OnEnable()

@@ -22,14 +22,14 @@ namespace CuaHang
         [Header("Zoom Cam")]
         [SerializeField] float _zoomCamSpeed = 0.2f;
 
-        Coroutine zoomCoroutine;
+        Coroutine _zoomCoroutine;
         RaycastCursor _raycastCursor;
         Camera _cam;
         ItemDrag _itemDrag;
         InputImprove _input;
 
         public Transform ItemFollow { get => _itemFollow; private set => _itemFollow = value; }
-        public Item ItemEditing { get => _itemEditing; private set => _itemEditing = value; }
+        public Item ItemEditing { get => _itemEditing; }
         public bool IsMoveStick { get => _isMoveStick; set => _isMoveStick = value; }
         public bool IsTouchRotationArea { get => _isTouchRotationArea; set => _isTouchRotationArea = value; }
         public Quaternion CamshaftRotation { get => _camshaft.rotation; }
@@ -40,9 +40,9 @@ namespace CuaHang
         {
             base.Awake();
             _raycastCursor = RaycastCursor.Instance;
-            _itemDrag = SingleModuleManager.Instance._itemDrag;
             _input = InputImprove.Instance;
             _cam = Camera.main;
+            _itemDrag = _raycastCursor._ItemDrag;
         }
 
         private void OnEnable()
@@ -80,7 +80,7 @@ namespace CuaHang
         /// <summary> Điều khiển cam </summary>
         void CamController()
         {
-            if (ItemEditing == false && ItemFollow != null)
+            if (_itemEditing == false && ItemFollow != null)
             {
                 // Move follow Object
                 _camshaft.position = Vector3.MoveTowards(_camshaft.position, ItemFollow.position, _moveSpeed * Time.deltaTime);
@@ -102,12 +102,12 @@ namespace CuaHang
         #region Zoom Detection
         void PinchStart()
         {
-            zoomCoroutine = StartCoroutine(ZoomDetection());
+            _zoomCoroutine = StartCoroutine(ZoomDetection());
         }
 
         void PinchEnd()
         {
-            if (zoomCoroutine != null) StopCoroutine(zoomCoroutine);
+            if (_zoomCoroutine != null) StopCoroutine(_zoomCoroutine);
         }
 
         IEnumerator ZoomDetection()
@@ -115,7 +115,7 @@ namespace CuaHang
             float previousDistance = 0f, distance = 0f;
             while (true)
             {
-                if (_isMoveStick) break;
+                if (_isMoveStick || _itemEditing) break;
 
                 distance = Vector2.Distance(_input.PrimaryFingerPosition(), _input.SecondFingerPosition());
 
@@ -164,10 +164,10 @@ namespace CuaHang
 
         void CancelFollowItem(InputAction.CallbackContext context)
         {
-            if (ItemEditing)
+            if (_itemEditing)
             {
-                ItemEditing.SetEditMode(false);
-                ItemEditing = null;
+                _itemEditing.SetEditMode(false);
+                _itemEditing = null;
             }
 
             _EventOnEditItem?.Invoke(null);
@@ -193,27 +193,27 @@ namespace CuaHang
             _EventOnEditItem?.Invoke(null);
             _cam.orthographicSize = _camSizeDefault;
 
-            if (ItemEditing)
+            if (_itemEditing)
             {
-                ItemEditing.SetEditMode(false);
-                ItemEditing = null;
+                _itemEditing.SetEditMode(false);
+                _itemEditing = null;
             }
         }
 
         /// <summary> cam tập trung vaò item edit </summary>
-        private void EditItem(InputAction.CallbackContext context)
+        void EditItem(InputAction.CallbackContext context)
         {
             Item item = _raycastCursor._ItemSelect.GetComponentInChildren<Item>();
 
-            if (item && item._camHere && !ItemEditing)
+            if (item && item._camHere && !_itemEditing)
             {
-                ItemEditing = item;
-                ItemEditing.SetEditMode(true);
+                _itemEditing = item;
+                _itemEditing.SetEditMode(true);
                 _EventOnEditItem?.Invoke(item);
                 return;
             }
 
-            if (ItemEditing)
+            if (_itemEditing)
             {
                 SetObjectFollow(ItemFollow);
             }

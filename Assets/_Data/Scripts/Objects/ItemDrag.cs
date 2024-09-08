@@ -178,6 +178,7 @@ namespace CuaHang
         public void MoveItemDragOnAndroid()
         {
             if (GameSystem.Instance._Platform != Platform.Android) return;
+            
             Vector3 hitPos = new();
             hitPos = GetDragPointHit().point;
             hitPos = RoundPos(hitPos, _enableSnapping);

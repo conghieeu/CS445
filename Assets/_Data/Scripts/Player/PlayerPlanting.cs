@@ -17,7 +17,7 @@ namespace CuaHang
         { 
             _input = InputImprove.Instance;
             _ctrl = GetComponent<PlayerCtrl>();
-            _itemDrag = SingleModuleManager.Instance._itemDrag;
+            _itemDrag = RaycastCursor.Instance._ItemDrag;
         }
 
         private void OnEnable()

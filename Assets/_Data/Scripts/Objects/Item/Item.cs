@@ -155,7 +155,7 @@ namespace CuaHang
             float rx = UnityEngine.Random.Range(-size, size);
             float rz = UnityEngine.Random.Range(-size, size);
 
-            Vector3 p = SingleModuleManager.Instance._itemSpawnPos.position;
+            Vector3 p = SpawnManager.Instance._ItemSpawner.position;
 
             transform.position = new Vector3(p.x + rx, p.y, p.z + rz);
         }

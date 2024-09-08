@@ -4,13 +4,17 @@ namespace CuaHang.UI
 {
     public class UIMovementController : UIPanel
     {
-
         private void Start()
         {
-            UIComputerScreen.e_IsOnEditComputer += active =>
+            if (GameSystem.CurrentPlatform == Platform.Standalone)
             {
-                SetActiveCanvasGroup(!active);
-            };
+                SetActiveCanvasGroup(false);
+            }
+            else if (GameSystem.CurrentPlatform == Platform.Android)
+            {
+                CameraControl._EventOnEditItem += item => SetActiveCanvasGroup(!item);
+            }
+
         }
     }
 

@@ -577,7 +577,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enableDebugLog: 0
   _dontDestroyOnLoad: 0
-  _platform: 1
+  _platform: 0
 --- !u!4 &83824971
 Transform:
   m_ObjectHideFlags: 0
@@ -2526,6 +2526,7 @@ MonoBehaviour:
     m_Bits: 804
   _uIRaycastChecker: {fileID: 1589320177}
   _dragPoint: {fileID: 239164529}
+  _itemDrag: {fileID: 6334553454394321204}
 --- !u!4 &423970280
 Transform:
   m_ObjectHideFlags: 0
@@ -4516,7 +4517,7 @@ GameObject:
   - component: {fileID: 766202891}
   - component: {fileID: 766202892}
   m_Layer: 0
-  m_Name: SingleModuleManager
+  m_Name: Spawer Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4546,13 +4547,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 766202890}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 249175531e45d0847a99706301a3d6e0, type: 3}
+  m_Script: {fileID: 11500000, guid: ec7d012f59fa28f48b46753575abe6e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemDrag: {fileID: 6334553454394321204}
-  _raycastCursor: {fileID: 423970279}
-  _itemSpawnPos: {fileID: 548140215}
-  _pointOutShop: {fileID: 342665302}
+  enableDebugLog: 0
+  _dontDestroyOnLoad: 0
+  _itemSpawner: {fileID: 548140215}
 --- !u!1 &768845319
 GameObject:
   m_ObjectHideFlags: 0
@@ -6722,6 +6722,7 @@ GameObject:
   - component: {fileID: 1113367041}
   - component: {fileID: 1113367040}
   - component: {fileID: 1113367043}
+  - component: {fileID: 1113367044}
   m_Layer: 5
   m_Name: Button_OnDrag
   m_TagString: Untagged
@@ -6846,7 +6847,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cb179a8654141b44b2da4a4e971c605, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableDebugLog: 0
+  _canvasGroup: {fileID: 0}
+  _panelContent: {fileID: 0}
   _isPointerDown: 0
+--- !u!225 &1113367044
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1113367037}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1128605707
 GameObject:
   m_ObjectHideFlags: 0
@@ -12372,10 +12388,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _itemSelected: {fileID: 0}
-  _buttonOnDrag: {fileID: 1113367040}
-  _buttonRotationRight: {fileID: 214591570}
-  _buttonRotationLeft: {fileID: 85497003}
-  _buttonDropItem: {fileID: 135516243}
+  _buttonOnDrag: {fileID: 1113367043}
   _buttonCancelEdit: {fileID: 875761912}
   _menuContext: {fileID: 1065436580}
   _buttonDrag: {fileID: 375506569}
@@ -15198,6 +15211,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1430870471339164510}
   - component: {fileID: 6948330551905865650}
+  - component: {fileID: 6948330551905865651}
   m_Layer: 5
   m_Name: Play_Menu_Settings
   m_TagString: Untagged
@@ -20389,6 +20403,18 @@ MonoBehaviour:
   _dropDownGraphics: {fileID: 4621612288880403595}
   _toggleFullScreen: {fileID: 1493716325533570439}
   _sliderVolume: {fileID: 8537903284123791900}
+--- !u!225 &6948330551905865651
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3518249355782018047}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!114 &6955034666143415114
 MonoBehaviour:
   m_ObjectHideFlags: 0

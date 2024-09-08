@@ -2,13 +2,14 @@ using UnityEngine;
 
 namespace CuaHang.UI
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class UIPanel : HieuBehavior
     {
         [Header("UI PANEL")]
         [SerializeField] protected CanvasGroup _canvasGroup;
         [SerializeField] protected RectTransform _panelContent;
 
-        private void Start()
+        protected virtual void Start()
         {
             _canvasGroup = GetComponent<CanvasGroup>();
         }
@@ -21,7 +22,7 @@ namespace CuaHang.UI
             }
         }
 
-        protected virtual void SetActiveCanvasGroup(bool isOn)
+        public virtual void SetActiveCanvasGroup(bool isOn)
         {
             if (isOn)
             {

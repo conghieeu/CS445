@@ -11,10 +11,7 @@ namespace CuaHang.UI
         [SerializeField] Item _itemSelected; 
 
         [Header("On Item Drag")]
-        [SerializeField] Button _buttonOnDrag;
-        [SerializeField] Button _buttonRotationRight;
-        [SerializeField] Button _buttonRotationLeft;
-        [SerializeField] Button _buttonDropItem;
+        [SerializeField] PointDragItem _buttonOnDrag;
 
         [Header("On Item Editing")]
         [SerializeField] Button _buttonCancelEdit;
@@ -42,13 +39,13 @@ namespace CuaHang.UI
         {
             _cameraControl = CameraControl.Instance;
             _input = InputImprove.Instance;
-            _itemDrag = SingleModuleManager.Instance._itemDrag;
+            _itemDrag = RaycastCursor.Instance._ItemDrag;
         }
 
         private void Start()
         {
             _defaultTmp = _tmp.text;
-            _raycastCursor = SingleModuleManager.Instance._raycastCursor;
+            _raycastCursor = RaycastCursor.Instance;
         }
 
         private void OnEnable()
@@ -109,34 +106,37 @@ namespace CuaHang.UI
             }
         }
 
-        /// <summary> Khi click vao ngon tay yeu cau button drag item </summary>
+        /// <summary> Hiện button di chuyển item </summary>
         private void OnClickButtonDrag()
         {
-            _buttonOnDrag.transform.position = _input.MousePosition(); // chuot di chuyen voi chuot click 
-            _buttonOnDrag.gameObject.SetActive(true);
+            if(GameSystem.CurrentPlatform != Platform.Android) return;
+
+            _buttonOnDrag.SetActiveCanvasGroup(true);
+            _buttonOnDrag.transform.position = _input.MousePosition();
             _buttonOnDrag.transform.position = _buttonDrag.transform.position;
         }
 
         /// <summary> bật button rotation item drag </summary>
         private void OnDragItem()
         {
+            if(GameSystem.CurrentPlatform != Platform.Android) return;
+
             if (_itemDrag.gameObject.activeInHierarchy)
-            {
-                // button on drag sẽ theo trỏ chuột 
+            { 
                 _itemDrag.MoveItemDragOnAndroid(); // di chuyen item theo point drag
-                MenuFollowItemTarget(_itemDrag.transform);
+                FollowTarget(_itemDrag.transform, _buttonDrag.transform); // button on drag di chuyen theo item
             }
             else
             {
-                _buttonOnDrag.gameObject.SetActive(false);
+                _buttonOnDrag.SetActiveCanvasGroup(false);
             }
         }
 
-        private void MenuFollowItemTarget(Transform target)
+        private void FollowTarget(Transform target, Transform follower)
         {
             Vector3 worldPosition = target.position;
             Vector3 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
-            _menuContext.transform.position = screenPosition;
+            follower.position = screenPosition;
         }
 
         /// <summary> Hiện option có thể chọn khi click đối tượng item </summary>
@@ -153,7 +153,7 @@ namespace CuaHang.UI
                 _buttonDrag.gameObject.SetActive(true);
 
                 // dat panel lai vi tri item select
-                MenuFollowItemTarget(_itemSelected.transform);
+                FollowTarget(_itemSelected.transform, _menuContext.transform);
             }
             else
             {
