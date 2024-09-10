@@ -9,9 +9,14 @@ namespace CuaHang.UI
         [SerializeField] protected CanvasGroup _canvasGroup;
         [SerializeField] protected RectTransform _panelContent;
 
+        private void Awake()
+        { 
+            _canvasGroup = GetComponent<CanvasGroup>();
+        }
+
         protected virtual void Start()
         {
-            _canvasGroup = GetComponent<CanvasGroup>();
+
         }
 
         public virtual void ShowContents(bool value)
@@ -24,6 +29,9 @@ namespace CuaHang.UI
 
         public virtual void SetActiveCanvasGroup(bool isOn)
         {
+
+            if (!_canvasGroup) return;
+
             if (isOn)
             {
                 _canvasGroup.alpha = 1;
