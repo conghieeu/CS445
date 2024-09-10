@@ -557,7 +557,7 @@ GameObject:
   - component: {fileID: 83824971}
   - component: {fileID: 83824970}
   m_Layer: 0
-  m_Name: Game System
+  m_Name: GameSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -577,7 +577,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enableDebugLog: 0
   _dontDestroyOnLoad: 0
-  _platform: 0
+  _platform: 1
 --- !u!4 &83824971
 Transform:
   m_ObjectHideFlags: 0

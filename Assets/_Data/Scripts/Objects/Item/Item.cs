@@ -193,7 +193,10 @@ namespace CuaHang
         public virtual void SetDragState(bool active)
         {
             _coll.enabled = !active;
-            _isCanDrag = !active; 
+            _isCanDrag = !active;
+
+            if (_itemParent && _itemParent._itemSlot)
+                _itemParent._itemSlot.RemoveItemInList(this);
         }
 
         public virtual void DropItem(Transform location)

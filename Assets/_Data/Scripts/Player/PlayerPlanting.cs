@@ -10,11 +10,11 @@ namespace CuaHang
     public class PlayerPlanting : HieuBehavior
     {
         PlayerCtrl _ctrl;
-        InputImprove _input; 
+        InputImprove _input;
         ItemDrag _itemDrag;
 
         private void Awake()
-        { 
+        {
             _input = InputImprove.Instance;
             _ctrl = GetComponent<PlayerCtrl>();
             _itemDrag = RaycastCursor.Instance._ItemDrag;
@@ -22,9 +22,14 @@ namespace CuaHang
 
         private void OnEnable()
         {
-            _input.Sender += SenderParcel;
-            _input.Sender += SenderItemSell;
+            _input.Sender += _ => SenderParcel();
+            _input.Sender += _ => SenderItemSell();
+        }
 
+        private void OnDisable()
+        {
+            _input.Sender -= _ => SenderParcel();
+            _input.Sender -= _ => SenderItemSell();
         }
 
         private void FixedUpdate()
@@ -35,7 +40,7 @@ namespace CuaHang
 
 
         /// <summary> chạm vào kệ, người chơi có thể truyền item từ parcel sang table đó </summary>
-        private void SenderItemSell(InputAction.CallbackContext context)
+        private void SenderItemSell()
         {
             // có item ở cảm biến
             Item shelf = _ctrl._sensorForward.GetItemTypeHit(Type.Shelf);
@@ -43,30 +48,27 @@ namespace CuaHang
 
             if (shelf && itemHold && !itemHold._isCanSell) // gửi các apple từ bưu kiện sang kệ
             {
-                shelf._itemSlot.ReceiverItems(itemHold._itemSlot, false);
+                shelf._itemSlot.ReceiverItems(itemHold._itemSlot, true);
             }
             else if (shelf && itemHold && itemHold._isCanSell) // để apple lênh kệ
             {
                 In($"Player để quá táo lênh kệ");
                 _itemDrag.OnDropItem();
-                shelf._itemSlot.TryAddItemToItemSlot(itemHold, false);
+                shelf._itemSlot.TryAddItemToItemSlot(itemHold, true);
             }
         }
 
         /// <summary> đưa parcel vào thùng rác </summary>
-        private void SenderParcel(InputAction.CallbackContext context)
+        private void SenderParcel()
         {
-            Item trash = _ctrl._sensorForward.GetItemTypeHit(Type.Storage);
+            Item trash = _ctrl._sensorForward.GetItemTypeHit(Type.Trash);
             Item parcel = _itemDrag._itemDragging;
 
-            if (trash && parcel)
+            if (trash && parcel && parcel._type == Type.Parcel)
             {
-                if (parcel._type == Type.Parcel)
-                {
-                    In($"Player thêm item {parcel} vào trash  {trash}");
-                    _itemDrag.OnDropItem();
-                    trash._itemSlot.TryAddItemToItemSlot(parcel, true);
-                }
+                _itemDrag.OnDropItem();
+                trash._itemSlot.TryAddItemToItemSlot(parcel, true);
+
             }
         }
 
