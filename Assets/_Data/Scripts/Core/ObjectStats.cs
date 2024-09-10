@@ -38,7 +38,15 @@ public abstract class ObjectStats : HieuBehavior
         };
     }
 
-    protected GameData GetGameData() => SerializationAndEncryption.Instance._gameData;
+    protected GameData GetGameData() 
+    {
+        if(SerializationAndEncryption.Instance == null)
+        {
+            Debug.LogWarning("Không có GameData");
+            return null;
+        }
+        return SerializationAndEncryption.Instance._gameData;
+    }
 
     //-----------ABSTRACT------------
     /// <summary> Truyền giá trị save vào _gameData </summary>

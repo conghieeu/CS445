@@ -65,7 +65,7 @@ namespace CuaHang
         }
 
         /// <summary> Dành cho nút nhấn drop item </summary>
-        public void OnButtonDropItem()
+        public void DropItem()
         {
             if (IsCanPlant())
             {
@@ -91,16 +91,6 @@ namespace CuaHang
             _itemDragging = item;
         }
 
-        /// <summary> set up lại value khi đặt item </summary>
-        public void OnDropItem()
-        {
-            Destroy(_modelsHolding.gameObject); // Delete model item
-            _itemDragging.DropItem(_modelsHolding);
-            _itemDragging = null;
-            _isDragging = false;
-            gameObject.SetActive(false);
-        }
-
         /// <summary> Button quay item drag sẽ gọi </summary>
         public void _ClickRotation(float angle)
         {
@@ -112,18 +102,19 @@ namespace CuaHang
             _modelsHolder.localRotation = Quaternion.Euler(0, newAngle, 0);
         }
 
-        void ClickDropItem(InputAction.CallbackContext context)
-        {
-            if (IsCanPlant() && GameSystem.CurrentPlatform != Platform.Android)
-            {
-                OnDropItem();
-                _navMeshSurface.BuildNavMesh();
-            }
-        }
-
         public void SetSnap()
         {
             _enableSnapping = !_enableSnapping;
+        }
+
+        /// <summary> set up lại value khi đặt item </summary>
+        public void OnDropItem()
+        {
+            Destroy(_modelsHolding.gameObject); // Delete model item
+            _itemDragging.DropItem(_modelsHolding);
+            _itemDragging = null;
+            _isDragging = false;
+            gameObject.SetActive(false);
         }
 
         void SetMaterial()
@@ -162,6 +153,15 @@ namespace CuaHang
                 }
             }
             return false;
+        }
+
+        void ClickDropItem(InputAction.CallbackContext context)
+        {
+            if (IsCanPlant() && GameSystem.CurrentPlatform != Platform.Android)
+            {
+                OnDropItem();
+                _navMeshSurface.BuildNavMesh();
+            }
         }
 
         /// <summary> Di chuyen item danh cho pc </summary>
