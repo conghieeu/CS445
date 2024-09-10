@@ -9,7 +9,8 @@ namespace CuaHang
     {
         [Header("RaycastCursor")]
         [SerializeField] Transform _itemSelect; // đối tượng target
-        [SerializeField] bool _enableOutline;
+        [SerializeField] bool _enableOutline = true;
+        [SerializeField] bool _enableRaycast = true;
         [SerializeField] LayerMask _layerMask;
         [SerializeField] UIRaycastChecker _uIRaycastChecker;
         [SerializeField] Transform _dragPoint; // là tâm của đối tượng giao diện
@@ -46,7 +47,9 @@ namespace CuaHang
         /// <summary> Chiếu tia raycast lấy dữ liệu cho _Hit </summary>
         public RaycastHit GetRayMouseHit()
         {
-            RaycastHit _hit;
+            RaycastHit _hit = new ();
+            if (_enableRaycast == false) return _hit;
+
             Ray ray = _cam.ScreenPointToRay(_input.MousePosition());
             Physics.Raycast(ray, out _hit, 100, _layerMask);
             return _hit;
@@ -55,6 +58,8 @@ namespace CuaHang
         public RaycastHit GetRayDragPointHit()
         {
             RaycastHit _hit = new();
+             if (_enableRaycast == false) return _hit;
+
             Ray ray = _cam.ScreenPointToRay(_dragPoint.position);
             Physics.Raycast(ray, out _hit, 100, _layerMask);
             return _hit;

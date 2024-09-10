@@ -124,7 +124,6 @@ namespace CuaHang.UI
             if (_itemDrag.gameObject.activeInHierarchy)
             { 
                 _itemDrag.MoveItemDragOnAndroid(); // di chuyen item theo point drag
-                FollowTarget(_itemDrag.transform, _buttonDrag.transform); // button on drag di chuyen theo item
             }
             else
             {

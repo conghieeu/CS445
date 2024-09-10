@@ -44,13 +44,13 @@ namespace CuaHang
         private void OnEnable()
         {
             _input.Click += ClickDropItem;
-            _input.SnapPerformed += SetSnap;
+            _input.SnapPerformed += _ => SetSnap();
         }
 
         private void OnDisable()
         {
             _input.Click -= ClickDropItem;
-            _input.SnapPerformed -= SetSnap;
+            _input.SnapPerformed -= _ => SetSnap();
         }
 
         private void FixedUpdate()
@@ -105,9 +105,9 @@ namespace CuaHang
         public void _ClickRotation(float angle)
         {
             float currentAngle = _modelsHolder.localEulerAngles.y;
-            float roundedAngle = Mathf.Round(currentAngle / 10.0f) * 10.0f;  
-            float rotationAngle = Mathf.Round(angle * _rotationSpeed / 10.0f) * 10.0f;   
-            float newAngle = roundedAngle + rotationAngle;  
+            float roundedAngle = Mathf.Round(currentAngle / 10.0f) * 10.0f;
+            float rotationAngle = Mathf.Round(angle * _rotationSpeed / 10.0f) * 10.0f;
+            float newAngle = roundedAngle + rotationAngle;
 
             _modelsHolder.localRotation = Quaternion.Euler(0, newAngle, 0);
         }
@@ -121,7 +121,7 @@ namespace CuaHang
             }
         }
 
-        void SetSnap(InputAction.CallbackContext context)
+        public void SetSnap()
         {
             _enableSnapping = !_enableSnapping;
         }
@@ -178,7 +178,7 @@ namespace CuaHang
         public void MoveItemDragOnAndroid()
         {
             if (GameSystem.Instance._Platform != Platform.Android) return;
-            
+
             Vector3 hitPos = new();
             hitPos = GetDragPointHit().point;
             hitPos = RoundPos(hitPos, _enableSnapping);
