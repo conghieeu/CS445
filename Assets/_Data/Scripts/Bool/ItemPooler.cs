@@ -1,12 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace CuaHang.Pooler
 {
     public class ItemPooler : ObjectPooler
     {
-        public TypePool _typePool;
+        [SerializeField] Transform _itemSpawnerPoint;
+        
         public static ItemPooler Instance;
+
+        public Transform ItemSpawnerPoint { get => _itemSpawnerPoint; }
 
         protected override void Awake()
         {
@@ -14,7 +18,7 @@ namespace CuaHang.Pooler
 
             if (Instance != null && Instance != this)
             {
-                Destroy(gameObject); 
+                Destroy(gameObject);
             }
             else
             {

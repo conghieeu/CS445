@@ -114,7 +114,7 @@ namespace CuaHang
 
             if (item && item._isCanDrag)
             {
-                item.DragItem();
+                item.SetDragState(true);
                 _itemDrag.PickUpItem(item);
             }
         }

@@ -28,14 +28,19 @@ namespace CuaHang.Pooler
             }
         }
 
-        /// <summary> Xoá object trong hồ </summary>
-        public virtual void RemoveObject(ObjectPool objectPool)
+        /// <summary> 
+        /// Xoá object khỏi pool và đánh dấu là có thể tái sử dụng 
+        /// </summary>
+        public virtual void RemoveObjectFromPool(ObjectPool objectPool)
         {
             objectPool.gameObject.SetActive(false);
             objectPool._isRecyclable = true;
         }
 
-        public virtual bool IsContentID(string id)
+        /// <summary> 
+        /// Kiểm tra xem pool có chứa object với ID cụ thể hay không 
+        /// </summary>
+        public virtual bool ContainsID(string id)
         {
             foreach (var obj in _ObjectPools)
             {
@@ -44,21 +49,28 @@ namespace CuaHang.Pooler
             return false;
         }
 
-        public virtual ObjectPool GetObjectID(string id)
+        /// <summary> 
+        /// Lấy object từ pool theo ID 
+        /// </summary>
+        public virtual ObjectPool GetObjectByID(string id)
         {
             foreach (var obj in _ObjectPools)
-            { 
+            {
                 if (obj._ID == id) return obj;
             }
             return null;
         }
 
-        public ObjectPool GetObjectPool(TypeID typeID)
+        /// <summary> 
+        /// Tái sử dụng object nhàn rỗi hoặc tạo mới object từ pool 
+        /// </summary>
+        public ObjectPool GetOrCreateObjectPool(TypeID typeID)
         {
-            ObjectPool objectPool = GetHider(typeID);
+            ObjectPool objectPool = GetDisabledObject(typeID);
 
-            if (objectPool) // use old
+            if (objectPool) // tái sử dụng
             {
+                objectPool._isRecyclable = false;
                 objectPool.gameObject.SetActive(true);
             }
             else // Create New 
@@ -82,13 +94,17 @@ namespace CuaHang.Pooler
             return objectPool;
         }
 
-        /// <summary> Tìm object nghỉ </summary>
-        private ObjectPool GetHider(TypeID typeID)
+        /// <summary> 
+        /// Tìm object nhàn rỗi trong pool theo typeID 
+        /// </summary>
+        private ObjectPool GetDisabledObject(TypeID typeID)
         {
             foreach (var objectPool in _objectPools)
             {
                 if (objectPool._typeID == typeID && objectPool._isRecyclable)
+                {
                     return objectPool;
+                }
             }
             return null;
         }

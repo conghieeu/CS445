@@ -25,7 +25,7 @@ namespace CuaHang
             // tái tạo items data
             foreach (var staffData in staffsData)
             {
-                ObjectPool staff = GetComponent<StaffPooler>().GetObjectID(staffData._id);
+                ObjectPool staff = GetComponent<StaffPooler>().GetObjectByID(staffData._id);
 
                 // load data những đối tượng đã tồn tại
                 if (staff)
@@ -35,7 +35,7 @@ namespace CuaHang
                 else
                 {
                     // tạo
-                    ObjectPool newStaff = GetComponent<StaffPooler>().GetObjectPool(staffData._typeID);
+                    ObjectPool newStaff = GetComponent<StaffPooler>().GetOrCreateObjectPool(staffData._typeID);
                     newStaff.GetComponent<StaffStats>().LoadData(staffData);
                 }
             }

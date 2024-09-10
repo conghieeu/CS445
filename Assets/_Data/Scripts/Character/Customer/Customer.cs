@@ -23,6 +23,9 @@ namespace CuaHang.AI
         public List<TypeID> _listItemBuy; // Cac item can lay, giới hạn là 15 item
         public List<Item> _itemsCard; // cac item da mua
 
+        // Thêm tham chiếu đến ReputationSystem
+        public ReputationSystem reputationSystem;
+
         protected override void Awake()
         {
             base.Awake();
@@ -32,7 +35,8 @@ namespace CuaHang.AI
         protected override void Start()
         {
             base.Start();
-            _outShopPoint = GameObject.Find("GO OUT SHOP POS").transform;
+            _outShopPoint = CustomerPooler.Instance.GoOutShopPoint.transform;
+            reputationSystem = ReputationSystem.Instance;
         }
 
         private void FixedUpdate()
@@ -74,6 +78,9 @@ namespace CuaHang.AI
                 _listItemBuy.Remove(_itemFinding._typeID);
                 _itemFinding = null;
 
+                // Cập nhật danh tiếng khi mua hàng
+                reputationSystem.UpdateReputation(ReputationSystem.CustomerAction.Buy);
+
                 return;
             }
 
@@ -109,7 +116,7 @@ namespace CuaHang.AI
 
         /// <summary> Set Properties with Item Data </summary>
         public void SetProperties(CustomerData data)
-        { 
+        {
             _ID = data._id;
             _isNotNeedBuy = data._isNotNeedBuy;
             _isPay = data._isPay;
@@ -224,9 +231,9 @@ namespace CuaHang.AI
                 // xoá tắt cả item dang giữ
                 foreach (var item in _itemsCard)
                 {
-                    ItemPooler.Instance.RemoveObject(item);
+                    ItemPooler.Instance.RemoveObjectFromPool(item);
                 }
-                CustomerPooler.Instance.RemoveObject(this);
+                CustomerPooler.Instance.RemoveObjectFromPool(this);
             }
         }
 
@@ -237,8 +244,9 @@ namespace CuaHang.AI
             {
                 if (_itemFinding._price > _itemFinding._SO._priceMarketMax)
                 {
-                    ExpressedComplaintsItem();
                     _isNotNeedBuy = true;
+                    // Cập nhật danh tiếng khi phàn nàn
+                    reputationSystem.UpdateReputation(ReputationSystem.CustomerAction.Complain);
                     return false;
                 }
             }
@@ -259,12 +267,6 @@ namespace CuaHang.AI
             return false;
         }
 
-        /// <summary> Expressed complaints because this product is too expensive </summary>
-        private void ExpressedComplaintsItem()
-        {
-            Debug.Log("Bán gì mắt vậy cha");
-        }
-
         /// <summary> Delay time pickup item </summary>
         private IEnumerator IsPickingItem()
         {
@@ -272,8 +274,5 @@ namespace CuaHang.AI
             yield return new WaitForSeconds(2f);
             _isPickingItem = false;
         }
-
-
-
     }
 }

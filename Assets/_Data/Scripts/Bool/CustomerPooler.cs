@@ -7,12 +7,14 @@ namespace CuaHang.Pooler
 {
     public class CustomerPooler : ObjectPooler
     {
+        [SerializeField] Transform _goOutShopPoint;
         public static CustomerPooler Instance { get; private set; }
+        public Transform GoOutShopPoint { get => _goOutShopPoint; }
 
         protected override void Awake()
         {
             base.Awake();
-            
+
             if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);

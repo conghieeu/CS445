@@ -39,7 +39,7 @@ namespace CuaHang
             // tái tạo items data
             foreach (var cusData in customersData)
             {
-                ObjectPool customer = GetComponent<CustomerPooler>().GetObjectID(cusData._id);
+                ObjectPool customer = GetComponent<CustomerPooler>().GetObjectByID(cusData._id);
 
                 // load data những đối tượng đã tồn tại
                 if (customer)
@@ -49,7 +49,7 @@ namespace CuaHang
                 else
                 {
                     // tạo mới
-                    ObjectPool newCustomer = GetComponent<CustomerPooler>().GetObjectPool(cusData._typeID);
+                    ObjectPool newCustomer = GetComponent<CustomerPooler>().GetOrCreateObjectPool(cusData._typeID);
                     newCustomer.GetComponent<CustomerStats>().LoadData(cusData);
                 }
             }

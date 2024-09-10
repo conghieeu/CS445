@@ -24,7 +24,7 @@ namespace CuaHang.Pooler
             // tái tạo items data
             foreach (var itemData in itemsData)
             {
-                ObjectPool objectPool = _itemPooler.GetObjectID(itemData._id);
+                ObjectPool objectPool = _itemPooler.GetObjectByID(itemData._id);
                 // load data những đối tượng đã tồn tại
                 if (objectPool)
                 {
@@ -32,7 +32,7 @@ namespace CuaHang.Pooler
                 }
                 else
                 {
-                    ObjectPool item = _itemPooler.GetObjectPool(itemData._typeID);
+                    ObjectPool item = _itemPooler.GetOrCreateObjectPool(itemData._typeID);
                     item.GetComponent<ItemStats>().LoadData(itemData);
                 }
             }

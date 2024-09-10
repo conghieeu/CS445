@@ -122,7 +122,7 @@ namespace CuaHang
             foreach (var itemData in itemsData)
             {
                 // tạo
-                ObjectPool item = ItemPooler.Instance.GetObjectPool(itemData._typeID);
+                ObjectPool item = ItemPooler.Instance.GetOrCreateObjectPool(itemData._typeID);
 
                 item.GetComponent<ItemStats>().LoadData(itemData);
                 if (itemSlot)
@@ -139,7 +139,7 @@ namespace CuaHang
             {
                 if (items[i])
                 {
-                    Item item = ItemPooler.Instance.GetObjectPool(items[i]._typeID).GetComponent<Item>();
+                    Item item = ItemPooler.Instance.GetOrCreateObjectPool(items[i]._typeID).GetComponent<Item>();
 
                     if (_itemSlot.TryAddItemToItemSlot(item, false) && _isSamePrice)
                     {
@@ -155,7 +155,7 @@ namespace CuaHang
             float rx = UnityEngine.Random.Range(-size, size);
             float rz = UnityEngine.Random.Range(-size, size);
 
-            Vector3 p = SpawnManager.Instance._ItemSpawner.position;
+            Vector3 p = ItemPooler.Instance.ItemSpawnerPoint.position;
 
             transform.position = new Vector3(p.x + rx, p.y, p.z + rz);
         }
@@ -185,45 +185,25 @@ namespace CuaHang
                 _coll.enabled = false;
             }
             else
-            { 
-                _coll.enabled = true; 
+            {
+                _coll.enabled = true;
             }
         }
 
-        public virtual void DragItem()
+        public virtual void SetDragState(bool active)
         {
-            if (_itemParent)
-            {
-                if (_itemParent._itemSlot)
-                {
-                    _itemParent._itemSlot.RemoveItemInList(this);
-                    _isCanDrag = false;
-                }
-            }
-
-            _coll.enabled = false;
-
-            if (_itemSlot)
-            {
-                _itemSlot.SetItemsDrag(false);
-            }
+            _coll.enabled = !active;
+            _isCanDrag = !active; 
         }
 
         public virtual void DropItem(Transform location)
         {
+            _coll.enabled = true;
             SetParent(null, null, true);
-
             if (location)
             {
                 transform.position = location.position;
                 transform.rotation = location.rotation;
-            }
-
-            _coll.enabled = true;
-
-            if (_itemSlot)
-            {
-                _itemSlot.SetItemsDrag(true);
             }
         }
 

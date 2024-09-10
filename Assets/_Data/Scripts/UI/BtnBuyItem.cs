@@ -29,13 +29,13 @@ namespace CuaHang.UI
 
             if (_parcel)
             {
-                Item parcel = ItemPooler.Instance.GetObjectPool(_parcel._typeID).GetComponent<Item>();
+                Item parcel = ItemPooler.Instance.GetOrCreateObjectPool(_parcel._typeID).GetComponent<Item>();
                 parcel.CreateItemInSlot(_items);
                 parcel.SetRandomPos();
             }
             else
             {
-                Item item = ItemPooler.Instance.GetObjectPool(_items[0]._typeID).GetComponent<Item>();
+                Item item = ItemPooler.Instance.GetOrCreateObjectPool(_items[0]._typeID).GetComponent<Item>();
                 item.SetRandomPos();
             }
 
