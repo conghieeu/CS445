@@ -29,14 +29,14 @@ namespace CuaHang.UI
         {
             Customer c = _customerObserve;
             _uIComputerScreen.CustomerSelectMark = _customerObserve;
-            _uIComputerScreen.TxtCustomerValue.text = $"{this.name}\nMua: {c._totalPay}\nTiền đưa bạn: 300";
+            _uIComputerScreen.TxtCustomerValue.text = $"{this.name}\nMua: {c.TotalPay}\nTiền đưa bạn: 300";
         }
 
         /// <summary> Hiện những thống số của khách hàng lênh cái thanh này </summary>
         public void SetCustomer(Customer customer)
         {
             _customerObserve = customer;
-            _txtTotal.text = "Total: " + _customerObserve._totalPay.ToString("F1");
+            _txtTotal.text = "Total: " + _customerObserve.TotalPay.ToString("F1");
         }
     }
 }

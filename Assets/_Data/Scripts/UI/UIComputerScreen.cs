@@ -37,6 +37,8 @@ namespace CuaHang.UI
         [SerializeField] List<WaitingLine.WaitingSlot> _comSlot;
         [SerializeField] List<SlotBar> _barSlots;
 
+        PlayerCtrl _playerCtrl;
+
         public Customer CustomerSelectMark { get => _customerSelectMark; set => _customerSelectMark = value; }
         public TextMeshProUGUI TxtCustomerValue { get => _txtCustomerValue; set => _txtCustomerValue = value; }
 
@@ -49,6 +51,7 @@ namespace CuaHang.UI
             _btnGoBuyPanel.onClick.AddListener(OnClickGoBuyPanel);
             _btnPay.onClick.AddListener(OnClickPayBtn);
             _infRefund.onValueChanged.AddListener(ValidateInput);
+            _playerCtrl = PlayerCtrl.Instance;
 
             for (int i = 0; i < 10; i++) _barSlots.Add(new SlotBar());
         }
@@ -73,14 +76,14 @@ namespace CuaHang.UI
             }
         }
 
-        // Hàm này sẽ được gọi mỗi khi giá trị trong inputField thay đổi
+        /// <summary> được gọi mỗi khi giá trị trong inputField thay đổi </summary>
         private void ValidateInput(string input)
         {
             if (float.TryParse(input, out float tienThoi))
             {
-                if (CustomerSelectMark && 300 - tienThoi <= CustomerSelectMark._totalPay)
+                if (CustomerSelectMark && 300 - tienThoi <= CustomerSelectMark.TotalPay)
                 {
-                    if (GameManager._Coin < tienThoi)
+                    if (_playerCtrl.Money < tienThoi)
                     {
                         _txtReport.text = "Cảnh báo: Không đủ tiền để thối";
                     }
@@ -138,7 +141,7 @@ namespace CuaHang.UI
         {
             if (!CustomerSelectMark) return;
 
-            if (GameManager._Coin < _tienThoi)
+            if (_playerCtrl.Money < _tienThoi)
             {
                 _txtReport.text = "Cảnh báo: Không đủ tiền để thối";
                 return;
@@ -146,13 +149,13 @@ namespace CuaHang.UI
 
             if (_isCanPay)
             {
-                CustomerSelectMark.PlayerConfirmPay();
+                CustomerSelectMark.IsPlayerConfirmPay = true;
 
                 float coinAdd = 300 - _tienThoi;
 
-                if (GameManager._Coin >= _tienThoi)
+                if (_playerCtrl.Money >= _tienThoi)
                 {
-                    GameManager.AddCoin(coinAdd);
+                    _playerCtrl.Money += coinAdd;
                 }
 
                 CustomerSelectMark = null;

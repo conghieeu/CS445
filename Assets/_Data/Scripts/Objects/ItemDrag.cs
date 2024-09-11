@@ -85,7 +85,7 @@ namespace CuaHang
             _modelsHolder.localRotation = item.transform.rotation;
 
             // Cho item này lênh tay player
-            item.SetParent(PlayerCtrl.Instance._posHoldParcel, null, false);
+            item.SetParent(PlayerCtrl.Instance.PosHoldParcel, null, false);
 
             _isDragging = true;
             _itemDragging = item;

@@ -56,12 +56,11 @@ public class CustomerData
     public float _totalPay;
     public bool _isNotNeedBuy; // Không cần mua gì nữa 
     public bool _playerConfirmPay; // Player xác nhận thanh toán
-    public bool _isPay;
     public Vector3 _position;
     public Quaternion _rotation;
     public List<ItemData> _itemSlot;
 
-    public CustomerData(string id, TypeID typeID, string name, float totalPay, bool isNotNeedBuy, bool playerConfirmPay, bool isPay, Vector3 position, Quaternion rotation, List<ItemData> itemSlot)
+    public CustomerData(string id, TypeID typeID, string name, float totalPay, bool isNotNeedBuy, bool playerConfirmPay, Vector3 position, Quaternion rotation, List<ItemData> itemSlot)
     {
         _id = id;
         _typeID = typeID;
@@ -69,7 +68,6 @@ public class CustomerData
         _totalPay = totalPay;
         _isNotNeedBuy = isNotNeedBuy;
         _playerConfirmPay = playerConfirmPay;
-        _isPay = isPay;
         _position = position;
         _rotation = rotation;
         _itemSlot = itemSlot;
@@ -107,18 +105,28 @@ public class GameSettingsData
 [Serializable]
 public class PlayerData
 {
-    public bool _isInitialized; // kiểm tra đối tượng này được tạo ra chưa
-    public string _name;
-    public float _money;
-    public Vector3 _position;
-    public Quaternion _rotation;
+    [SerializeField] bool _isInitialized;
+    [SerializeField] string _name;
+    [SerializeField] float _money;
+    [SerializeField] int _reputation;
+    [SerializeField] Vector3 _position;
+    [SerializeField] Quaternion _rotation;
 
-    public PlayerData(string name, float money, Quaternion rotation, Vector3 position)
+    public bool IsInitialized { get => _isInitialized; private set => _isInitialized = value; }
+    public string Name { get => _name; private set => _name = value; }
+    public float Money { get => _money; private set => _money = value; }
+    public int Reputation { get => _reputation; private set => _reputation = value; }
+    public Vector3 Position { get => _position; private set => _position = value; }
+    public Quaternion Rotation { get => _rotation; private set => _rotation = value; }
+
+    public PlayerData(bool isInitialized, string name, float money, int reputation, Vector3 position, Quaternion rotation)
     {
-        _name = name;
-        _money = money;
-        _rotation = rotation;
-        _position = position;
+        IsInitialized = isInitialized;
+        Name = name;
+        Money = money;
+        Reputation = reputation;
+        Position = position;
+        Rotation = rotation;
     }
 }
 

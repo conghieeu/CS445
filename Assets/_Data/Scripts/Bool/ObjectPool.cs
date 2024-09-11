@@ -16,6 +16,11 @@ namespace CuaHang
             CreateID();
         }
 
+        public virtual void OnCreate()
+        {
+            CreateID();
+        }
+
         public string GenerateIdentifier => System.Guid.NewGuid().ToString();
 
         public string _ID

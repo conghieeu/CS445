@@ -161,7 +161,7 @@ namespace CuaHang
         }
 
         public void SetPrice(float price)
-        {
+        { 
             if (_isBlockPrice) return;
 
             if (!_SO)

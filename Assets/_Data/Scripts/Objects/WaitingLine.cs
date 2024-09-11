@@ -56,7 +56,7 @@ namespace CuaHang
             // Thông báo slot đợi lại cho khách hàng
             foreach (var s in _waitingSlots)
             {
-                if (s._customer) s._customer._slotWaiting = s._slot;
+                if (s._customer) s._customer.SlotWaiting = s._slot;
             }
         }
 
@@ -93,7 +93,7 @@ namespace CuaHang
             {
                 if (slot._customer == customer)
                 {
-                    customer.GetComponent<Customer>()._slotWaiting = null;
+                    customer.GetComponent<Customer>().SlotWaiting = null;
                     slot._customer = null;
                     break;
                 }

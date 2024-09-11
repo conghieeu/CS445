@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using CuaHang;
 
 public class ReputationSystem : Singleton<ReputationSystem>
 {
@@ -8,7 +9,7 @@ public class ReputationSystem : Singleton<ReputationSystem>
     [SerializeField] int maxReputation = 100;      // Giới hạn trên của danh tiếng
     [SerializeField] int minReputation = 0;        // Giới hạn dưới của danh tiếng 
 
-    public int Reputation { get => _reputation; }
+    public int Reputation { get => _reputation; set => _reputation = value; }
 
     // Định nghĩa enum cho các hành động của khách hàng
     public enum CustomerAction
@@ -17,6 +18,11 @@ public class ReputationSystem : Singleton<ReputationSystem>
         Return,
         Complain,
         Praise
+    }
+
+    private void OnEnable()
+    {
+        PlayerStats._OnDataChange += data => Reputation = data.Reputation;
     }
 
     public event Action<int> OnReputationChanged;

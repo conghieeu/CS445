@@ -17,6 +17,6 @@ MonoBehaviour:
   _type: 5
   _priceDefault: 4
   _priceMarketMin: 0
-  _priceMarketMax: 99
+  _priceMarketMax: 10
   _isCanSell: 1
   _isBlockPrice: 0

@@ -1,15 +1,30 @@
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace CuaHang.UI
 {
     public class UITopBar : MonoBehaviour
     {
-        [SerializeField] protected Text _textCoin;
-    
-        private void FixedUpdate()
+        [SerializeField] TextMeshProUGUI _txtMoney;
+
+        private void Start()
         {
-            _textCoin.text = $"Tổng tiền: {GameManager._Coin.ToString("F1")}";
+            UpdateTextCoin(PlayerCtrl.Instance.Money);
+        }
+
+        private void OnEnable()
+        {
+            PlayerCtrl.OnChangeMoney += UpdateTextCoin;
+        }
+
+        private void OnDisable()
+        {
+            PlayerCtrl.OnChangeMoney -= UpdateTextCoin;
+        }
+
+        private void UpdateTextCoin(float money)
+        {
+            _txtMoney.text = $"Tổng tiền: {money.ToString("F1")}";
         }
     }
 

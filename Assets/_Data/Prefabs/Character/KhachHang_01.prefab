@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3130748030247572226
+--- !u!1 &816128284490688173
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,42 +8,10 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3072975797244840339}
-  m_Layer: 6
-  m_Name: Models
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3072975797244840339
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3130748030247572226}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 8446441641665934487}
-  m_Father: {fileID: 96872103378358193}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &5645302447260995868
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 96872103378358193}
-  - component: {fileID: 2445740193117199596}
-  - component: {fileID: 2267618258392733715}
-  - component: {fileID: 69060743928095919}
+  - component: {fileID: 5584297954203990422}
+  - component: {fileID: 1785071934253618892}
+  - component: {fileID: 6752794201707082981}
+  - component: {fileID: 4911480720891226446}
   m_Layer: 6
   m_Name: KhachHang_01
   m_TagString: Untagged
@@ -51,32 +19,32 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &96872103378358193
+--- !u!4 &5584297954203990422
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5645302447260995868}
+  m_GameObject: {fileID: 816128284490688173}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.9934328, z: 0, w: 0.114417024}
+  m_LocalRotation: {x: -0, y: 0.9934328, z: -0, w: 0.114417024}
   m_LocalPosition: {x: 0.45, y: 0, z: 11.73}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3072975797244840339}
+  - {fileID: 1480497475543084954}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 166.86, z: 0}
---- !u!195 &2445740193117199596
+--- !u!195 &1785071934253618892
 NavMeshAgent:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5645302447260995868}
+  m_GameObject: {fileID: 816128284490688173}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.4
+  m_Radius: 0.1
   m_Speed: 1
   m_Acceleration: 8
   avoidancePriority: 50
@@ -88,20 +56,23 @@ NavMeshAgent:
   m_Height: 1.6
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
---- !u!114 &2267618258392733715
+  m_ObstacleAvoidanceType: 1
+--- !u!114 &6752794201707082981
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5645302447260995868}
+  m_GameObject: {fileID: 816128284490688173}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b46c76519d74699459b55519798e02e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   enableDebugLog: 0
+  _id: 5963a3a9-7d51-424f-999e-e8d980e39e94
+  _typeID: 1
+  _name: KhachHang_01
   _isRecyclable: 0
   _stageAnim: 0
   _stopDistance: 0.8
@@ -111,48 +82,78 @@ MonoBehaviour:
   _navMeshAgent: {fileID: 0}
   _gameManager: {fileID: 0}
   _anim: {fileID: 0}
-  _ID: 
-  _name: KhachHang_01
   _totalPay: 0
   _itemFinding: {fileID: 0}
   _slotWaiting: {fileID: 0}
   _outShopPoint: {fileID: 0}
-  _customerStats: {fileID: 0}
-  _isNotNeedBuy: 0
+  _isDoneShopping: 0
+  _isPlayerConfirmPay: 0
   _isPickingItem: 0
-  _playerConfirmPay: 0
-  _isPay: 0
   _listItemBuy: 
   _itemsCard: []
---- !u!114 &69060743928095919
+--- !u!114 &4911480720891226446
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5645302447260995868}
+  m_GameObject: {fileID: 816128284490688173}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5524b1a275af14a4c908b0ad6d91025c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   enableDebugLog: 0
+  _customer: {fileID: 0}
   _customerData:
     _id: 
-    _name: 
+    _typeID: 0
+    _name: KhachHang_01
     _totalPay: 0
     _isNotNeedBuy: 0
     _playerConfirmPay: 0
-    _isPay: 0
     _position: {x: 0, y: 0, z: 0}
-  _customer: {fileID: 0}
---- !u!1001 &8267888261094822780
+    _rotation: {x: 0, y: 0, z: 0, w: 0}
+    _itemSlot: []
+--- !u!1 &7011018442316956336
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1480497475543084954}
+  m_Layer: 0
+  m_Name: Models
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1480497475543084954
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7011018442316956336}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4389138083424191413}
+  m_Father: {fileID: 5584297954203990422}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &4279511085005808734
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 3072975797244840339}
+    m_TransformParent: {fileID: 1480497475543084954}
     m_Modifications:
     - target: {fileID: -9165797768001435688, guid: b2d38a8f7d3517649a3b9f6fc9ff88be, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -572,26 +573,21 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b2d38a8f7d3517649a3b9f6fc9ff88be, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5743750082804932875}
+      addedObject: {fileID: 1010116215343606083}
   m_SourcePrefab: {fileID: 100100000, guid: b2d38a8f7d3517649a3b9f6fc9ff88be, type: 3}
---- !u!4 &8446441641665934487 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b2d38a8f7d3517649a3b9f6fc9ff88be, type: 3}
-  m_PrefabInstance: {fileID: 8267888261094822780}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &9114187511128714797 stripped
+--- !u!1 &4008917773615044879 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b2d38a8f7d3517649a3b9f6fc9ff88be, type: 3}
-  m_PrefabInstance: {fileID: 8267888261094822780}
+  m_PrefabInstance: {fileID: 4279511085005808734}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &5743750082804932875
+--- !u!95 &1010116215343606083
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9114187511128714797}
+  m_GameObject: {fileID: 4008917773615044879}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 3f1aba8a8ea95c24f833a292aca683e1, type: 2}
@@ -605,3 +601,8 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!4 &4389138083424191413 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b2d38a8f7d3517649a3b9f6fc9ff88be, type: 3}
+  m_PrefabInstance: {fileID: 4279511085005808734}
+  m_PrefabAsset: {fileID: 0}

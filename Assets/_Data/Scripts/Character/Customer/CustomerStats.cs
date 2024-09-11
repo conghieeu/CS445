@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace CuaHang.AI
 {
-
     public class CustomerStats : ObjectStats
     {
         [Header("ItemStats")]
@@ -22,7 +21,7 @@ namespace CuaHang.AI
         {
             List<ItemData> itemsCard = new();
 
-            foreach (var item in _customer._itemsCard)
+            foreach (var item in _customer.ItemsCard)
             {
                 if (item)
                 {
@@ -34,10 +33,9 @@ namespace CuaHang.AI
                 _customer._ID,
                 _customer._typeID,
                 _customer._name,
-                _customer._totalPay,
-                _customer._isNotNeedBuy,
-                _customer._playerConfirmPay,
-                _customer._isPay,
+                _customer.TotalPay,
+                _customer.IsDoneShopping,
+                _customer.IsPlayerConfirmPay,
                 _customer.transform.position,
                 _customer.transform.rotation,
                 itemsCard);

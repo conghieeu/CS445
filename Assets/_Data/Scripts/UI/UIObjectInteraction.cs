@@ -25,7 +25,7 @@ namespace CuaHang.UI
         [Header("Object Info Panel")]
         [SerializeField] bool _isShowInfo;
         [SerializeField] GameObject _infoPanel;
-        [SerializeField] TextMeshProUGUI _tmp;
+        [SerializeField] TextMeshProUGUI _txtContentItem; // hiện nội dung item
         [SerializeField] string _defaultTmp;
         [SerializeField] BtnPressHandler _btnIncreasePrice;
         [SerializeField] BtnPressHandler _btnDiscountPrice;
@@ -44,7 +44,7 @@ namespace CuaHang.UI
 
         private void Start()
         {
-            _defaultTmp = _tmp.text;
+            _defaultTmp = _txtContentItem.text;
             _raycastCursor = RaycastCursor.Instance;
         }
 
@@ -166,18 +166,23 @@ namespace CuaHang.UI
         {
             _isShowInfo = !_isShowInfo;
 
+            SetTxtContentItem();
+
+            _infoPanel.SetActive(_isShowInfo);
+        }
+
+        private void SetTxtContentItem()
+        {
             // hiện thị stats
             if (_itemSelected && _itemSelected._SO)
             {
                 string x = $"Name: {_itemSelected._name} \nPrice: {_itemSelected._price.ToString("F1")} \n";
-                _tmp.text = _itemSelected._SO._isCanSell ? x + "Item có thể bán" : x + "Item không thể bán";
+                _txtContentItem.text = _itemSelected._SO._isCanSell ? x + "Item có thể bán" : x + "Item không thể bán";
             }
             else
             {
-                _tmp.text = _defaultTmp;
+                _txtContentItem.text = _defaultTmp;
             }
-
-            _infoPanel.SetActive(_isShowInfo);
         }
 
         // --------------BUTTON--------------
@@ -185,11 +190,13 @@ namespace CuaHang.UI
         public void IncreasePrice()
         {
             if (_itemSelected) _itemSelected.SetPrice(0.1f);
+            SetTxtContentItem();
         }
 
         public void DiscountPrice()
         {
             if (_itemSelected) _itemSelected.SetPrice(-0.1f);
+            SetTxtContentItem();
         }
 
     }

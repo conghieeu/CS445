@@ -10,142 +10,142 @@ namespace CuaHang.AI
     public class Customer : AIBehavior
     {
         [Header("Customer")]
-        public float _totalPay;
-        public Item _itemFinding; // item mà khách hàng đang tìm
-        public Transform _slotWaiting; // Hàng chờ (WaitingLine) modun của máy tính sẽ SET thứ này
-        public Transform _outShopPoint; // Là điểm sẽ tới nếu rời shop
-        public CustomerStats _customerStats; // customer stats moduel
-        public bool _isNotNeedBuy; // Không cần mua gì nữa
-        public bool _isPickingItem; // Khi Khách hàng đang pick item
-        public bool _playerConfirmPay; // Player xác nhận thanh toán
-        public bool _isPay;
+        [SerializeField] float _totalPay;
+        [SerializeField] Item _itemFinding; // item mà khách hàng đang tìm
+        [SerializeField] Transform _slotWaiting; // Hàng chờ (WaitingLine) modun của máy tính sẽ SET thứ này
+        [SerializeField] Transform _outShopPoint; // Là điểm sẽ tới nếu rời shop
+        [SerializeField] bool _isDoneShopping; // Không cần mua gì nữa
+        [SerializeField] bool _isPlayerConfirmPay;
+        [SerializeField] bool _isPickingItem; // để set animation
+        [SerializeField] List<TypeID> _listItemBuy; // Cac item can lay, giới hạn là 15 item
+        [SerializeField] List<Item> _itemsCard; // cac item da mua
 
-        public List<TypeID> _listItemBuy; // Cac item can lay, giới hạn là 15 item
-        public List<Item> _itemsCard; // cac item da mua
+        ReputationSystem _reputationSystem; // Thêm tham chiếu đến ReputationSystem
 
-        // Thêm tham chiếu đến ReputationSystem
-        public ReputationSystem reputationSystem;
-
-        protected override void Awake()
-        {
-            base.Awake();
-            _customerStats = GetComponent<CustomerStats>();
-        }
+        public float TotalPay { get => _totalPay; }
+        public bool IsDoneShopping { get => _isDoneShopping; }
+        public Transform SlotWaiting { get => _slotWaiting; set => _slotWaiting = value; }
+        public List<Item> ItemsCard { get => _itemsCard; }
+        public bool IsPlayerConfirmPay { get => _isPlayerConfirmPay; set => _isPlayerConfirmPay = value; }
 
         protected override void Start()
         {
             base.Start();
             _outShopPoint = CustomerPooler.Instance.GoOutShopPoint.transform;
-            reputationSystem = ReputationSystem.Instance;
+            _reputationSystem = ReputationSystem.Instance;
         }
 
         private void FixedUpdate()
         {
-            if (_isPickingItem) return;
-
             SetItemNeed();
-
-            // set item finding
-            if (!_itemFinding || !_itemFinding.gameObject.activeSelf)
-            {
-                foreach (var typeID in _listItemBuy)
-                {
-                    _itemFinding = ItemPooler.Instance.ShuffleFindItem(typeID);
-                }
-            }
-
-            // điều kiện rời cửa hàng
-            if (_listItemBuy.Count > 0) _isNotNeedBuy = false;
-            else _isNotNeedBuy = true;
-
             Behavior();
             SetAnimation();
-        }
+        } 
 
-        /// <summary> Hành vi </summary>
-        void Behavior()
+        private void OnDisable()
         {
-            // đi lấy item thứ cần mua
-            if (GoToItemNeed() && IsAgreeItem() && !_isNotNeedBuy)
-            {
-                In("1.1: Đang đi lấy thứ muốn mua");
-
-                StartCoroutine(IsPickingItem());
-                _totalPay += _itemFinding._price;
-                _itemsCard.Add(_itemFinding);
-                _itemFinding._itemParent._itemSlot.RemoveItemInList(_itemFinding);
-                _itemFinding.gameObject.SetActive(false);
-                _listItemBuy.Remove(_itemFinding._typeID);
-                _itemFinding = null;
-
-                // Cập nhật danh tiếng khi mua hàng
-                reputationSystem.UpdateReputation(ReputationSystem.CustomerAction.Buy);
-
-                return;
-            }
-
-            // không mua được nữa nhưng có item nên là thanh toán
-            if (_itemsCard.Count > 0 && !_itemFinding)
-            {
-                In("1.2: Mua được vài thứ, đi thanh toán");
-                _listItemBuy.Clear();
-
-                ConfirmPayItem();
-
-                if (_isPay)
-                {
-                    GoOutShop();
-                }
-                else
-                {
-                    IsMoveToWating();
-                }
-                return;
-            }
-
-            // không mua được gì Out shop
-            if (_itemsCard.Count == 0 && !_itemFinding)
-            {
-                In("1.3: không mua được gì Out shop");
-                GoOutShop();
-                return;
-            }
+            _itemsCard.Clear();
+            _listItemBuy.Clear();
+            _isDoneShopping = false;
+            _isPlayerConfirmPay = false;
+            _totalPay = 0;
         }
 
-        // -----------PUBLIC-----------
+        public override void OnCreate()
+        {
+            base.OnCreate();
+            _totalPay = 0;
+        }
 
         /// <summary> Set Properties with Item Data </summary>
         public void SetProperties(CustomerData data)
         {
             _ID = data._id;
-            _isNotNeedBuy = data._isNotNeedBuy;
-            _isPay = data._isPay;
+            _isDoneShopping = data._isNotNeedBuy;
             _name = data._name;
-            _playerConfirmPay = data._playerConfirmPay;
-            transform.position = data._position;
-            transform.rotation = data._rotation;
             _totalPay = data._totalPay;
 
-            // chưa set lại player đã mua những gì 
+            IsPlayerConfirmPay = data._playerConfirmPay;
+            transform.position = data._position;
+            transform.rotation = data._rotation;
         }
 
-        /// <summary> Player xác nhận thanh toán với khách hàng này </summary>
-        public void PlayerConfirmPay()
+        /// <summary> Hành vi </summary>
+        private void Behavior()
         {
-            _isNotNeedBuy = true;
-            _playerConfirmPay = true;
+            // đi lấy item thứ cần mua
+            if (GoToItemNeed())
+            {
+                In($"Đi tới item muốn mua");
+                return;
+            }
+
+            // chấp nhận thông số item và mua item
+            if (IsAgreeItem())
+            {
+                In($"Lấy item");
+                StartCoroutine(PickItem()); // trigger animation
+
+                _totalPay += _itemFinding._price;
+                _itemsCard.Add(_itemFinding);
+                _listItemBuy.Remove(_itemFinding._typeID);
+                _itemFinding._itemParent._itemSlot.RemoveItemInList(_itemFinding);
+                _itemFinding.gameObject.SetActive(false);
+                _itemFinding = null;
+
+                return;
+            }
+            else
+            {
+                if (_isDoneShopping == false)
+                {
+                    In($"Giá quá cao");
+                    _isDoneShopping = true;
+
+                    // Cập nhật danh tiếng khi phàn nàn
+                    _reputationSystem.UpdateReputation(ReputationSystem.CustomerAction.Complain);
+                }
+            }
+
+            // delay cho animation pick up item
+            if(_isPickingItem) return;
+
+            // không mua được gì Out shop
+            if (_totalPay == 0 && (!_itemFinding || _isDoneShopping))
+            {
+                In("không mua được gì Out shop");
+                GoOutShop();
+                return;
+            }
+
+            // không mua được nữa nhưng có item nên là thanh toán
+            if (_totalPay > 0 && (!_itemFinding || _isDoneShopping))
+            {
+                In("Mua được vài thứ, đi thanh toán");
+                _listItemBuy.Clear();
+
+                if (!_isPlayerConfirmPay)
+                {
+                    GoToWating();
+                }
+                else
+                {
+                    // Cập nhật danh tiếng khi mua hàng
+                    _reputationSystem.UpdateReputation(ReputationSystem.CustomerAction.Buy);
+
+                    _mayTinh._waitingLine.CancelRegisterSlot(this);
+                    GoOutShop();
+                }
+            }
         }
 
-        // -----------PRIVATE-----------
-        private bool IsMoveToWating()
+        private void GoToWating()
         {
             _mayTinh._waitingLine.RegisterSlot(this); // Đăng ký slot 
-            if (_slotWaiting) // move
+            if (_slotWaiting)
             {
                 MoveToTarget(_slotWaiting);
-                return true;
             }
-            return false;
         }
 
         private void SetAnimation()
@@ -178,9 +178,12 @@ namespace CuaHang.AI
         /// <summary> Chọn ngẫu nhiên item mà khách hàng này muốn lấy </summary>
         private void SetItemNeed()
         {
-            if (_listItemBuy.Count == 0 && _itemsCard.Count == 0) // đk để được set danh sách mua
+            if (_listItemBuy.Count == 0 && ItemsCard.Count == 0) // đk để được set danh sách mua
             {
-                if (_listItemBuy.Count >= 0) _listItemBuy.Clear(); // Item muốn mua không còn thì reset ds
+                if (_listItemBuy.Count >= 0)
+                {
+                    _listItemBuy.Clear(); // Item muốn mua không còn thì reset ds
+                }
 
                 // Tạo một số ngẫu nhiên giữa minCount và maxCount
                 int countBuy = UnityEngine.Random.Range(3, 3);
@@ -202,24 +205,17 @@ namespace CuaHang.AI
         /// <summary> Chạy tới vị trí item cần lấy </summary>
         private bool GoToItemNeed()
         {
-            Item target = _itemPooler.GetItemContentItem(_itemFinding); // lấy cái bàn chứa quả táo
-            if (target == null)
-            {
-                _itemFinding = null;
-                return false;
-            }
+            if (_isDoneShopping || _isPickingItem) return false;
 
-            Transform movePoint = null;
-            if (target._waitingPoint)
-            {
-                movePoint = target._waitingPoint;
-            }
-            else
-            {
-                movePoint = target.transform;
-            }
+            // set item finding
+            if (_listItemBuy.Count > 0 && !_itemFinding) _itemFinding = ItemPooler.Instance.ShuffleFindItem(_listItemBuy[0]);
 
-            if (MoveToTarget(movePoint)) return true;
+            Item shelf = _itemPooler.GetItemContentItem(_itemFinding); // lấy cái bàn chứa quả táo
+
+            if (shelf && shelf._waitingPoint && !MoveToTarget(shelf._waitingPoint))
+            {
+                return true;
+            }
             return false;
         }
 
@@ -229,7 +225,7 @@ namespace CuaHang.AI
             if (MoveToTarget(_outShopPoint))
             {
                 // xoá tắt cả item dang giữ
-                foreach (var item in _itemsCard)
+                foreach (var item in ItemsCard)
                 {
                     ItemPooler.Instance.RemoveObjectFromPool(item);
                 }
@@ -240,39 +236,16 @@ namespace CuaHang.AI
         /// <summary> Giá quá cao thì không đồng ý mua </summary>
         private bool IsAgreeItem()
         {
-            if (_itemFinding)
-            {
-                if (_itemFinding._price > _itemFinding._SO._priceMarketMax)
-                {
-                    _isNotNeedBuy = true;
-                    // Cập nhật danh tiếng khi phàn nàn
-                    reputationSystem.UpdateReputation(ReputationSystem.CustomerAction.Complain);
-                    return false;
-                }
-            }
-
-            return true;
+            return _itemFinding && _itemFinding._price <= _itemFinding._SO._priceMarketMax;
         }
 
-        /// <summary> Thanh toán tiền, trả true nếu thanh toán thành công </summary>
-        private bool ConfirmPayItem()
-        {
-            if (_isPay) return true;
-            if (_playerConfirmPay)
-            {
-                _isPay = true;
-                _mayTinh._waitingLine.CancelRegisterSlot(this);
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary> Delay time pickup item </summary>
-        private IEnumerator IsPickingItem()
+        /// <summary> trigger animation picking </summary>
+        private IEnumerator PickItem()
         {
             _isPickingItem = true;
             yield return new WaitForSeconds(2f);
             _isPickingItem = false;
+
         }
     }
 }
