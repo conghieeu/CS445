@@ -7,7 +7,7 @@ namespace CuaHang.Pooler
     public class ItemPooler : ObjectPooler
     {
         [SerializeField] Transform _itemSpawnerPoint;
-        
+
         public static ItemPooler Instance;
 
         public Transform ItemSpawnerPoint { get => _itemSpawnerPoint; }
@@ -23,6 +23,24 @@ namespace CuaHang.Pooler
             else
             {
                 Instance = this;
+            }
+        }
+
+        public void SetProperties(List<ItemData> itemsData)
+        {
+            foreach (var itemData in itemsData)
+            {
+                // tải những dữ liệu cho đối tượng có sẵn
+                ObjectPool objectPool = GetObjectByID(itemData.Id);
+                if (objectPool)
+                {
+                    objectPool.GetComponent<ItemStats>().LoadData(itemData);
+                }
+                else
+                {
+                    ObjectPool item = GetOrCreateObjectPool(itemData.TypeID);
+                    item.GetComponent<ItemStats>().LoadData(itemData);
+                }
             }
         }
 

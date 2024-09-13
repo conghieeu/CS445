@@ -8,38 +8,14 @@ namespace CuaHang
 {
     public class CustomerPoolerStats : ObjectStats
     {
-        [Header("CUSTOMER POOLER STATS")]
-        [SerializeField] CustomerPooler _cusPooler;
-
-        protected override void Start()
-        {
-            base.Start();
-            _cusPooler = GetComponent<CustomerPooler>();
-        }
-
-        protected override void SaveData()
-        { 
-            List<CustomerData> customersData = new List<CustomerData>();
-
-            foreach (var pool in _cusPooler._ObjectPools)
-            {
-                if (pool && pool._ID != "" && pool.gameObject.activeInHierarchy)
-                {
-                    customersData.Add(pool.GetComponent<CustomerStats>().GetData());
-                }
-            }
-
-            GetGameData()._customersData = customersData;
-        }
-
         public override void LoadData<T>(T data)
-        { 
-            List<CustomerData> customersData = (data as GameData)._customersData;
+        {
+            List<CustomerData> customersData = (data as GameData)._gamePlayData.CustomersData;
 
             // tái tạo items data
             foreach (var cusData in customersData)
             {
-                ObjectPool customer = GetComponent<CustomerPooler>().GetObjectByID(cusData._id);
+                ObjectPool customer = GetComponent<CustomerPooler>().GetObjectByID(cusData.Id);
 
                 // load data những đối tượng đã tồn tại
                 if (customer)
@@ -49,15 +25,43 @@ namespace CuaHang
                 else
                 {
                     // tạo mới
-                    ObjectPool newCustomer = GetComponent<CustomerPooler>().GetOrCreateObjectPool(cusData._typeID);
+                    ObjectPool newCustomer = GetComponent<CustomerPooler>().GetOrCreateObjectPool(cusData.TypeID);
                     newCustomer.GetComponent<CustomerStats>().LoadData(cusData);
                 }
             }
         }
 
-        protected override void LoadNoData()
+        protected override void LoadNewGame()
         {
-            // throw new System.NotImplementedException();
+            SaveData();
+        }
+
+        protected override void LoadNewData()
+        {
+            SaveData();
+        }
+
+        protected override void SaveData()
+        {
+            List<CustomerData> customersData = GetData();
+
+            GetGameData()._gamePlayData.CustomersData = customersData;
+        }
+
+        private List<CustomerData> GetData()
+        {
+            List<CustomerData> customersData = new List<CustomerData>();
+            CustomerPooler cusPooler = GetComponent<CustomerPooler>();
+
+            foreach (var pool in cusPooler._ObjectPools)
+            {
+                if (pool && pool._ID != "" && pool.gameObject.activeInHierarchy)
+                {
+                    customersData.Add(pool.GetComponent<CustomerStats>().GetData());
+                }
+            }
+
+            return customersData;
         }
     }
 }

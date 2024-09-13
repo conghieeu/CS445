@@ -8,11 +8,11 @@ namespace CuaHang.UI
         {
             if (GameSystem.CurrentPlatform == Platform.Standalone)
             {
-                SetActiveCanvasGroup(false);
+                EnableCanvasGroup(false);
             }
             else if (GameSystem.CurrentPlatform == Platform.Android)
             {
-                CameraControl._EventOnEditItem += item => SetActiveCanvasGroup(!item);
+                CameraControl.OnEditItem += item => EnableCanvasGroup(!item);
             }
 
         }

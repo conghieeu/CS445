@@ -8,59 +8,41 @@ namespace CuaHang
     public class ItemStats : ObjectStats
     {
         [Header("ITEM STATS")]
-        [SerializeField] Item _item;
-        [SerializeField] ItemSlot _itemSlot;
         [SerializeField] ItemData _itemData;
-
-        protected override void Start()
-        {
-            _item = GetComponent<Item>();
-            _itemSlot = GetComponentInChildren<ItemSlot>();
-
-        }
 
         // Lay du lieu cua chinh cai nay de save
         public ItemData GetData()
-        { 
-            List<ItemData> itemsDataChild = new();
+        {
+            Item item = GetComponent<Item>();
 
-            if (_itemSlot)
-            {
-                foreach (var item in _itemSlot._itemsSlots)
-                {
-                    if (item._item)
-                    {
-                        itemsDataChild.Add(item._item._itemStats.GetData());
-                    }
-                }
-            }
+            string idItemParent = "";
+            if (item._itemParent) idItemParent = item._itemParent._ID;
 
             _itemData = new ItemData(
-                _item._ID,
-                _item._typeID,
-                _item._price,
-                _item.transform.position,
-                _item.transform.rotation,
-                itemsDataChild);
+                item._ID,
+                idItemParent,
+                item._typeID,
+                item._price,
+                item.transform.position,
+                item.transform.rotation);
 
             return _itemData;
         }
 
-        protected override void SaveData() { }
-
-        // call pool recreate this then pool call this
+        /// <summary> Item Pooler gọi để tải dử liệu </summary>
         public override void LoadData<T>(T data)
         {
             _itemData = data as ItemData;
+            
+            if (_itemData == null) return;
 
-            // set du lieu
-            _item = GetComponent<Item>();
-            _item.SetProperties(_itemData);
+            GetComponent<Item>().SetProperties(_itemData);
         }
 
-        protected override void LoadNoData()
-        {
-            throw new System.NotImplementedException();
-        }
+        protected override void SaveData() { }
+
+        protected override void LoadNewGame() { }
+
+        protected override void LoadNewData() { }
     }
 }

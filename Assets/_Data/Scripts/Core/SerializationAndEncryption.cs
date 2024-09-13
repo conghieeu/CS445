@@ -6,138 +6,190 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
+using JetBrains.Annotations;
+using UnityEngine.SceneManagement;
 
 [Serializable]
 public class ItemData
 {
-    public string _id;
-    public TypeID _typeID;
-    public float _price;
-    public Vector3 _position;
-    public Quaternion _rotation;
-    public List<ItemData> _itemSlot; // leaf 
+    [SerializeField] string _id;
+    [SerializeField] string _idItemParent; // id item cha
+    [SerializeField] TypeID _typeID;
+    [SerializeField] float _price;
+    [SerializeField] Vector3 _position;
+    [SerializeField] Quaternion _rotation;
 
-    public ItemData(string id, TypeID typeID, float price, Vector3 position, Quaternion rotation, List<ItemData> itemSlot)
+    public ItemData(string id, string idItemParent, TypeID typeID, float price, Vector3 position, Quaternion rotation)
     {
-        _id = id;
-        _typeID = typeID;
-        _price = price;
-        _position = position;
-        _rotation = rotation;
-        _itemSlot = itemSlot;
+        Id = id;
+        IdItemParent = idItemParent;
+        TypeID = typeID;
+        Price = price;
+        Position = position;
+        Rotation = rotation;
     }
+
+    public string Id { get => _id; set => _id = value; }
+    public string IdItemParent { get => _idItemParent; set => _idItemParent = value; }
+    public TypeID TypeID { get => _typeID; set => _typeID = value; }
+    public float Price { get => _price; set => _price = value; }
+    public Vector3 Position { get => _position; set => _position = value; }
+    public Quaternion Rotation { get => _rotation; set => _rotation = value; }
 }
 
 [Serializable]
 public class StaffData
 {
-    public string _id;
-    public TypeID _typeID;
-    public string _name;
-    public ItemData _parcelHold;
-    public Vector3 _position;
+    [SerializeField] string id;
+    [SerializeField] TypeID typeID;
+    [SerializeField] string name;
+    [SerializeField] Vector3 position;
 
-    public StaffData(string id, TypeID typeID, string name, ItemData parcelHold, Vector3 position)
+    public string Id { get => id; set => id = value; }
+    public TypeID TypeID { get => typeID; set => typeID = value; }
+    public string Name { get => name; set => name = value; }
+    public Vector3 Position { get => position; set => position = value; }
+
+    public StaffData(string id, TypeID typeID, string name, Vector3 position)
     {
-        _id = id;
-        _typeID = typeID;
-        _name = name;
-        _parcelHold = parcelHold;
-        _position = position;
+        Id = id;
+        TypeID = typeID;
+        Name = name;
+        Position = position;
     }
 }
 
 [Serializable]
 public class CustomerData
 {
-    public string _id;
-    public TypeID _typeID;
-    public string _name;
-    public float _totalPay;
-    public bool _isNotNeedBuy; // Không cần mua gì nữa 
-    public bool _playerConfirmPay; // Player xác nhận thanh toán
-    public Vector3 _position;
-    public Quaternion _rotation;
-    public List<ItemData> _itemSlot;
+    [SerializeField] string _id;
+    [SerializeField] TypeID _typeID;
+    [SerializeField] string _name;
+    [SerializeField] float _totalPay;
+    [SerializeField] bool _isNotNeedBuy; // Không cần mua gì nữa 
+    [SerializeField] bool _playerConfirmPay; // Player xác nhận thanh toán
+    [SerializeField] Vector3 _position;
+    [SerializeField] Quaternion _rotation;
 
-    public CustomerData(string id, TypeID typeID, string name, float totalPay, bool isNotNeedBuy, bool playerConfirmPay, Vector3 position, Quaternion rotation, List<ItemData> itemSlot)
+    public CustomerData(string id, TypeID typeID, string name, float totalPay, bool isNotNeedBuy, bool playerConfirmPay, Vector3 position, Quaternion rotation)
     {
-        _id = id;
-        _typeID = typeID;
-        _name = name;
-        _totalPay = totalPay;
-        _isNotNeedBuy = isNotNeedBuy;
-        _playerConfirmPay = playerConfirmPay;
-        _position = position;
-        _rotation = rotation;
-        _itemSlot = itemSlot;
+        Id = id;
+        TypeID = typeID;
+        Name = name;
+        TotalPay = totalPay;
+        IsNotNeedBuy = isNotNeedBuy;
+        PlayerConfirmPay = playerConfirmPay;
+        Position = position;
+        Rotation = rotation;
     }
+
+    public string Id { get => _id; set => _id = value; }
+    public TypeID TypeID { get => _typeID; set => _typeID = value; }
+    public string Name { get => _name; set => _name = value; }
+    public float TotalPay { get => _totalPay; set => _totalPay = value; }
+    public bool IsNotNeedBuy { get => _isNotNeedBuy; set => _isNotNeedBuy = value; }
+    public bool PlayerConfirmPay { get => _playerConfirmPay; set => _playerConfirmPay = value; }
+    public Vector3 Position { get => _position; set => _position = value; }
+    public Quaternion Rotation { get => _rotation; set => _rotation = value; }
 }
 
 [Serializable]
 public class GameSettingsData
 {
-    [SerializeField] bool _isInitialized;
     [SerializeField] bool _isFullScreen;
     [SerializeField] int _qualityIndex;
     [SerializeField] float _masterVolume;
     [SerializeField] int _currentResolutionIndex;
     [SerializeField] Quaternion _camRotation;
 
-    public bool IsInitialized { get => _isInitialized; }
-    public bool IsFullScreen { get => _isFullScreen; }
-    public int QualityIndex { get => _qualityIndex; }
-    public float MasterVolume { get => _masterVolume; }
-    public int CurrentResolutionIndex { get => _currentResolutionIndex; }
-    public Quaternion CamRotation { get => _camRotation; }
-
-    public GameSettingsData(bool isInitialized, bool fullScreen, int quality, float masterVolume, int currentResolutionIndex, Quaternion camRotation)
+    public GameSettingsData(bool isFullScreen, int qualityIndex, float masterVolume, int currentResolutionIndex, Quaternion camRotation)
     {
-        _isInitialized = isInitialized;
-        _isFullScreen = fullScreen;
-        _qualityIndex = quality;
-        _masterVolume = masterVolume;
-        _currentResolutionIndex = currentResolutionIndex;
-        _camRotation = camRotation;
+        IsFullScreen = isFullScreen;
+        QualityIndex = qualityIndex;
+        MasterVolume = masterVolume;
+        CurrentResolutionIndex = currentResolutionIndex;
+        CamRotation = camRotation;
     }
+
+    public Quaternion CamRotation { get => CamRotation1; set => CamRotation1 = value; }
+    public bool IsFullScreen { get => _isFullScreen; set => _isFullScreen = value; }
+    public int QualityIndex { get => _qualityIndex; set => _qualityIndex = value; }
+    public float MasterVolume { get => _masterVolume; set => _masterVolume = value; }
+    public int CurrentResolutionIndex { get => _currentResolutionIndex; set => _currentResolutionIndex = value; }
+    public Quaternion CamRotation1 { get => _camRotation; set => _camRotation = value; }
 }
 
 [Serializable]
 public class PlayerData
 {
-    [SerializeField] bool _isInitialized;
-    [SerializeField] string _name;
-    [SerializeField] float _money;
+    [SerializeField] float _currentMoney;
     [SerializeField] int _reputation;
     [SerializeField] Vector3 _position;
     [SerializeField] Quaternion _rotation;
 
-    public bool IsInitialized { get => _isInitialized; private set => _isInitialized = value; }
-    public string Name { get => _name; private set => _name = value; }
-    public float Money { get => _money; private set => _money = value; }
-    public int Reputation { get => _reputation; private set => _reputation = value; }
-    public Vector3 Position { get => _position; private set => _position = value; }
-    public Quaternion Rotation { get => _rotation; private set => _rotation = value; }
-
-    public PlayerData(bool isInitialized, string name, float money, int reputation, Vector3 position, Quaternion rotation)
+    public PlayerData(float currentMoney, int reputation, Vector3 position, Quaternion rotation)
     {
-        IsInitialized = isInitialized;
-        Name = name;
-        Money = money;
+        CurrentMoney = currentMoney;
         Reputation = reputation;
         Position = position;
         Rotation = rotation;
     }
+
+    public float CurrentMoney { get => _currentMoney; set => _currentMoney = value; }
+    public int Reputation { get => _reputation; set => _reputation = value; }
+    public Vector3 Position { get => _position; set => _position = value; }
+    public Quaternion Rotation { get => _rotation; set => _rotation = value; }
+}
+
+[Serializable]
+public class GamePlayData
+{
+    [SerializeField] bool _isInitialized;
+    [SerializeField] PlayerData _playerData; // dữ liệu nhân vật người chơi
+    [SerializeField] List<CustomerData> _customersData;
+    [SerializeField] List<StaffData> _staffsData;
+    [SerializeField] List<ItemData> _itemsData;
+
+    public GamePlayData()
+    {
+        _isInitialized = false;
+        CustomersData = new();
+        StaffsData = new();
+        ItemsData = new();
+    }
+
+    public bool IsInitialized { get => _isInitialized; set => _isInitialized = value; }
+    public PlayerData PlayerData { get => _playerData; set => _playerData = value; }
+    public List<CustomerData> CustomersData { get => _customersData; set => _customersData = value; }
+    public List<StaffData> StaffsData { get => _staffsData; set => _staffsData = value; }
+    public List<ItemData> ItemsData { get => _itemsData; set => _itemsData = value; }
+}
+
+[Serializable]
+public class PlayerProfileData
+{
+    [SerializeField] string _userName;
+    [SerializeField] float _highestMoney;
+    [SerializeField] float _playTime; // Tổng thời gian chơi tính bằng phút 
+
+    public PlayerProfileData(string userName, float highestMoney, float playTime)
+    {
+        UserName = userName;
+        HighestMoney = highestMoney;
+        PlayTime = playTime;
+    }
+
+    public string UserName { get => _userName; set => _userName = value; }
+    public float HighestMoney { get => _highestMoney; set => _highestMoney = value; }
+    public float PlayTime { get => _playTime; set => _playTime = value; }
 }
 
 [Serializable]
 public class GameData
 {
-    public PlayerData _playerData;
+    public PlayerProfileData _playerProfileData;
     public GameSettingsData _gameSettingsData;
-    public List<CustomerData> _customersData;
-    public List<StaffData> _staffsData;
-    public List<ItemData> _itemsData;
+    public GamePlayData _gamePlayData;
 }
 
 namespace Core
@@ -145,24 +197,39 @@ namespace Core
     /// <summary> Là GAMEDATA, chuỗi hoá và mã hoá lưu được nhiều loại dữ liệu của đối tượng </summary>
     public class SerializationAndEncryption : Singleton<SerializationAndEncryption>
     {
-        public static event Action _OnDataSaved;
-        public static event Action<GameData> _OnDataLoaded;
-        public GameData _gameData = new();
-
-        [SerializeField] static bool _isDataLoaded; // có load được file save không
-        [SerializeField] bool _serialize;
-        [SerializeField] bool _usingXML;
-        [SerializeField] bool _encrypt;
+        [Header("Data")]
+        [SerializeField] GameData _gameData = new();
+        [SerializeField] bool _isSaveFileExists;
         [SerializeField] string _saveName = "/gameData.save";
         [SerializeField] string _filePath;
 
-        public static bool IsDataLoaded { get => _isDataLoaded; }
+        [Header("SerializationAndEncryption")]
+        [SerializeField] bool _serialize;
+        [SerializeField] bool _usingXML;
+        [SerializeField] bool _encrypt;
+
+        public bool IsSaveFileExists { get => _isSaveFileExists; private set => _isSaveFileExists = value; }
+        public GameData GameData { get => _gameData; set => _gameData = value; }
+
+        public static event Action _OnDataSaved;
+        public static event Action<GameData> _OnDataLoaded;
 
         void Start()
         {
             _filePath = Application.persistentDataPath + _saveName;
             SetDontDestroyOnLoad(true);
-            LoadData();
+            _isSaveFileExists = File.Exists(_filePath);
+            LoadData(); 
+        }
+
+        private void OnEnable()
+        {
+            SceneManager.sceneLoaded += (scene, mode) => LoadData();
+        }
+
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= (scene, mode) => LoadData();
         }
 
         private void OnApplicationQuit()
@@ -170,13 +237,19 @@ namespace Core
             SaveData();
         }
 
+        public void StartNewGame()
+        {
+            GameData._gamePlayData = new();
+            SaveData();
+        }
+
         public void SaveData()
         {
-            _OnDataSaved?.Invoke();
-            File.WriteAllText(_filePath, SerializeAndEncrypt(_gameData));
+            GameData._gamePlayData.IsInitialized = true;
 
+            File.WriteAllText(_filePath, SerializeAndEncrypt(GameData));
+            _OnDataSaved?.Invoke();
             Debug.Log("Game data saved to: " + _filePath);
-            _isDataLoaded = true;
         }
 
         public void LoadData()
@@ -185,16 +258,14 @@ namespace Core
             {
                 string stringData = File.ReadAllText(_filePath);
 
-                _gameData = Deserialized(stringData);
-                _OnDataLoaded?.Invoke(_gameData);
+                GameData = Deserialized(stringData);
+                _OnDataLoaded?.Invoke(GameData);
 
                 Debug.Log("Game data loaded from: " + _filePath);
-                _isDataLoaded = true;
             }
             else
             {
                 Debug.LogWarning("Save file not found in: " + _filePath);
-                _isDataLoaded = false;
             }
         }
 
@@ -240,7 +311,6 @@ namespace Core
             }
             return gameData;
         }
-
     }
 
     public static class Utils

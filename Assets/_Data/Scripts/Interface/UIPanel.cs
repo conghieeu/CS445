@@ -19,7 +19,7 @@ namespace CuaHang.UI
 
         }
 
-        public virtual void ShowContents(bool value)
+        public virtual void SetActiveContents(bool value)
         {
             if (_panelContent)
             {
@@ -27,7 +27,12 @@ namespace CuaHang.UI
             }
         }
 
-        public virtual void SetActiveCanvasGroup(bool isOn)
+        public virtual bool IsEnableCanvasGroup()
+        {
+            return _canvasGroup.interactable;
+        }
+
+        public virtual void EnableCanvasGroup(bool isOn)
         {
 
             if (!_canvasGroup) return;

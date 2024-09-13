@@ -7,51 +7,53 @@ using UnityEngine;
 
 public abstract class ObjectStats : HieuBehavior
 {
-    protected virtual void Start() // root thì mới cần bắt sự kiện
+    public SerializationAndEncryption _SAE => SerializationAndEncryption.Instance;
+
+    protected virtual void OnEnable()
     {
-        // On start scene
-        if (SerializationAndEncryption.IsDataLoaded)
-        {
-            LoadData(GetGameData());
-        }
-        else  // Trường hợp file save chưa từng được tạo ra
-        {
-            LoadNoData();
-        }
-
-        // load event
-        SerializationAndEncryption._OnDataLoaded += gameData =>
-        {
-            if (this != null && transform != null)
-            {
-                LoadData(gameData);
-            }
-        };
-
-        // save event
-        SerializationAndEncryption._OnDataSaved += () =>
-        {
-            if (this != null && transform != null)
-            {
-                SaveData();
-            }
-        };
+        SerializationAndEncryption._OnDataLoaded += OnLoadData;
+        SerializationAndEncryption._OnDataSaved += OnSaveData;
     }
 
-    protected GameData GetGameData() 
+    protected virtual void OnDisable()
     {
-        if(SerializationAndEncryption.Instance == null)
-        {
-            Debug.LogWarning("Không có GameData");
-            return null;
-        }
-        return SerializationAndEncryption.Instance._gameData;
+        SerializationAndEncryption._OnDataLoaded -= OnLoadData;
+        SerializationAndEncryption._OnDataSaved -= OnSaveData;
     }
 
-    //-----------ABSTRACT------------
-    /// <summary> Truyền giá trị save vào _gameData </summary>
-    protected abstract void SaveData();
-    protected abstract void LoadNoData(); // sẽ load với các setting được chuẩn bị sẵn
+    protected GameData GetGameData() => _SAE.GameData;
+
+    private void OnSaveData()
+    {
+        if (this != null && transform != null)
+        {
+            SaveData();
+        }
+    }
+
+    private void OnLoadData(GameData data)
+    {
+        if (this != null && transform != null)
+        { 
+            if (_SAE.IsSaveFileExists == false)
+            {
+                LoadNewData();
+                LoadNewGame();
+            }
+            else if (_SAE.GameData._gamePlayData.IsInitialized == false)
+            {
+                LoadNewGame();
+            }
+            else
+            {
+                LoadData(data);
+            }
+        }
+    }
+
     public abstract void LoadData<T>(T data);
+    protected abstract void SaveData();  /// <summary> Truyền giá trị save vào _gameData </summary>
+    protected abstract void LoadNewData();  /// <summary> Truyền giá trị save vào _gameData </summary>
+    protected abstract void LoadNewGame(); /// <summary> sẽ load với các setting được chuẩn bị sẵn </summary>
 
 }

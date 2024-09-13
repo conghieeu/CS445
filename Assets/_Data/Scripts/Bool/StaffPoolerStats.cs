@@ -8,57 +8,59 @@ namespace CuaHang
 {
     public class StaffPoolerStats : ObjectStats
     {
-        [Header("STAFF POOLER STATS")]
-        [SerializeField] StaffPooler _staffPooler;
-
-        protected override void Start()
-        {
-            base.Start();
-            _staffPooler = GetComponent<StaffPooler>();
-        }
 
         /// <summary> Load dữ liệu theo GameData </summary>
         public override void LoadData<T>(T data)
         {
-            List<StaffData> staffsData = (data as GameData)._staffsData;
+            List<StaffData> staffsData = (data as GameData)._gamePlayData.StaffsData;
 
             // tái tạo items data
             foreach (var staffData in staffsData)
             {
-                ObjectPool staff = GetComponent<StaffPooler>().GetObjectByID(staffData._id);
-
-                // load data những đối tượng đã tồn tại
+                // load data những đối tượng có sẵn
+                ObjectPool staff = GetComponent<StaffPooler>().GetObjectByID(staffData.Id);
                 if (staff)
                 {
                     staff.GetComponent<StaffStats>().LoadData(staffData);
                 }
                 else
                 {
-                    // tạo
-                    ObjectPool newStaff = GetComponent<StaffPooler>().GetOrCreateObjectPool(staffData._typeID);
+                    // tạo lại item slot
+                    ObjectPool newStaff = GetComponent<StaffPooler>().GetOrCreateObjectPool(staffData.TypeID);
                     newStaff.GetComponent<StaffStats>().LoadData(staffData);
                 }
             }
         }
 
+        protected override void LoadNewGame()
+        {
+            SaveData();
+        }
+
+        protected override void LoadNewData()
+        {
+            SaveData();
+        }
+
         protected override void SaveData()
+        {
+            List<StaffData> staffsData = GetData();
+            GetGameData()._gamePlayData.StaffsData = staffsData;
+        }
+
+        private List<StaffData> GetData()
         {
             List<StaffData> staffsData = new List<StaffData>();
 
-            foreach (var pool in _staffPooler._ObjectPools)
+            foreach (var objP in GetComponent<StaffPooler>()._ObjectPools)
             {
-                if (pool && pool._ID != "" && pool.gameObject.activeInHierarchy)
+                if (objP && objP._ID != "" && objP.gameObject.activeInHierarchy)
                 {
-                    staffsData.Add(pool.GetComponent<StaffStats>().GetData());
+                    staffsData.Add(objP.GetComponent<StaffStats>().GetData());
                 }
             }
 
-            GetGameData()._staffsData = staffsData;
-        }
-
-        protected override void LoadNoData()
-        {
-            // throw new System.NotImplementedException();
+            return staffsData;
         }
     }
 }

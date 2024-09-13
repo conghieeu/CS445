@@ -11,25 +11,29 @@ public class GameSettingStats : ObjectStats
 
     public static event Action<GameSettingsData> _OnDataChange;
 
-    protected override void Start()
+    private void Start()
     {
-        base.Start();
         _cameraControl = CameraControl.Instance;
     }
 
     public override void LoadData<T>(T data)
     {
-        _gameSettingData = (data as GameData)._gameSettingsData;
-
-        // save data chưa từng được khởi tạo
-        if (!_gameSettingData.IsInitialized) return;
+        if (data is GameData) _gameSettingData = (data as GameData)._gameSettingsData;
+        else if (data is GameSettingsData) _gameSettingData = data as GameSettingsData;
 
         // set properties
-        GameSettings gameSettings = GetComponent<GameSettings>();
-        gameSettings.SetProperties(_gameSettingData);
+        GetComponent<GameSettings>().SetProperties(_gameSettingData);
 
         // Thong bao
         _OnDataChange?.Invoke(_gameSettingData);
+    }
+
+    protected override void LoadNewGame() { }
+
+    protected override void LoadNewData()
+    {
+        SaveData();
+        LoadData(GetData()); // mục đích cập nhập và thông báo
     }
 
     protected override void SaveData()
@@ -38,20 +42,14 @@ public class GameSettingStats : ObjectStats
         GetGameData()._gameSettingsData = _gameSettingData;
     }
 
-    protected override void LoadNoData()
-    {
-        SaveData();
-    }
-
-    public GameSettingsData GetData()
+    GameSettingsData GetData()
     {
         GameSettings gSet = GetComponent<GameSettings>();
-
         Quaternion camAngle = _gameSettingData.CamRotation;
+
         if (_cameraControl) camAngle = _cameraControl.CamshaftRotation;
 
         GameSettingsData data = new(
-            true,
             gSet._IsFullScreen,
             gSet._QualityIndex,
             gSet._MasterVolume,

@@ -21,12 +21,12 @@ namespace CuaHang.UI
         {
             if (_panelClose)
             {
-                _panelClose.ShowContents(false);
+                _panelClose.SetActiveContents(false);
             }
 
             if (_panelOpen)
             {
-                _panelOpen.ShowContents(true);
+                _panelOpen.SetActiveContents(true);
             }
 
         }

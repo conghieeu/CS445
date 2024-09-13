@@ -7,7 +7,7 @@ using System;
 namespace CuaHang
 {
     /// <summary> Là item, có khả năng drag </summary>
-    public class Item : ObjectPool, IInteractable
+    public class Item : ObjectPool
     {
         [Header("ITEM")]
         [Header("Properties")]
@@ -17,7 +17,6 @@ namespace CuaHang
         [SerializeField] bool _isBlockPrice;
 
         [Header("Variables")]
-        public string _interactionPrompt;
         public bool _isCanDrag = true;  // có thằng nhân vật nào đó đang bưng bê cái này
         public bool _isCanSell; // có thể bán được không 
         public bool _isSamePrice; // muốn đặt giá tiền các item trong kệ sẽ ngan item cha không
@@ -30,10 +29,26 @@ namespace CuaHang
         public Transform _waitingPoint;
         public Transform _models;
         public CamHere _camHere;
-        [SerializeField] TextMeshProUGUI _txtPrice;
         [SerializeField] BoxCollider _coll;
 
-        public string InteractionPrompt => _interactionPrompt;
+        ItemPooler _itemPooler => ItemPooler.Instance;
+
+        protected virtual void Awake()
+        {
+            _coll = GetComponent<BoxCollider>();
+            _itemSlot = GetComponentInChildren<ItemSlot>();
+            _camHere = GetComponentInChildren<CamHere>();
+            _itemStats = GetComponentInChildren<ItemStats>();
+
+            LoadScriptableObject();
+        }
+
+        void OnDisable()
+        {
+            _isCanDrag = true;
+            _isRecyclable = false;
+            _thisParent = null;
+        }
 
         public void SetParent(Transform thisParent, Item itemParent, bool isCanDrag)
         {
@@ -53,35 +68,8 @@ namespace CuaHang
             _isCanDrag = isCanDrag;
         }
 
-        protected virtual void Awake()
-        {
-            _coll = GetComponent<BoxCollider>();
-            _itemSlot = GetComponentInChildren<ItemSlot>();
-            _camHere = GetComponentInChildren<CamHere>();
-            _itemStats = GetComponentInChildren<ItemStats>();
-
-            SetProperties();
-        }
-
-        void Start()
-        {
-            // Hiện giá tiền ra UI
-            if (_txtPrice) _txtPrice.text = $"{_price.ToString()}c";
-        }
-
-        void OnEnable()
-        {
-            _isCanDrag = true;
-            _isRecyclable = false;
-        }
-
-        void OnDisable()
-        {
-            _thisParent = null;
-        }
-
         /// <summary> Set value với SO có đang gáng </summary>
-        private void SetProperties()
+        private void LoadScriptableObject()
         {
             if (_SO == null)
             {
@@ -97,23 +85,23 @@ namespace CuaHang
             _isBlockPrice = _SO._isBlockPrice;
         }
 
-        /// <summary> dùng cái này cho việc truyền itemSlot </summary>
-        public virtual bool Interact(Interactor interactor)
-        {
-            return true;
-        }
-
         /// <summary> Set Properties with Item Data </summary>
         public virtual void SetProperties(ItemData data)
         {
-            _ID = data._id;
-            _price = data._price;
-            _typeID = data._typeID;
-            transform.position = data._position;
-            transform.rotation = data._rotation;
-            CreateItemInSlot(data._itemSlot);
+            _ID = data.Id;
+            _price = data.Price;
+            _typeID = data.TypeID;
+            transform.position = data.Position;
+            transform.rotation = data.Rotation;
+
+            // tìm item cha và tự chui vào đó
+            if (_itemPooler.GetObjectByID(data.IdItemParent))
+            {
+                _itemPooler.GetObjectByID(data.IdItemParent).GetComponentInChildren<ItemSlot>().TryAddItemToItemSlot(this, true);
+            }
         }
 
+        /// <summary> Tạo item trong item slot với itemsData </summary>
         public void CreateItemInSlot(List<ItemData> itemsData)
         {
             ItemSlot itemSlot = GetComponentInChildren<ItemSlot>();
@@ -122,7 +110,7 @@ namespace CuaHang
             foreach (var itemData in itemsData)
             {
                 // tạo
-                ObjectPool item = ItemPooler.Instance.GetOrCreateObjectPool(itemData._typeID);
+                ObjectPool item = ItemPooler.Instance.GetOrCreateObjectPool(itemData.TypeID);
 
                 item.GetComponent<ItemStats>().LoadData(itemData);
                 if (itemSlot)
@@ -161,7 +149,7 @@ namespace CuaHang
         }
 
         public void SetPrice(float price)
-        { 
+        {
             if (_isBlockPrice) return;
 
             if (!_SO)

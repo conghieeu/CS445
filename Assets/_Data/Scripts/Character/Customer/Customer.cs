@@ -60,14 +60,14 @@ namespace CuaHang.AI
         /// <summary> Set Properties with Item Data </summary>
         public void SetProperties(CustomerData data)
         {
-            _ID = data._id;
-            _isDoneShopping = data._isNotNeedBuy;
-            _name = data._name;
-            _totalPay = data._totalPay;
+            _ID = data.Id;
+            _isDoneShopping = data.IsNotNeedBuy;
+            _name = data.Name;
+            _totalPay = data.TotalPay;
 
-            IsPlayerConfirmPay = data._playerConfirmPay;
-            transform.position = data._position;
-            transform.rotation = data._rotation;
+            IsPlayerConfirmPay = data.PlayerConfirmPay;
+            transform.position = data.Position;
+            transform.rotation = data.Rotation;
         }
 
         /// <summary> Hành vi </summary>

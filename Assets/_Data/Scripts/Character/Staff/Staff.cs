@@ -94,9 +94,9 @@ namespace CuaHang.AI
         /// <summary> Được gọi stats </summary>
         public void SetProperties(StaffData data)
         {
-            _ID = data._id;
-            _name = data._name;
-            transform.position = data._position;
+            _ID = data.Id;
+            _name = data.Name;
+            transform.position = data.Position;
 
             // tái tạo parcel hold trong tay cua nhan vien
             // reStaff._parcelHold = staff._parcelHold; 

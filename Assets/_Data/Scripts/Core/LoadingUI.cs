@@ -21,7 +21,7 @@ namespace Core
         {
             if (m_loadingCountingTxt)
             {
-                m_loadingCountingTxt.text = $"Loading {(loadingProgress * 100).ToString("f0")}%"; 
+                m_loadingCountingTxt.text = $"ĐANG TẢI {(loadingProgress * 100).ToString("f0")}%"; 
             }
 
             if (m_loadingFilled)

@@ -7,43 +7,35 @@ namespace CuaHang.AI
     {
         [Header("ItemStats")]
         [SerializeField] StaffData _staffData;
-        [SerializeField] Staff _staff;
-
-        protected override void Start()
-        {
-            _staff = GetComponent<Staff>();
-        }
 
         public virtual StaffData GetData()
         {
-            SaveData();
-            return _staffData;
-        }
-
-        protected override void SaveData()
-        {
-            ItemData itemHolder = null;
+            Staff staff = GetComponent<Staff>();
 
             _staffData = new StaffData(
-                _staff._ID,
-                _staff._typeID,
-                _staff._name,
-                itemHolder,
-                _staff.transform.position);
+                staff._ID,
+                staff._typeID,
+                staff._name,
+                staff.transform.position);
+
+            return _staffData;
         }
 
         public override void LoadData<T>(T data)
         {
-            _staffData = data as StaffData; 
+            _staffData = data as StaffData;
 
-            _staff = GetComponent<Staff>();
-            _staff.SetProperties(_staffData);
+            if (_staffData == null) return;
+
+            Staff staff = GetComponent<Staff>();
+            staff.SetProperties(_staffData);
         }
 
-        protected override void LoadNoData()
-        {
-            throw new System.NotImplementedException();
-        }
+        protected override void SaveData() { }
+
+        protected override void LoadNewGame() { }
+
+        protected override void LoadNewData() { }
     }
 
 }

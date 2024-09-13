@@ -22,7 +22,7 @@ public class ReputationSystem : Singleton<ReputationSystem>
 
     private void OnEnable()
     {
-        PlayerStats._OnDataChange += data => Reputation = data.Reputation;
+        PlayerStats._OnDataChange += playerData => Reputation = playerData.Reputation;
     }
 
     public event Action<int> OnReputationChanged;

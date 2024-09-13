@@ -8,56 +8,38 @@ namespace CuaHang.AI
     public class CustomerStats : ObjectStats
     {
         [Header("ItemStats")]
-        [SerializeField] Customer _customer;
         [SerializeField] CustomerData _customerData;
-
-        protected override void Start()
-        {
-            _customer = GetComponent<Customer>();
-        }
 
         // Lay du lieu cua chinh cai nay de save
         public CustomerData GetData()
         {
-            List<ItemData> itemsCard = new();
-
-            foreach (var item in _customer.ItemsCard)
-            {
-                if (item)
-                {
-                    itemsCard.Add(item._itemStats.GetData());
-                }
-            }
-
+            Customer customer = GetComponent<Customer>();
             _customerData = new CustomerData(
-                _customer._ID,
-                _customer._typeID,
-                _customer._name,
-                _customer.TotalPay,
-                _customer.IsDoneShopping,
-                _customer.IsPlayerConfirmPay,
-                _customer.transform.position,
-                _customer.transform.rotation,
-                itemsCard);
+                customer._ID,
+                customer._typeID,
+                customer._name,
+                customer.TotalPay,
+                customer.IsDoneShopping,
+                customer.IsPlayerConfirmPay,
+                customer.transform.position,
+                customer.transform.rotation);
 
             return _customerData;
         }
 
-        protected override void SaveData() { }
-
+        /// <summary> CusomterPooler se yeu cau load </summary>
         public override void LoadData<T>(T data)
-        {
+        { 
             _customerData = data as CustomerData;
 
-            // set du lieu
-            _customer = GetComponent<Customer>();
-            _customer.SetProperties(_customerData);
+            if (_customerData == null) return;
+            
+            GetComponent<Customer>().SetProperties(_customerData);
         }
 
-        protected override void LoadNoData()
-        {
-            throw new System.NotImplementedException();
-        }
+        protected override void SaveData() { }
+        protected override void LoadNewGame() { }
+        protected override void LoadNewData() { }
     }
 
 }

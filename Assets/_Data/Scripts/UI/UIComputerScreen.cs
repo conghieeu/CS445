@@ -44,8 +44,8 @@ namespace CuaHang.UI
 
         void Start()
         {
-            CameraControl._EventOnEditItem += SetActiveContent;
             SetActiveContent(null);
+            CameraControl.OnEditItem += SetActiveContent;
 
             _btnGoPayPanel.onClick.AddListener(OnClickGoPayPanel);
             _btnGoBuyPanel.onClick.AddListener(OnClickGoBuyPanel);

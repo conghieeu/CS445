@@ -28,18 +28,14 @@ namespace CuaHang.Pooler
             }
         }
 
-        /// <summary> 
-        /// Xoá object khỏi pool và đánh dấu là có thể tái sử dụng 
-        /// </summary>
+        /// <summary> Xoá object khỏi pool và đánh dấu là có thể tái sử dụng  </summary>
         public virtual void RemoveObjectFromPool(ObjectPool objectPool)
         {
             objectPool.gameObject.SetActive(false);
             objectPool._isRecyclable = true;
         }
 
-        /// <summary> 
-        /// Kiểm tra xem pool có chứa object với ID cụ thể hay không 
-        /// </summary>
+        /// <summary> Kiểm tra xem pool có chứa object với ID cụ thể hay không  </summary>
         public virtual bool ContainsID(string id)
         {
             foreach (var obj in _ObjectPools)
@@ -54,6 +50,8 @@ namespace CuaHang.Pooler
         /// </summary>
         public virtual ObjectPool GetObjectByID(string id)
         {
+            if (id == "") return null;
+
             foreach (var obj in _ObjectPools)
             {
                 if (obj._ID == id) return obj;
@@ -61,9 +59,7 @@ namespace CuaHang.Pooler
             return null;
         }
 
-        /// <summary> 
-        /// Tái sử dụng object nhàn rỗi hoặc tạo mới object từ pool 
-        /// </summary>
+        /// <summary> Tái sử dụng object nhàn rỗi hoặc tạo mới object từ pool   </summary>
         public ObjectPool GetOrCreateObjectPool(TypeID typeID)
         {
             ObjectPool objectPool = GetDisabledObject(typeID);
@@ -88,7 +84,7 @@ namespace CuaHang.Pooler
                 }
             }
 
-            if (objectPool) 
+            if (objectPool)
             {
                 objectPool.OnCreate();
             }
@@ -97,9 +93,7 @@ namespace CuaHang.Pooler
             return objectPool;
         }
 
-        /// <summary> 
-        /// Tìm object nhàn rỗi trong pool theo typeID 
-        /// </summary>
+        /// <summary> Tìm object nhàn rỗi trong pool theo typeID  </summary>
         private ObjectPool GetDisabledObject(TypeID typeID)
         {
             foreach (var objectPool in _objectPools)

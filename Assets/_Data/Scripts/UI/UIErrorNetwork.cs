@@ -14,12 +14,12 @@ namespace CuaHang.UI
         {
             if (!value)
             {
-                ShowContents(true);
+                SetActiveContents(true);
                 Time.timeScale = 0;
             }
             else
             {
-                ShowContents(false);
+                SetActiveContents(false);
                 Time.timeScale = 1;
             }
         }

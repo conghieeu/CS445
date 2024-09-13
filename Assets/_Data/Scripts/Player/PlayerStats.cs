@@ -10,47 +10,43 @@ namespace CuaHang
 
         public static event Action<PlayerData> _OnDataChange;
 
-        PlayerCtrl _playerCtrl;
-
-        protected override void Start()
-        {
-            _playerCtrl = GetComponent<PlayerCtrl>();
-            base.Start();
-        }
-
         public override void LoadData<T>(T data)
-        {
-            if (data is GameData) _playerData = (data as GameData)._playerData;
+        { 
+            if (data is GameData) _playerData = (data as GameData)._gamePlayData.PlayerData;
             else if (data is PlayerData) _playerData = data as PlayerData;
 
-            if (!_playerData.IsInitialized) return;
-
-            // set properties
-            _playerCtrl.SetProperties(_playerData);
+            if (_playerData == null) return; 
+ 
+            GetComponent<PlayerCtrl>().SetProperties(_playerData);
             _OnDataChange?.Invoke(_playerData);
         }
 
         protected override void SaveData()
         {
             _playerData = GetData();
-            GetGameData()._playerData = _playerData;
+            GetGameData()._gamePlayData.PlayerData = _playerData;
         }
 
-        protected override void LoadNoData()
+        protected override void LoadNewGame()
         {
+            Debug.Log("Load new game");
+            SaveData();
+            LoadData(GetData()); // mục đích cập nhập và thông báo
+        }
+
+        protected override void LoadNewData()
+        {
+            Debug.Log("Load new data");
             SaveData();
             LoadData(GetData());
         }
 
         /// <summary> Lấy dữ liệu trạng thái hiện tại của đối tương này </summary>
-        public PlayerData GetData()
+        PlayerData GetData()
         {
-            PlayerCtrl player = GetComponent<PlayerCtrl>();
-            ReputationSystem reputationSystem = ReputationSystem.Instance;
-            PlayerData data = new PlayerData(true, player.Name, player.Money, reputationSystem.Reputation, transform.position, transform.rotation);
-
+            PlayerCtrl playerCtrl = GetComponent<PlayerCtrl>();
+            PlayerData data = new PlayerData(playerCtrl.CurrentMoney, playerCtrl.Reputation, transform.position, transform.rotation);
             return data;
         }
-
     }
 }

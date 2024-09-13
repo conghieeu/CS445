@@ -11,46 +11,36 @@ namespace CuaHang
         [SerializeField] bool _isMoveStick;
         [SerializeField] float _camSizeDefault = 5;
         [SerializeField] float _moveSpeed;
-        [SerializeField] Transform _itemFollow; // là đối tượng cam theo dỏi
-        [SerializeField] Item _itemEditing; // item zoom vào
+        [SerializeField] Transform _objectFollow; // là đối tượng cam theo dỏi
+        [SerializeField] Item _itemEdit; // item zoom vào
         [SerializeField] Transform _camshaft; // trục xoay cam
         [SerializeField] Transform _cameraHolder; // vị trí cam
-
-        [Header("Rotation cam")]
         [SerializeField] float _rotationSpeed;
-
-        [Header("Zoom Cam")]
         [SerializeField] float _zoomCamSpeed = 0.2f;
 
         Coroutine _zoomCoroutine;
-        RaycastCursor _raycastCursor;
-        Camera _cam;
-        ItemDrag _itemDrag;
-        InputImprove _input;
+        Camera _cam => Camera.main;
+        ItemDrag _itemDrag => RaycastCursor.Instance._ItemDrag;
+        InputImprove _input => InputImprove.Instance;
+        PlayerCtrl _playerCtrl => PlayerCtrl.Instance;
 
-        public Transform ItemFollow { get => _itemFollow; private set => _itemFollow = value; }
-        public Item ItemEditing { get => _itemEditing; }
         public bool IsMoveStick { get => _isMoveStick; set => _isMoveStick = value; }
         public bool IsTouchRotationArea { get => _isTouchRotationArea; set => _isTouchRotationArea = value; }
         public Quaternion CamshaftRotation { get => _camshaft.rotation; }
 
-        public static event Action<Item> _EventOnEditItem;
+        public static event Action<Item> OnEditItem;
 
-        protected override void Awake()
+        private void Start()
         {
-            base.Awake();
-            _raycastCursor = RaycastCursor.Instance;
-            _input = InputImprove.Instance;
-            _cam = Camera.main;
-            _itemDrag = _raycastCursor._ItemDrag;
+            OnEditItem?.Invoke(_itemEdit);
         }
 
         private void OnEnable()
         {
             GameSettingStats._OnDataChange += OnSettingLoad;
-            _input.EditItem += EditItem;
-            _input.Cancel += CancelFollowItem;
-            _input.FollowItem += CamFollowItem;
+            RaycastCursor.OnEditItem += SetItemEdit;
+            RaycastCursor.OnFollowItem += SetItemFollow;
+            _input.Cancel += _ => CancelFollowItem();
             _input.SecondTouchContactStart += _ => PinchStart();
             _input.SecondTouchContactCancel += _ => PinchEnd();
         }
@@ -58,9 +48,9 @@ namespace CuaHang
         private void OnDisable()
         {
             GameSettingStats._OnDataChange -= OnSettingLoad;
-            _input.EditItem -= EditItem;
-            _input.Cancel -= CancelFollowItem;
-            _input.FollowItem -= CamFollowItem;
+            RaycastCursor.OnEditItem -= SetItemEdit;
+            RaycastCursor.OnFollowItem -= SetItemFollow;
+            _input.Cancel -= _ => CancelFollowItem();
             _input.SecondTouchContactStart -= _ => PinchStart();
             _input.SecondTouchContactCancel -= _ => PinchEnd();
         }
@@ -80,10 +70,10 @@ namespace CuaHang
         /// <summary> Điều khiển cam </summary>
         void CamController()
         {
-            if (_itemEditing == false && ItemFollow != null)
+            if (_objectFollow)
             {
-                // Move follow Object
-                _camshaft.position = Vector3.MoveTowards(_camshaft.position, ItemFollow.position, _moveSpeed * Time.deltaTime);
+                // cam follow Object
+                _camshaft.position = Vector3.MoveTowards(_camshaft.position, _objectFollow.position, _moveSpeed * Time.deltaTime);
                 _cam.transform.position = _cameraHolder.position;
                 _cam.transform.rotation = _cameraHolder.rotation;
 
@@ -115,7 +105,7 @@ namespace CuaHang
             float previousDistance = 0f, distance = 0f;
             while (true)
             {
-                if (_isMoveStick || _itemEditing) break;
+                if (_isMoveStick || _itemEdit) break;
 
                 distance = Vector2.Distance(_input.PrimaryFingerPosition(), _input.SecondFingerPosition());
 
@@ -150,75 +140,68 @@ namespace CuaHang
 
         void OnSettingLoad(GameSettingsData data)
         {
-            _camshaft.rotation = data.CamRotation;
+            if (_camshaft)
+            {
+                _camshaft.rotation = data.CamRotation;
+            }
         }
 
         /// <summary> Nhìn vào player </summary>
         void CamFollowPlayer()
         {
-            if (_itemDrag.gameObject.activeInHierarchy || !ItemFollow)
+            if (!_itemDrag.gameObject.activeInHierarchy || !_objectFollow)
             {
-                SetObjectFollow(PlayerCtrl.Instance.transform);
+                SetObjectFollow(_playerCtrl.transform);
             }
         }
 
-        void CancelFollowItem(InputAction.CallbackContext context)
+        void CancelFollowItem()
         {
-            if (_itemEditing)
+            if (_itemEdit)
             {
-                _itemEditing.SetEditMode(false);
-                _itemEditing = null;
+                _itemEdit.SetEditMode(false);
+                _itemEdit = null;
             }
 
-            _EventOnEditItem?.Invoke(null);
-            SetObjectFollow(PlayerCtrl.Instance.transform);
+            SetObjectFollow(_playerCtrl.transform);
+            OnEditItem(_itemEdit);
         }
 
-        /// <summary> Để cam nhìn vào character follow </summary>
-        void CamFollowItem(InputAction.CallbackContext context)
+        /// <summary> Người chơi nhần F Để cam nhìn vào character follow </summary>
+        void SetItemFollow(Item item)
         {
-            Transform item = _raycastCursor._ItemSelect;
-
-            // F để tập trung vào đối tượng
-            if (item && item.GetComponent<Item>())
+            if (item)
             {
-                ItemFollow = item;
+                _objectFollow = item.transform;
             }
         }
 
         /// <summary> cam sẽ nhìn vào cái gì </summary>
-        void SetObjectFollow(Transform objectF)
+        void SetObjectFollow(Transform objectFollow)
         {
-            ItemFollow = objectF;
-            _EventOnEditItem?.Invoke(null);
+            _objectFollow = objectFollow;
             _cam.orthographicSize = _camSizeDefault;
-
-            if (_itemEditing)
-            {
-                _itemEditing.SetEditMode(false);
-                _itemEditing = null;
-            }
         }
 
         /// <summary> cam tập trung vaò item edit </summary>
-        void EditItem(InputAction.CallbackContext context)
+        void SetItemEdit(Item item)
         {
-            Item item = _raycastCursor._ItemSelect.GetComponentInChildren<Item>();
-
-            if (item && item._camHere && !_itemEditing)
+            if (_itemEdit)
             {
-                _itemEditing = item;
-                _itemEditing.SetEditMode(true);
-                _EventOnEditItem?.Invoke(item);
-                return;
+                _itemEdit.SetEditMode(false);
+                _itemEdit = null;
             }
 
-            if (_itemEditing)
+            _itemEdit = item;
+
+            if (_itemEdit)
             {
-                SetObjectFollow(ItemFollow);
+                _itemEdit.SetEditMode(true);
+                _itemEdit = item;
             }
+
+            OnEditItem(item);
         }
-
 
     }
 }

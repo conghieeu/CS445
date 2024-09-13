@@ -19,11 +19,6 @@ namespace CuaHang
             _waitingLine = GetComponentInChildren<WaitingLine>();
         }
 
-        public override bool Interact(Interactor interactor)
-        {
-            return CreateObjectPlant();
-        }
-
         /// <summary> Đặt lại toạ độ trục Y = 0 để nó khớp với sàn </summary>
         public override void DropItem(Transform location)
         {
@@ -40,7 +35,7 @@ namespace CuaHang
             }
         }
 
-        // tạo vật thể với SO mới trùng vs SO mẫu nào đó
+        /// <summary> tạo vật thể với SO mới trùng vs SO mẫu nào đó </summary>
         private bool CreateObjectPlant()
         {
             Item parcel = ItemPooler.Instance.GetOrCreateObjectPool(TypeID.parcel_1).GetComponent<Item>();

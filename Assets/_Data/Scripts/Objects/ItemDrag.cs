@@ -65,13 +65,15 @@ namespace CuaHang
         }
 
         /// <summary> Dành cho nút nhấn drop item </summary>
-        public void DropItem()
+        public bool DropItem()
         {
             if (IsCanPlant())
             {
                 OnDropItem();
                 _navMeshSurface.BuildNavMesh();
+                return true;
             }
+            return false;
         }
 
         /// <summary> để model temp đang dragging nó hiện giống model đang di chuyển ở thằng Player </summary>

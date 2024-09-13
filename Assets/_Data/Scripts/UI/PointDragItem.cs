@@ -14,7 +14,7 @@ public class PointDragItem : UIPanel, IPointerDownHandler, IPointerUpHandler
     {
         base.Start();
 
-        SetActiveCanvasGroup(GameSystem.CurrentPlatform == Platform.Android);
+        EnableCanvasGroup(GameSystem.CurrentPlatform == Platform.Android);
 
         _inputImprove = InputImprove.Instance;
     }

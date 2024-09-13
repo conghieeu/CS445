@@ -7,16 +7,18 @@ namespace CuaHang.UI
 {
     public class UIRaycastChecker : MonoBehaviour
     {
-        GraphicRaycaster _uiRaycaster;
+        [SerializeField] GraphicRaycaster _uiRaycaster;
 
-        private void Awake()
+        private void Start()
         {
             _uiRaycaster = GetComponentInChildren<GraphicRaycaster>();
         }
 
         /// <summary> Kiểm tra xem người dùng có chạm vào UI hay không </summary>
         public bool IsPointerOverUI()
-        {
+        { 
+            if (_uiRaycaster == null) return false;
+
             PointerEventData eventData = new PointerEventData(EventSystem.current);
 
             if (Input.touchCount > 0)
