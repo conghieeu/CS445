@@ -28,10 +28,12 @@ namespace CuaHang
         public ItemStats _itemStats;
         public Transform _waitingPoint;
         public Transform _models;
-        public CamHere _camHere;
-        [SerializeField] BoxCollider _coll;
+        CamHere _camHere;
+        BoxCollider _coll;
 
         ItemPooler _itemPooler => ItemPooler.Instance;
+        public BoxCollider Coll { get => _coll; }
+        public CamHere CamHere { get => _camHere; }
 
         protected virtual void Awake()
         {
@@ -165,22 +167,9 @@ namespace CuaHang
             _price = newPrice;
         }
 
-        public void SetEditMode(bool enable)
-        {
-            if (enable)
-            {
-                _camHere.SetCamFocusHere();
-                _coll.enabled = false;
-            }
-            else
-            {
-                _coll.enabled = true;
-            }
-        }
-
         public virtual void SetDragState(bool active)
         {
-            _coll.enabled = !active;
+            Coll.enabled = !active;
             _isCanDrag = !active;
 
             if (_itemParent && _itemParent._itemSlot)
@@ -189,7 +178,7 @@ namespace CuaHang
 
         public virtual void DropItem(Transform location)
         {
-            _coll.enabled = true;
+            Coll.enabled = true;
             SetParent(null, null, true);
             if (location)
             {

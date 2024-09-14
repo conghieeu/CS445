@@ -33,6 +33,7 @@ namespace CuaHang
             }
         }
 
+        [ContextMenu("Create ID")]
         /// <summary> tạo mã định danh </summary> 
         public void CreateID()
         {

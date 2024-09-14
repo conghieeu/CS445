@@ -6,29 +6,17 @@ namespace CuaHang
 {
     public class CamHere : MonoBehaviour
     {
-        public bool _autoSetCam; // gọi set cam liên tục để check vị trí để như nào là hợp lý
+        public bool _isOnCamHere;
         public float _camSize;
-        public Camera _cam;
-
-        private void Awake()
-        {
-            _cam = Camera.main;
-        }
-
-        private void FixedUpdate()
-        {
-            if (_autoSetCam) SetCamFocusHere();
-
-        }
 
         // camera hãy tập trung vào đây
-        public void SetCamFocusHere()
+        public void SetCamFocusHere(Camera cam)
         {
-            if (_cam)
+            if (cam)
             {
-                _cam.orthographicSize = _camSize;
-                _cam.transform.position = transform.position;
-                _cam.transform.rotation = transform.rotation;
+                cam.orthographicSize = _camSize;
+                cam.transform.position = transform.position;
+                cam.transform.rotation = transform.rotation;
             }
         }
     }

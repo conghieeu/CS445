@@ -44,34 +44,43 @@ namespace CuaHang.UI
 
         void Start()
         {
+            _playerCtrl = PlayerCtrl.Instance;
             SetActiveContent(null);
-            CameraControl.OnEditItem += SetActiveContent;
 
             _btnGoPayPanel.onClick.AddListener(OnClickGoPayPanel);
             _btnGoBuyPanel.onClick.AddListener(OnClickGoBuyPanel);
             _btnPay.onClick.AddListener(OnClickPayBtn);
             _infRefund.onValueChanged.AddListener(ValidateInput);
-            _playerCtrl = PlayerCtrl.Instance;
 
             for (int i = 0; i < 10; i++) _barSlots.Add(new SlotBar());
         }
 
+        private void OnEnable()
+        {
+            RaycastCursor.ActionEditItem += SetActiveContent;
+        }
+
+        private void OnDisable()
+        {
+            RaycastCursor.ActionEditItem -= SetActiveContent;
+        }
+
         void FixedUpdate()
         {
-            CreateBtnSlot(); 
-        } 
+            CreateBtnSlot();
+        }
 
         public void SetActiveContent(Item item)
-        {  
+        {
             if (item && item.GetComponent<MayTinh>())
             {
                 if (_panelPayment) _panelPayment.gameObject.SetActive(true);
-                _mayTinh = item.GetComponent<MayTinh>(); 
+                _mayTinh = item.GetComponent<MayTinh>();
             }
             else
             {
                 if (_panelPayment) _panelPayment.gameObject.SetActive(false);
-                if (_panelBuyItem) _panelBuyItem.gameObject.SetActive(false); 
+                if (_panelBuyItem) _panelBuyItem.gameObject.SetActive(false);
                 _mayTinh = null;
             }
         }

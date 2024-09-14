@@ -10,26 +10,24 @@ namespace CuaHang
     public class PlayerPlanting : HieuBehavior
     {
         PlayerCtrl _ctrl;
-        InputImprove _input;
-        ItemDrag _itemDrag;
+        InputImprove _input => InputImprove.Instance;
+        ItemDrag _itemDrag => RaycastCursor.Instance.ItemDrag;
 
         private void Awake()
-        {
-            _input = InputImprove.Instance;
+        { 
             _ctrl = GetComponent<PlayerCtrl>();
-            _itemDrag = RaycastCursor.Instance._ItemDrag;
         }
 
         private void OnEnable()
         {
-            _input.Sender += _ => SenderParcel();
-            _input.Sender += _ => SenderItemSell();
+            _input.SenderItem += _ => SenderParcel();
+            _input.SenderItem += _ => SenderItemSell();
         }
 
         private void OnDisable()
         {
-            _input.Sender -= _ => SenderParcel();
-            _input.Sender -= _ => SenderItemSell();
+            _input.SenderItem -= _ => SenderParcel();
+            _input.SenderItem -= _ => SenderItemSell();
         }
 
         private void FixedUpdate()

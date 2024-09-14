@@ -56,7 +56,7 @@ namespace CuaHang
         private void FixedUpdate()
         {
             SetMaterial();
-            MoveItemDragOnPC();
+            MoveItemDrag();
         }
 
         private void Update()
@@ -167,23 +167,20 @@ namespace CuaHang
         }
 
         /// <summary> Di chuyen item danh cho pc </summary>
-        void MoveItemDragOnPC()
+        void MoveItemDrag()
         {
-            if (GameSystem.Instance._Platform != Platform.Standalone) return;
             Vector3 hitPos = new();
-            hitPos = GetRayHit().point;
-            hitPos = RoundPos(hitPos, _enableSnapping);
-            transform.position = hitPos;
-        }
+            if (GameSystem.Instance._Platform == Platform.Standalone)
+            {
+                hitPos = GetRayHit().point;
+                hitPos = RoundPos(hitPos, _enableSnapping);
+            }
+            else if (GameSystem.Instance._Platform == Platform.Android)
+            {
+                hitPos = GetDragPointHit().point;
+                hitPos = RoundPos(hitPos, _enableSnapping);
+            }
 
-        /// <summary> Di chuyen item danh cho android </summary>
-        public void MoveItemDragOnAndroid()
-        {
-            if (GameSystem.Instance._Platform != Platform.Android) return;
-
-            Vector3 hitPos = new();
-            hitPos = GetDragPointHit().point;
-            hitPos = RoundPos(hitPos, _enableSnapping);
             transform.position = hitPos;
         }
 

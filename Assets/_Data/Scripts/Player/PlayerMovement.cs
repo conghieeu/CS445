@@ -27,7 +27,7 @@ namespace CuaHang.Player
             _rb = GetComponent<Rigidbody>();
             _cam = Camera.main.transform;
             _rb.angularDrag = 0.0f; // lực cản khi xoay vật
-            _itemDrag = RaycastCursor.Instance._ItemDrag;
+            _itemDrag = RaycastCursor.Instance.ItemDrag;
         }
 
         private void FixedUpdate()

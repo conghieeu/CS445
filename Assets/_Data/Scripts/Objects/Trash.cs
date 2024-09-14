@@ -21,7 +21,10 @@ namespace CuaHang
 
         private void Start()
         {
-            for (int i = 0; i < _itemSlot._itemsSlots.Count; i++) _listTrash.Add(new ParcelTrash());
+            for (int i = 0; i < _itemSlot._itemsSlots.Count; i++)
+            {
+                _listTrash.Add(new ParcelTrash());
+            }
         }
 
         private void FixedUpdate()

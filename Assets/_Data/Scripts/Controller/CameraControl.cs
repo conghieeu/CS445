@@ -12,15 +12,18 @@ namespace CuaHang
         [SerializeField] float _camSizeDefault = 5;
         [SerializeField] float _moveSpeed;
         [SerializeField] Transform _objectFollow; // là đối tượng cam theo dỏi
-        [SerializeField] Item _itemEdit; // item zoom vào
         [SerializeField] Transform _camshaft; // trục xoay cam
         [SerializeField] Transform _cameraHolder; // vị trí cam
         [SerializeField] float _rotationSpeed;
         [SerializeField] float _zoomCamSpeed = 0.2f;
 
+        [SerializeField] Item _itemEdit;
+        [SerializeField] Item _itemSelect;
+        [SerializeField] Item _itemFollow;
+
         Coroutine _zoomCoroutine;
         Camera _cam => Camera.main;
-        ItemDrag _itemDrag => RaycastCursor.Instance._ItemDrag;
+        ItemDrag _itemDrag => RaycastCursor.Instance.ItemDrag;
         InputImprove _input => InputImprove.Instance;
         PlayerCtrl _playerCtrl => PlayerCtrl.Instance;
 
@@ -28,38 +31,39 @@ namespace CuaHang
         public bool IsTouchRotationArea { get => _isTouchRotationArea; set => _isTouchRotationArea = value; }
         public Quaternion CamshaftRotation { get => _camshaft.rotation; }
 
-        public static event Action<Item> OnEditItem;
-
         private void Start()
         {
-            OnEditItem?.Invoke(_itemEdit);
+            SetFollowPlayer();
         }
 
         private void OnEnable()
         {
-            GameSettingStats._OnDataChange += OnSettingLoad;
-            RaycastCursor.OnEditItem += SetItemEdit;
-            RaycastCursor.OnFollowItem += SetItemFollow;
-            _input.Cancel += _ => CancelFollowItem();
-            _input.SecondTouchContactStart += _ => PinchStart();
-            _input.SecondTouchContactCancel += _ => PinchEnd();
+            GameSettingStats._OnDataChange += SetSettingLoad;
+
+            RaycastCursor.ActionEditItem += SetItemEdit;
+            RaycastCursor.ActionFollowItem += SetFollowItem;
+            RaycastCursor.ActionSelectItem += OnItemSelected;
+
+            _input.SecondTouchContactStart += PinchStart;
+            _input.SecondTouchContactCancel += PinchEnd;
         }
 
         private void OnDisable()
         {
-            GameSettingStats._OnDataChange -= OnSettingLoad;
-            RaycastCursor.OnEditItem -= SetItemEdit;
-            RaycastCursor.OnFollowItem -= SetItemFollow;
-            _input.Cancel -= _ => CancelFollowItem();
-            _input.SecondTouchContactStart -= _ => PinchStart();
-            _input.SecondTouchContactCancel -= _ => PinchEnd();
+            GameSettingStats._OnDataChange -= SetSettingLoad;
+
+            RaycastCursor.ActionEditItem -= SetItemEdit;
+            RaycastCursor.ActionFollowItem -= SetFollowItem;
+            RaycastCursor.ActionSelectItem += OnItemSelected;
+
+            _input.SecondTouchContactStart -= PinchStart;
+            _input.SecondTouchContactCancel -= PinchEnd;
         }
 
         private void FixedUpdate()
         {
             // save cam rotation
             GameSettings.Instance._CamRotation = _camshaft.rotation;
-            CamFollowPlayer();
         }
 
         private void Update()
@@ -70,7 +74,7 @@ namespace CuaHang
         /// <summary> Điều khiển cam </summary>
         void CamController()
         {
-            if (_objectFollow)
+            if (_objectFollow && _itemEdit == null)
             {
                 // cam follow Object
                 _camshaft.position = Vector3.MoveTowards(_camshaft.position, _objectFollow.position, _moveSpeed * Time.deltaTime);
@@ -90,12 +94,12 @@ namespace CuaHang
         }
 
         #region Zoom Detection
-        void PinchStart()
+        void PinchStart(InputAction.CallbackContext ctx)
         {
             _zoomCoroutine = StartCoroutine(ZoomDetection());
         }
 
-        void PinchEnd()
+        void PinchEnd(InputAction.CallbackContext ctx)
         {
             if (_zoomCoroutine != null) StopCoroutine(_zoomCoroutine);
         }
@@ -138,7 +142,12 @@ namespace CuaHang
         }
         #endregion
 
-        void OnSettingLoad(GameSettingsData data)
+        private void OnItemSelected(Item item)
+        {
+            _itemSelect = item;
+        }
+
+        void SetSettingLoad(GameSettingsData data)
         {
             if (_camshaft)
             {
@@ -147,61 +156,47 @@ namespace CuaHang
         }
 
         /// <summary> Nhìn vào player </summary>
-        void CamFollowPlayer()
+        void SetFollowPlayer()
         {
-            if (!_itemDrag.gameObject.activeInHierarchy || !_objectFollow)
+            if (_itemDrag.gameObject.activeInHierarchy || !_objectFollow)
             {
                 SetObjectFollow(_playerCtrl.transform);
             }
         }
 
-        void CancelFollowItem()
-        {
-            if (_itemEdit)
-            {
-                _itemEdit.SetEditMode(false);
-                _itemEdit = null;
-            }
-
-            SetObjectFollow(_playerCtrl.transform);
-            OnEditItem(_itemEdit);
-        }
-
         /// <summary> Người chơi nhần F Để cam nhìn vào character follow </summary>
-        void SetItemFollow(Item item)
+        void SetFollowItem(Item item)
         {
-            if (item)
-            {
-                _objectFollow = item.transform;
-            }
+            _itemFollow = item;
+            SetObjectFollow(item.transform);
         }
 
         /// <summary> cam sẽ nhìn vào cái gì </summary>
         void SetObjectFollow(Transform objectFollow)
         {
-            _objectFollow = objectFollow;
-            _cam.orthographicSize = _camSizeDefault;
+            if (objectFollow)
+            {
+                _objectFollow = objectFollow;
+                _cam.orthographicSize = _camSizeDefault;
+            }
         }
 
-        /// <summary> cam tập trung vaò item edit </summary>
         void SetItemEdit(Item item)
         {
-            if (_itemEdit)
+            if (item) // zoom in
             {
-                _itemEdit.SetEditMode(false);
-                _itemEdit = null;
+                item.CamHere.SetCamFocusHere(_cam);
+                item.Coll.enabled = false;
+            }
+            else // zoom out
+            {
+                if (_objectFollow) SetObjectFollow(_objectFollow.transform);
+                if (_itemEdit) _itemEdit.Coll.enabled = true;
             }
 
             _itemEdit = item;
-
-            if (_itemEdit)
-            {
-                _itemEdit.SetEditMode(true);
-                _itemEdit = item;
-            }
-
-            OnEditItem(item);
         }
+
 
     }
 }

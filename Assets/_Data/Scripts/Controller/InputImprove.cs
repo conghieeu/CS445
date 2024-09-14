@@ -107,7 +107,7 @@ public class InputImprove
         }
     }
 
-    public event Action<InputAction.CallbackContext> Sender
+    public event Action<InputAction.CallbackContext> SenderItem
     {
         add
         {

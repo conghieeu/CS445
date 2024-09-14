@@ -10,57 +10,69 @@ namespace CuaHang
     {
         [Header("RaycastCursor")]
         [SerializeField] bool _enableRaycast = true;
-        [SerializeField] bool _isEditItem;
         [SerializeField] LayerMask _layerMask;
         [SerializeField] UIRaycastChecker _uIRaycastChecker;
         [SerializeField] Transform _dragPoint; // là tâm của đối tượng giao diện
-        [SerializeField] Item _itemSelect; // đối tượng target
+        [SerializeField] Item _itemEdit; // item dang editing
+        [SerializeField] Item _itemFollow; // item dang follow
+        [SerializeField] Item _itemSelect; // item dang target
         [SerializeField] ItemDrag _itemDrag;
 
         InputImprove _input => InputImprove.Instance;
         Camera _cam => Camera.main;
 
-        public ItemDrag _ItemDrag
-        {
-            get => _itemDrag;
-            private set
-            {
-                _itemDrag = value;
-                OnDragItem?.Invoke(value._itemDragging);
-            }
-        }
-
+        public ItemDrag ItemDrag { get => _itemDrag; }
         public Item ItemSelect
         {
             get => _itemSelect;
             private set
             {
+                if (_itemSelect && _itemSelect != value) SetOutlines(_itemSelect.transform, false);
+
                 _itemSelect = value;
-                OnSelectItem?.Invoke(_itemSelect);
+
+                if (value) SetOutlines(value.transform, value);
+
+                ActionSelectItem?.Invoke(value);
+            }
+        }
+        public Item ItemEdit
+        {
+            get => _itemEdit; set
+            {
+                _itemEdit = value;
+                ActionEditItem?.Invoke(value);
+            }
+        }
+        public Item ItemFollow
+        {
+            get => _itemFollow; set
+            {
+                _itemFollow = value;
+                ActionFollowItem?.Invoke(value);
             }
         }
 
-        public static event Action<Item> OnSelectItem;
-        public static event Action<Item> OnDragItem;
-        public static event Action<Item> OnEditItem;
-        public static event Action<Item> OnFollowItem;
+        public static event Action<Item> ActionSelectItem;
+        public static event Action<Item> ActionEditItem;
+        public static event Action<Item> ActionFollowItem;
 
         private void OnEnable()
-        { 
+        {
             _input.EditItem += SetItemEdit;
             _input.DragItem += SetItemDrag;
             _input.Click += SetItemSelect;
             _input.FollowItem += SetFollowItem;
-            _input.Cancel += CancelFocus;
+            _input.Cancel += ItemCancel;
         }
 
         private void OnDisable()
-        { 
+        {
             _input.EditItem -= SetItemEdit;
             _input.DragItem -= SetItemDrag;
             _input.Click -= SetItemSelect;
             _input.FollowItem -= SetFollowItem;
-            _input.Cancel -= CancelFocus;
+            _input.Cancel -= ItemCancel;
         }
 
         /// <summary> Chiếu tia raycast lấy dữ liệu cho _Hit </summary>
@@ -85,16 +97,20 @@ namespace CuaHang
         }
 
         /// <summary> Thoát không muốn cam tập trung nhìn tối tượng item này nữa </summary>
-        void CancelFocus(InputAction.CallbackContext ctx)
+        private void ItemCancel(InputAction.CallbackContext ctx)
         {
-            if (ItemSelect)
+            if (ItemEdit)  // thoát item dang edit
+            {
+                ItemEdit = null;
+            }
+            else  // thoát item follow
             {
                 ItemSelect = null;
             }
         }
 
         /// <summary> Tìm outline trong đối tượng và bật tắt viền của nó </summary>
-        void SetOutlines(Transform model, bool isOn)
+        private void SetOutlines(Transform model, bool isOn)
         {
             foreach (Outline outline in model.GetComponentsInChildren<Outline>())
             {
@@ -105,52 +121,49 @@ namespace CuaHang
         }
 
         /// <summary> Bật item drag với item được _Hit chiếu</summary>
-        void SetItemDrag(InputAction.CallbackContext ctx)
+        private void SetItemDrag(InputAction.CallbackContext ctx)
         {
-            if (!_itemDrag || _itemDrag._isDragging || !ItemSelect) return;
+            if (!ItemDrag || ItemDrag._isDragging || !ItemSelect) return;
 
             Item item = ItemSelect.transform.GetComponent<Item>();
 
             if (item && item._isCanDrag)
             {
+                ItemEdit = null;
                 item.SetDragState(true);
-                _itemDrag.PickUpItem(item);
+                ItemDrag.PickUpItem(item);
             }
         }
 
         /// <summary> Tạo viền khi click vào item de select </summary>
-        void SetItemSelect(InputAction.CallbackContext ctx)
-        { 
-            if (!_uIRaycastChecker.IsPointerOverUI() && !_itemDrag._itemDragging)
+        private void SetItemSelect(InputAction.CallbackContext ctx)
+        {
+            if (!_uIRaycastChecker.IsPointerOverUI() && !ItemDrag._itemDragging)
             {
                 Transform hit = GetRayMouseHit().transform;
-                Item itemHit = null;
-                if (hit) itemHit = hit.GetComponent<Item>();
-
-                if (_itemSelect) SetOutlines(_itemSelect.transform, false);
-                if (itemHit) SetOutlines(itemHit.transform, true);
-                ItemSelect = itemHit;
+                if (hit)
+                {
+                    ItemSelect = hit.GetComponent<Item>();
+                }
             }
         }
 
         private void SetFollowItem(InputAction.CallbackContext ctx)
         {
-            if (_itemSelect != null)
-            {
-                OnFollowItem?.Invoke(_itemSelect);
-            }
+            if (ItemSelect != null) ItemFollow = ItemSelect;
         }
 
-        void SetItemEdit(InputAction.CallbackContext ctx)
+        private void SetItemEdit(InputAction.CallbackContext ctx)
         {
-            if (_itemSelect && _itemSelect._camHere && !_isEditItem)
+            if (ItemSelect && ItemSelect.CamHere)
             {
-                OnEditItem?.Invoke(_itemSelect);
+                ItemEdit = ItemSelect;
             }
             else
             {
-                OnEditItem?.Invoke(null);
+                ItemEdit = null;
             }
+
         }
     }
 }

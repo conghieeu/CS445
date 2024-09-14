@@ -226,7 +226,7 @@ namespace Core
         {
             SceneManager.sceneLoaded += (scene, mode) => LoadData();
         }
-
+        
         private void OnDisable()
         {
             SceneManager.sceneLoaded -= (scene, mode) => LoadData();

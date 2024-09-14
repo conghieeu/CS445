@@ -17,6 +17,7 @@ namespace CuaHang.UI
         [SerializeField] Button _btnSetDrag;
         [SerializeField] Button _btnShowInfo;
         [SerializeField] Button _btnDropItem;
+        [SerializeField] Button _btnEdit;
 
         [Header("Object Info Panel")]
         [SerializeField] bool _isShowInfo;
@@ -27,23 +28,26 @@ namespace CuaHang.UI
         [SerializeField] BtnPressHandler _btnDiscountPrice;
 
         InputImprove _inputImprove => InputImprove.Instance;
-        ItemDrag _itemDrag => RaycastCursor.Instance._ItemDrag;
+        ItemDrag _itemDrag => RaycastCursor.Instance.ItemDrag;
 
         private void Start()
         {
-            _btnOnDrag.EnableCanvasGroup(false);
             _defaultTmp = _txtContentItem.text;
-            OnSelectedItem(null);
+            _btnOnDrag.EnableCanvasGroup(false);
+
+            OnEditItem(null);
+            OnItemSelect(null);
         }
 
         private void OnEnable()
         {
-            RaycastCursor.OnSelectItem += OnSelectedItem;
-            CameraControl.OnEditItem += OnEditItem;
-
-            _inputImprove.DragItem += OnBtnDragItem;
             _btnDropItem.onClick.AddListener(OnBtnDropItem);
             _btnShowInfo.onClick.AddListener(OnBtnShowInfo);
+
+            RaycastCursor.ActionSelectItem += OnItemSelect;
+            RaycastCursor.ActionEditItem += OnEditItem;
+
+            _inputImprove.DragItem += OnBtnDragItem;
 
             _btnIncreasePrice.OnButtonDown += IncreasePrice;
             _btnDiscountPrice.OnButtonDown += DiscountPrice;
@@ -51,9 +55,20 @@ namespace CuaHang.UI
             _btnDiscountPrice.OnButtonHolding += DiscountPrice;
         }
 
+        private void OnDisable()
+        {
+            RaycastCursor.ActionSelectItem -= OnItemSelect;
+            RaycastCursor.ActionEditItem -= OnEditItem;
+            _inputImprove.DragItem -= OnBtnDragItem;
+
+            _btnIncreasePrice.OnButtonDown -= IncreasePrice;
+            _btnDiscountPrice.OnButtonDown -= DiscountPrice;
+            _btnIncreasePrice.OnButtonHolding -= IncreasePrice;
+            _btnDiscountPrice.OnButtonHolding -= DiscountPrice;
+        }
+
         private void FixedUpdate()
         {
-            OnDragItem();
 
             // panel context follow item select
             if (_itemSelect)
@@ -70,7 +85,7 @@ namespace CuaHang.UI
             {
                 _btnOnDrag.EnableCanvasGroup(false);
             }
-            else 
+            else
             {
                 _btnOnDrag.EnableCanvasGroup(true);
             }
@@ -78,16 +93,17 @@ namespace CuaHang.UI
 
         private void OnBtnDragItem(InputAction.CallbackContext ctx)
         {
-            if (_btnOnDrag == null) return;
+            if (_itemSelect == null) return;
 
-            _btnOnDrag.EnableCanvasGroup(true);
             _panelMenuContext.EnableCanvasGroup(false);
 
-            // _btnOnDrag position = _btnSetDrag position
-            if (GameSystem.CurrentPlatform != Platform.Android) return;
-            _btnOnDrag.EnableCanvasGroup(true);
-            _btnOnDrag.transform.position = _inputImprove.MousePosition();
-            _btnOnDrag.transform.position = _btnSetDrag.transform.position;
+            if (GameSystem.CurrentPlatform == Platform.Android)
+            {
+                _btnOnDrag.EnableCanvasGroup(true);
+                _btnOnDrag.transform.position = _inputImprove.MousePosition();
+                _btnOnDrag.transform.position = _btnSetDrag.transform.position;
+            }
+
         }
 
         private void OnBtnShowInfo()
@@ -99,34 +115,39 @@ namespace CuaHang.UI
         /// <summary> bật button cancel edit </summary>
         private void OnEditItem(Item item)
         {
-            if (_btnCancelEdit) _btnCancelEdit.gameObject.SetActive(item != null);
-        }
-
-        /// <summary> bật button rotation item drag </summary>
-        private void OnDragItem()
-        {
-            if (GameSystem.CurrentPlatform != Platform.Android) return;
-
-            if (_itemDrag.gameObject.activeInHierarchy)
+            if (item)
             {
-                _itemDrag.MoveItemDragOnAndroid(); // di chuyen item theo point drag
+                _btnCancelEdit.gameObject.SetActive(true);
+            }
+            else
+            {
+                _btnCancelEdit.gameObject.SetActive(false);
             }
         }
 
         /// <summary> Hiện option có thể chọn khi click đối tượng item </summary>
-        private void OnSelectedItem(Item item)
+        private void OnItemSelect(Item item)
         {
-            _itemSelect = item;
-
             if (item)
             {
-                if (_panelMenuContext) _panelMenuContext.EnableCanvasGroup(true);
+                _panelMenuContext.EnableCanvasGroup(true);
+
+                if (item.CamHere)
+                {
+                    _btnEdit.GetComponent<Image>().enabled = true;
+                }
+                else
+                {
+                    _btnEdit.GetComponent<Image>().enabled = false;
+                }
             }
             else
             {
                 _panelMenuContext.EnableCanvasGroup(false);
-                if (_infoPanel) _infoPanel.EnableCanvasGroup(false);
+                _infoPanel.EnableCanvasGroup(false);
             }
+            
+            _itemSelect = item;
         }
 
         private void SetTxtContentItem()

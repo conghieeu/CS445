@@ -28,20 +28,32 @@ namespace CuaHang.Pooler
 
         public void SetProperties(List<ItemData> itemsData)
         {
+            List<ItemData> items = new List<ItemData>();
+
             foreach (var itemData in itemsData)
             {
                 // tải những dữ liệu cho đối tượng có sẵn
-                ObjectPool objectPool = GetObjectByID(itemData.Id);
-                if (objectPool)
+                ObjectPool existItemID = GetObjectByID(itemData.Id);
+                ObjectPool existParentItemID = GetObjectByID(itemData.IdItemParent);
+
+                if (itemData.IdItemParent == "" || existParentItemID)
                 {
-                    objectPool.GetComponent<ItemStats>().LoadData(itemData);
+                    if (existItemID)
+                    {
+                        existItemID.GetComponent<ItemStats>().LoadData(itemData);
+                    }
+                    else
+                    {
+                        ObjectPool item = GetOrCreateObjectPool(itemData.TypeID);
+                        item.GetComponent<ItemStats>().LoadData(itemData);
+                    }
                 }
                 else
                 {
-                    ObjectPool item = GetOrCreateObjectPool(itemData.TypeID);
-                    item.GetComponent<ItemStats>().LoadData(itemData);
+                    items.Add(itemData);
                 }
             }
+            if (items.Count > 0) SetProperties(items);
         }
 
         /// <summary> Tìm item có item Slot và còn chỗ trống </summary>
