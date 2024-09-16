@@ -26,34 +26,31 @@ namespace CuaHang.Pooler
             }
         }
 
-        public void SetProperties(List<ItemData> itemsData)
+        public void OnSetData(List<ItemData> itemsData)
         {
-            List<ItemData> items = new List<ItemData>();
-
             foreach (var itemData in itemsData)
             {
-                // tải những dữ liệu cho đối tượng có sẵn
-                ObjectPool existItemID = GetObjectByID(itemData.Id);
-                ObjectPool existParentItemID = GetObjectByID(itemData.IdItemParent);
+                ObjectPool existID = GetObjectByID(itemData.Id);
 
-                if (itemData.IdItemParent == "" || existParentItemID)
+                if (existID) // object bool da co san
                 {
-                    if (existItemID)
-                    {
-                        existItemID.GetComponent<ItemStats>().LoadData(itemData);
-                    }
-                    else
-                    {
-                        ObjectPool item = GetOrCreateObjectPool(itemData.TypeID);
-                        item.GetComponent<ItemStats>().LoadData(itemData);
-                    }
+                    existID.GetComponent<ItemStats>().ItemData = itemData;
                 }
-                else
+                else // tao lai object bool
                 {
-                    items.Add(itemData);
+                    ObjectPool item = GetOrCreateObjectPool(itemData.TypeID);
+                    item.GetComponent<ItemStats>().ItemData = itemData;
                 }
             }
-            if (items.Count > 0) SetProperties(items);
+        }
+
+        /// <summary> Cho các item con load dữ liệu theo data </summary>
+        public void OnLoadData()
+        {
+            foreach (ObjectPool objectPool in _ObjectPools)
+            {
+                objectPool.GetComponent<ItemStats>().LoadData();
+            }
         }
 
         /// <summary> Tìm item có item Slot và còn chỗ trống </summary>
@@ -62,7 +59,7 @@ namespace CuaHang.Pooler
             foreach (var o in _ObjectPools)
             {
                 Item item = o.GetComponent<Item>();
-                if (item && item._itemSlot && item._typeID == typeID && item._itemSlot.IsHasSlotEmpty()) return item;
+                if (item && item.ItemSlot && item.TypeID == typeID && item.ItemSlot.IsHasSlotEmpty()) return item;
             }
             return null;
         }
@@ -74,7 +71,7 @@ namespace CuaHang.Pooler
             {
                 Item i = objectBool.GetComponent<Item>();
 
-                if (i && i._itemSlot && i._itemSlot.IsContentItem(item))
+                if (i && i.ItemSlot && i.ItemSlot.IsContentItem(item))
                 {
                     return i;
                 }
@@ -92,7 +89,7 @@ namespace CuaHang.Pooler
             {
                 Item item = o.GetComponent<Item>();
 
-                if (item && item._itemParent && o._typeID == typeID && item._itemParent._type == Type.Shelf && item.gameObject.activeSelf) return item;
+                if (item && item.ObjectParent && o.TypeID == typeID && item.ObjectParent.Type == Type.Shelf && item.gameObject.activeSelf) return item;
             }
 
             return null;

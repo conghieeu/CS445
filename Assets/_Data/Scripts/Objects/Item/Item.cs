@@ -3,6 +3,7 @@ using CuaHang.Pooler;
 using System.Collections.Generic;
 using TMPro;
 using System;
+using CuaHang.AI;
 
 namespace CuaHang
 {
@@ -10,30 +11,40 @@ namespace CuaHang
     public class Item : ObjectPool
     {
         [Header("ITEM")]
-        [Header("Properties")]
-        public ItemSO _SO; // SO chỉ được load một lần  
-        public Type _type;
-        public float _price;
-        [SerializeField] bool _isBlockPrice;
+        [Header("Attributes")]
+        [SerializeField] ItemSO _SO; // SO chỉ được load một lần
+        [SerializeField] float _price;
 
         [Header("Variables")]
-        public bool _isCanDrag = true;  // có thằng nhân vật nào đó đang bưng bê cái này
-        public bool _isCanSell; // có thể bán được không 
-        public bool _isSamePrice; // muốn đặt giá tiền các item trong kệ sẽ ngan item cha không
-        public Transform _thisParent; // là cha của item này
-        public ItemSlot _itemSlot; // Có cái này sẽ là item có khả năng lưu trử các item khác
-        public Item _itemParent; // item đang giữ item này
+        [SerializeField] bool _isCanDrag = true;  // có thằng nhân vật nào đó đang bưng bê cái này
+        [SerializeField] bool _isCanSell; // có thể bán được không 
+        [SerializeField] bool _isBlockPrice;
+        [SerializeField] bool _isSamePrice; // muốn đặt giá tiền các item trong kệ sẽ ngan item cha không
+        [SerializeField] Transform _thisParent; // là cha của item này
+        [SerializeField] ItemSlot _itemSlot; // Có cái này sẽ là item có khả năng lưu trử các item khác
+        [SerializeField] ObjectPool _objectParent; // item đang giữ item này
+        [SerializeField] ItemStats _itemStats;
+        [SerializeField] Transform _waitingPoint;
+        [SerializeField] Transform _models;
 
-        [Header("Components")]
-        public ItemStats _itemStats;
-        public Transform _waitingPoint;
-        public Transform _models;
         CamHere _camHere;
         BoxCollider _coll;
-
+        StaffPooler _staffPooler => StaffPooler.Instance;
         ItemPooler _itemPooler => ItemPooler.Instance;
+
         public BoxCollider Coll { get => _coll; }
         public CamHere CamHere { get => _camHere; }
+        public ItemSO SO { get => _SO; }
+        public float Price { get => _price; set => _price = value; }
+        public bool IsCanDrag { get => _isCanDrag; set => _isCanDrag = value; }
+        public bool IsCanSell { get => _isCanSell; set => _isCanSell = value; }
+        public bool IsSamePrice { get => _isSamePrice; set => _isSamePrice = value; }
+        public Transform ThisParent { get => _thisParent; set => _thisParent = value; }
+        public ItemSlot ItemSlot { get => _itemSlot; set => _itemSlot = value; }
+        public ObjectPool ObjectParent { get => _objectParent; set => _objectParent = value; }
+        public ItemStats ItemStats { get => _itemStats; set => _itemStats = value; }
+        public Transform WaitingPoint { get => _waitingPoint; set => _waitingPoint = value; }
+        public Transform Models { get => _models; set => _models = value; }
 
         protected virtual void Awake()
         {
@@ -42,7 +53,13 @@ namespace CuaHang
             _camHere = GetComponentInChildren<CamHere>();
             _itemStats = GetComponentInChildren<ItemStats>();
 
-            LoadScriptableObject();
+            // Set properties
+            _name = SO._name;
+            _typeID = SO._typeID;
+            _type = SO._type;
+            _price = SO._priceDefault;
+            _isCanSell = SO._isCanSell;
+            _isBlockPrice = SO._isBlockPrice;
         }
 
         void OnDisable()
@@ -52,7 +69,7 @@ namespace CuaHang
             _thisParent = null;
         }
 
-        public void SetParent(Transform thisParent, Item itemParent, bool isCanDrag)
+        public void SetParent(Transform thisParent, ObjectPool objectPoolParent, bool isCanDrag)
         {
             if (thisParent)
             {
@@ -66,33 +83,18 @@ namespace CuaHang
             }
 
             _thisParent = thisParent;
-            _itemParent = itemParent;
+            _objectParent = objectPoolParent;
             _isCanDrag = isCanDrag;
         }
 
-        /// <summary> Set value với SO có đang gáng </summary>
-        private void LoadScriptableObject()
-        {
-            if (_SO == null)
-            {
-                Debug.LogWarning("Chỗ này thiếu item SO rồi ", transform);
-                return;
-            }
-
-            _name = _SO._name;
-            _typeID = _SO._typeID;
-            _type = _SO._type;
-            _price = _SO._priceDefault;
-            _isCanSell = _SO._isCanSell;
-            _isBlockPrice = _SO._isBlockPrice;
-        }
-
         /// <summary> Set Properties with Item Data </summary>
-        public virtual void SetProperties(ItemData data)
+        public virtual void SetVariables(ItemData data)
         {
-            _ID = data.Id;
-            _price = data.Price;
-            _typeID = data.TypeID;
+            if(data == null) return;
+
+            ID = data.Id;
+            Price = data.Price;
+            TypeID = data.TypeID;
             transform.position = data.Position;
             transform.rotation = data.Rotation;
 
@@ -100,6 +102,10 @@ namespace CuaHang
             if (_itemPooler.GetObjectByID(data.IdItemParent))
             {
                 _itemPooler.GetObjectByID(data.IdItemParent).GetComponentInChildren<ItemSlot>().TryAddItemToItemSlot(this, true);
+            }
+            else if (_staffPooler.GetObjectByID(data.IdItemParent))// trường hợp cha là Nhân vật
+            {
+                _staffPooler.GetObjectByID(data.IdItemParent).GetComponentInChildren<Staff>().SetHeldItem(this);
             }
         }
 
@@ -114,7 +120,7 @@ namespace CuaHang
                 // tạo
                 ObjectPool item = ItemPooler.Instance.GetOrCreateObjectPool(itemData.TypeID);
 
-                item.GetComponent<ItemStats>().LoadData(itemData);
+                item.GetComponent<ItemStats>().OnSetData(itemData);
                 if (itemSlot)
                 {
                     itemSlot.TryAddItemToItemSlot(item.GetComponent<Item>(), true);
@@ -125,15 +131,15 @@ namespace CuaHang
         /// <summary> Tạo item trong itemSlot </summary>
         public void CreateItemInSlot(List<ItemSO> items)
         {
-            for (int i = 0; i < _itemSlot._itemsSlots.Count && i < items.Count; i++)
+            for (int i = 0; i < ItemSlot._itemsSlots.Count && i < items.Count; i++)
             {
                 if (items[i])
                 {
                     Item item = ItemPooler.Instance.GetOrCreateObjectPool(items[i]._typeID).GetComponent<Item>();
 
-                    if (_itemSlot.TryAddItemToItemSlot(item, false) && _isSamePrice)
+                    if (ItemSlot.TryAddItemToItemSlot(item, false) && IsSamePrice)
                     {
-                        item._price = _price;
+                        item.Price = Price;
                     }
                 }
             }
@@ -154,17 +160,17 @@ namespace CuaHang
         {
             if (_isBlockPrice) return;
 
-            if (!_SO)
+            if (!SO)
             {
                 Debug.LogWarning("Lỗi item này không có ScriptableObject", transform);
                 return;
             }
 
-            float newPrice = _price + price;
+            float newPrice = Price + price;
 
-            if (newPrice > _SO._priceMarketMax) Debug.Log("Cảnh báo bạn đang bị ảo giá");
-            if (newPrice < _SO._priceMarketMin) newPrice = _SO._priceMarketMin;
-            _price = newPrice;
+            if (newPrice > SO._priceMarketMax) Debug.Log("Cảnh báo bạn đang bị ảo giá");
+            if (newPrice < SO._priceMarketMin) newPrice = SO._priceMarketMin;
+            Price = newPrice;
         }
 
         public virtual void SetDragState(bool active)
@@ -172,8 +178,10 @@ namespace CuaHang
             Coll.enabled = !active;
             _isCanDrag = !active;
 
-            if (_itemParent && _itemParent._itemSlot)
-                _itemParent._itemSlot.RemoveItemInList(this);
+            if (ObjectParent && ObjectParent.GetComponentInChildren<ItemSlot>())
+            {
+                ObjectParent.GetComponentInChildren<ItemSlot>().RemoveItemInList(this);
+            }
         }
 
         public virtual void DropItem(Transform location)

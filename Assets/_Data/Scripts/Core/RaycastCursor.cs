@@ -21,7 +21,7 @@ namespace CuaHang
         InputImprove _input => InputImprove.Instance;
         Camera _cam => Camera.main;
 
-        public ItemDrag ItemDrag { get => _itemDrag; }
+        public ItemDrag ItemDrag { get => _itemDrag;}
         public Item ItemSelect
         {
             get => _itemSelect;
@@ -117,7 +117,6 @@ namespace CuaHang
                 if (isOn) outline.enabled = true;
                 else outline.enabled = false;
             }
-
         }
 
         /// <summary> Bật item drag với item được _Hit chiếu</summary>
@@ -127,7 +126,7 @@ namespace CuaHang
 
             Item item = ItemSelect.transform.GetComponent<Item>();
 
-            if (item && item._isCanDrag)
+            if (item && item.IsCanDrag)
             {
                 ItemEdit = null;
                 item.SetDragState(true);
@@ -150,7 +149,10 @@ namespace CuaHang
 
         private void SetFollowItem(InputAction.CallbackContext ctx)
         {
-            if (ItemSelect != null) ItemFollow = ItemSelect;
+            if (ItemSelect != null) 
+            {
+                ItemFollow = ItemSelect;
+            }
         }
 
         private void SetItemEdit(InputAction.CallbackContext ctx)
@@ -163,7 +165,9 @@ namespace CuaHang
             {
                 ItemEdit = null;
             }
-
         }
+
+
+        
     }
 }

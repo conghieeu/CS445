@@ -153,9 +153,9 @@ public class GamePlayData
     public GamePlayData()
     {
         _isInitialized = false;
-        CustomersData = new();
-        StaffsData = new();
-        ItemsData = new();
+        _customersData = new();
+        _staffsData = new();
+        _itemsData = new();
     }
 
     public bool IsInitialized { get => _isInitialized; set => _isInitialized = value; }
@@ -211,22 +211,23 @@ namespace Core
         public bool IsSaveFileExists { get => _isSaveFileExists; private set => _isSaveFileExists = value; }
         public GameData GameData { get => _gameData; set => _gameData = value; }
 
-        public static event Action _OnDataSaved;
-        public static event Action<GameData> _OnDataLoaded;
+        public static event Action ActionSaveData;
+        public static event Action<GameData> ActionSetData;
+        public static event Action ActionDataLoad;
 
         void Start()
         {
             _filePath = Application.persistentDataPath + _saveName;
             SetDontDestroyOnLoad(true);
             _isSaveFileExists = File.Exists(_filePath);
-            LoadData(); 
+            LoadData();
         }
 
         private void OnEnable()
         {
             SceneManager.sceneLoaded += (scene, mode) => LoadData();
         }
-        
+
         private void OnDisable()
         {
             SceneManager.sceneLoaded -= (scene, mode) => LoadData();
@@ -248,7 +249,7 @@ namespace Core
             GameData._gamePlayData.IsInitialized = true;
 
             File.WriteAllText(_filePath, SerializeAndEncrypt(GameData));
-            _OnDataSaved?.Invoke();
+            ActionSaveData?.Invoke();
             Debug.Log("Game data saved to: " + _filePath);
         }
 
@@ -259,7 +260,8 @@ namespace Core
                 string stringData = File.ReadAllText(_filePath);
 
                 GameData = Deserialized(stringData);
-                _OnDataLoaded?.Invoke(GameData);
+                ActionSetData?.Invoke(GameData);
+                ActionDataLoad?.Invoke();
 
                 Debug.Log("Game data loaded from: " + _filePath);
             }

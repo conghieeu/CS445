@@ -15,9 +15,9 @@ namespace CuaHang.AI
         {
             Customer customer = GetComponent<Customer>();
             _customerData = new CustomerData(
-                customer._ID,
-                customer._typeID,
-                customer._name,
+                customer.ID,
+                customer.TypeID,
+                customer.Name,
                 customer.TotalPay,
                 customer.IsDoneShopping,
                 customer.IsPlayerConfirmPay,
@@ -28,7 +28,7 @@ namespace CuaHang.AI
         }
 
         /// <summary> CusomterPooler se yeu cau load </summary>
-        public override void LoadData<T>(T data)
+        public override void OnSetData<T>(T data)
         { 
             _customerData = data as CustomerData;
 

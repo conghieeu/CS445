@@ -32,7 +32,7 @@ namespace CuaHang.Pooler
         public virtual void RemoveObjectFromPool(ObjectPool objectPool)
         {
             objectPool.gameObject.SetActive(false);
-            objectPool._isRecyclable = true;
+            objectPool.IsRecyclable = true;
         }
 
         /// <summary> Kiểm tra xem pool có chứa object với ID cụ thể hay không  </summary>
@@ -40,7 +40,7 @@ namespace CuaHang.Pooler
         {
             foreach (var obj in _ObjectPools)
             {
-                if (obj._ID == id) return true;
+                if (obj.ID == id) return true;
             }
             return false;
         }
@@ -54,7 +54,7 @@ namespace CuaHang.Pooler
 
             foreach (var obj in _ObjectPools)
             {
-                if (obj._ID == id) return obj;
+                if (obj.ID == id) return obj;
             }
             return null;
         }
@@ -66,7 +66,7 @@ namespace CuaHang.Pooler
 
             if (objectPool) // tái sử dụng
             {
-                objectPool._isRecyclable = false;
+                objectPool.IsRecyclable = false;
                 objectPool.gameObject.SetActive(true);
             }
             else // Create New 
@@ -75,7 +75,7 @@ namespace CuaHang.Pooler
                 {
                     ObjectPool pO = prefab.GetComponent<ObjectPool>();
 
-                    if (pO && pO._typeID == typeID)
+                    if (pO && pO.TypeID == typeID)
                     {
                         objectPool = Instantiate(pO, transform);
                         _objectPools.Add(objectPool);
@@ -86,9 +86,12 @@ namespace CuaHang.Pooler
 
             if (objectPool)
             {
-                objectPool.OnCreate();
+                objectPool.GenerateIdentifier();
             }
-            else Debug.LogWarning($"Item {typeID} Này Tạo từ pool không thành công");
+            else
+            {
+                Debug.LogWarning($"Item {typeID} Này Tạo từ pool không thành công");
+            }
 
             return objectPool;
         }
@@ -98,7 +101,7 @@ namespace CuaHang.Pooler
         {
             foreach (var objectPool in _objectPools)
             {
-                if (objectPool._typeID == typeID && objectPool._isRecyclable)
+                if (objectPool.TypeID == typeID && objectPool.IsRecyclable)
                 {
                     return objectPool;
                 }

@@ -21,7 +21,7 @@ namespace CuaHang
 
         private void Start()
         {
-            for (int i = 0; i < _itemSlot._itemsSlots.Count; i++)
+            for (int i = 0; i < ItemSlot._itemsSlots.Count; i++)
             {
                 _listTrash.Add(new ParcelTrash());
             }
@@ -32,9 +32,9 @@ namespace CuaHang
             CountDownRemove();
         }
 
-        public override void SetProperties(ItemData data)
+        public override void SetVariables(ItemData data)
         {
-            base.SetProperties(data);
+            base.SetVariables(data);
             AddTrashFromSlot();
         }
 
@@ -54,7 +54,7 @@ namespace CuaHang
 
         void AddTrashFromSlot()
         {
-            foreach (var item in _itemSlot._itemsSlots)
+            foreach (var item in ItemSlot._itemsSlots)
             {
                 AddItemToTrash(item._item);
             }
@@ -77,7 +77,7 @@ namespace CuaHang
                 if (_listTrash[i]._time <= 0f && item)
                 {
                     item.SetParent(null, null, false);
-                    _itemSlot.RemoveItemInWorld(_listTrash[i]._item);
+                    ItemSlot.RemoveItemInWorld(_listTrash[i]._item);
                     _listTrash[i]._item = null;
                 }
             }

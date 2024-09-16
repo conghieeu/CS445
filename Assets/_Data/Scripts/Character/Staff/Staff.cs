@@ -1,18 +1,15 @@
-using System; 
 using UnityEngine;
 using CuaHang.Pooler;
-using System.Collections.Generic;
 
 namespace CuaHang.AI
 {
     public class Staff : AIBehavior
     {
         [Header("STAFF")]
-        [Header("Flags")]
-        public Item _parcelHold; // Parcel đã nhặt và đang giữ trong người
-        private Item _triggerParcel; // trigger của animation ngăn animation được gọi liên tục từ fixed Update
+        public Item _heldItem; // item đã nhặt và đang giữ trong người
+        
+        Item _heldItemCurrent; // trigger của animation ngăn animation được gọi liên tục từ fixed Update
 
-        [Header("Components")]
         [SerializeField] Transform _itemHoldPos; // là vị trí mà nhân viên này đang giữ ObjectPlant trong người 
 
         protected override void Start()
@@ -27,38 +24,44 @@ namespace CuaHang.AI
             Animation();
         }
 
+        /// <summary> Được gọi stats </summary>
+        public void SetProperties(StaffData data)
+        {
+            ID = data.Id;
+            _name = data.Name;
+            transform.position = data.Position;
+        }
+
         /// <summary>  Khi đáp ứng sự kiện hãy gọi vào đây nên nó đưa phán đoán hành vi tiếp theo nhân viên cần làm </summary>
-        void Behavior()
+        private void Behavior()
         {
             // Find the parcel
-            Item parcel = null;
-            if (!_parcelHold) parcel = GetParcel();
+            Item itemCarry = null;
+            if (!_heldItem) itemCarry = FindCarryItem();
 
             // Nhặt parcel
-            if (parcel && MoveToTarget(parcel.transform))
+            if (itemCarry && MoveToTarget(itemCarry.transform))
             {
-                parcel.SetParent(_itemHoldPos, null, true);
-                parcel._isCanDrag = false;
-                _parcelHold = parcel;
+                SetHeldItem(itemCarry);
                 return;
             }
 
             // Parcel có item không
             bool parcelHasItem = false;
-            if (_parcelHold)
+            if (_heldItem)
             {
-                parcelHasItem = _parcelHold._itemSlot.IsAnyItem();
+                parcelHasItem = _heldItem.ItemSlot.IsAnyItem();
             }
 
-            if (_parcelHold == null) return;
+            if (_heldItem == null) return;
 
             // Đưa item lênh kệ
             Item shelf = ItemPooler.Instance.GetItemEmptySlot(TypeID.shelf_1);
             if (shelf && parcelHasItem)
             {
-                if (MoveToTarget(shelf._waitingPoint.transform))
+                if (MoveToTarget(shelf.WaitingPoint.transform))
                 {
-                    shelf._itemSlot.ReceiverItems(_parcelHold._itemSlot, true);
+                    shelf.ItemSlot.ReceiverItems(_heldItem.ItemSlot, true);
                 }
                 return;
             }
@@ -69,9 +72,9 @@ namespace CuaHang.AI
             {
                 if (MoveToTarget(storage.transform))
                 {
-                    storage._itemSlot.TryAddItemToItemSlot(_parcelHold, true);
-                    _parcelHold._isCanDrag = true;
-                    _parcelHold = null;
+                    storage.ItemSlot.TryAddItemToItemSlot(_heldItem, true);
+                    _heldItem.IsCanDrag = true;
+                    _heldItem = null;
                 }
                 return;
             }
@@ -82,65 +85,61 @@ namespace CuaHang.AI
             {
                 if (MoveToTarget(trash.transform))
                 {
-                    trash._itemSlot.TryAddItemToItemSlot(_parcelHold, true);
-                    trash.AddItemToTrash(_parcelHold);
-                    _parcelHold._isCanDrag = true;
-                    _parcelHold = null;
+                    trash.ItemSlot.TryAddItemToItemSlot(_heldItem, true);
+                    trash.AddItemToTrash(_heldItem);
+                    _heldItem.IsCanDrag = true;
+                    _heldItem = null;
                 }
                 return;
             }
         }
 
-        /// <summary> Được gọi stats </summary>
-        public void SetProperties(StaffData data)
+        /// <summary> nhặt item carry lênh </summary>
+        public void SetHeldItem(Item itemCarry)
         {
-            _ID = data.Id;
-            _name = data.Name;
-            transform.position = data.Position;
-
-            // tái tạo parcel hold trong tay cua nhan vien
-            // reStaff._parcelHold = staff._parcelHold; 
+            itemCarry.SetParent(_itemHoldPos, this, false);
+            itemCarry.IsCanDrag = false;
+            _heldItem = itemCarry;
         }
 
-        void Animation()
+        private void Animation()
         {
             float velocity = _navMeshAgent.velocity.sqrMagnitude;
 
             // Idle
-            if (velocity == 0 && _stageAnim != STATE_ANIM.Idle || velocity == 0 && _triggerParcel != _parcelHold)
+            if (velocity == 0 && _stageAnim != STATE_ANIM.Idle || velocity == 0 && _heldItemCurrent != _heldItem)
             {
-                if (_parcelHold) _stageAnim = STATE_ANIM.Idle_Carrying;
+                if (_heldItem) _stageAnim = STATE_ANIM.Idle_Carrying;
                 else _stageAnim = STATE_ANIM.Idle;
-                _triggerParcel = _parcelHold;
+                _heldItemCurrent = _heldItem;
                 SetAnim();
                 return;
             }
 
             // Walk
-            if (velocity > 0.1f && _stageAnim != STATE_ANIM.Walk || velocity > 0.1f && _triggerParcel != _parcelHold)
+            if (velocity > 0.1f && _stageAnim != STATE_ANIM.Walk || velocity > 0.1f && _heldItemCurrent != _heldItem)
             {
-                if (_parcelHold) _stageAnim = STATE_ANIM.Walk_Carrying;
+                if (_heldItem) _stageAnim = STATE_ANIM.Walk_Carrying;
                 else _stageAnim = STATE_ANIM.Walk;
-                _triggerParcel = _parcelHold;
+                _heldItemCurrent = _heldItem;
                 SetAnim();
                 return;
             }
 
         }
 
-        /// <summary> Tìm item có thể kéo drag </summary>
-        Item GetParcel()
+        /// <summary> Nhân viên này tìm item cần mang vác xử lý </summary>
+        private Item FindCarryItem()
         {
             foreach (var objectPool in ItemPooler.Instance._ObjectPools)
             {
                 Item item = objectPool.GetComponent<Item>();
 
-                if (item && item._typeID == TypeID.parcel_1 && !item._thisParent && item.gameObject.activeSelf)
+                if (item && item.TypeID == TypeID.parcel_1 && !item.ThisParent && item.gameObject.activeSelf)
                 {
                     return item;
                 }
             }
-
             return null;
         }
     }

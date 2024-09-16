@@ -26,7 +26,7 @@ namespace CuaHang
 
                 if (item)
                 {
-                    if (item._type == type)
+                    if (item.Type == type)
                     {
                         return item;
                     }

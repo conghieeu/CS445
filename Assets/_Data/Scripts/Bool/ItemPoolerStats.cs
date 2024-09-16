@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Core;
 using UnityEngine;
 
 namespace CuaHang.Pooler
@@ -8,13 +7,16 @@ namespace CuaHang.Pooler
     {
         [Header("ITEM POOLER STATS")]
         [SerializeField] List<ItemData> _itemsData;
-
-        /// <summary> tạo các root đầu tiên </summary>
-        public override void LoadData<T>(T data)
+ 
+        public override void OnSetData<T>(T data)
         {
-            _itemsData = (data as GameData)._gamePlayData.ItemsData;
+            List<ItemData> items = (data as GameData)._gamePlayData.ItemsData;
+            GetComponent<ItemPooler>().OnSetData(items);
+        }
 
-            GetComponent<ItemPooler>().SetProperties(_itemsData);
+        public override void OnLoadData()
+        {
+            GetComponent<ItemPooler>().OnLoadData();
         }
 
         /// <summary> bắt tính hiệu save </summary>
@@ -40,12 +42,11 @@ namespace CuaHang.Pooler
 
             foreach (var pool in GetComponent<ItemPooler>()._ObjectPools)
             {
-                if (pool && pool._ID != "" && pool.gameObject.activeInHierarchy)
+                if (pool && pool.ID != "" && pool.gameObject.activeInHierarchy)
                 {
                     itemsData.Add(pool.GetComponent<ItemStats>().GetData());
                 }
             }
-
             return itemsData;
         }
     }

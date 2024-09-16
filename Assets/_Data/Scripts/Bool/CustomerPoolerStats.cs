@@ -1,32 +1,37 @@
 using System.Collections.Generic;
 using CuaHang.AI;
 using CuaHang.Pooler;
-using Core;
-using UnityEngine;
 
 namespace CuaHang
 {
     public class CustomerPoolerStats : ObjectStats
     {
-        public override void LoadData<T>(T data)
-        {
-            List<CustomerData> customersData = (data as GameData)._gamePlayData.CustomersData;
+        List<CustomerData> _customersData = new List<CustomerData>();
 
+        public List<CustomerData> CustomersData { get => _customersData; set => _customersData = value; }
+
+        public override void OnSetData<T>(T data)
+        {
+            CustomersData = (data as GameData)._gamePlayData.CustomersData;
+        }
+
+        public override void OnLoadData()
+        {
             // tái tạo items data
-            foreach (var cusData in customersData)
+            foreach (var cusData in CustomersData)
             {
                 ObjectPool customer = GetComponent<CustomerPooler>().GetObjectByID(cusData.Id);
 
                 // load data những đối tượng đã tồn tại
                 if (customer)
                 {
-                    customer.GetComponent<CustomerStats>().LoadData(cusData);
+                    customer.GetComponent<CustomerStats>().OnSetData(cusData);
                 }
                 else
                 {
                     // tạo mới
                     ObjectPool newCustomer = GetComponent<CustomerPooler>().GetOrCreateObjectPool(cusData.TypeID);
-                    newCustomer.GetComponent<CustomerStats>().LoadData(cusData);
+                    newCustomer.GetComponent<CustomerStats>().OnSetData(cusData);
                 }
             }
         }
@@ -55,7 +60,7 @@ namespace CuaHang
 
             foreach (var pool in cusPooler._ObjectPools)
             {
-                if (pool && pool._ID != "" && pool.gameObject.activeInHierarchy)
+                if (pool && pool.ID != "" && pool.gameObject.activeInHierarchy)
                 {
                     customersData.Add(pool.GetComponent<CustomerStats>().GetData());
                 }
@@ -63,5 +68,7 @@ namespace CuaHang
 
             return customersData;
         }
+
+
     }
 }

@@ -16,7 +16,7 @@ public class GameSettingStats : ObjectStats
         _cameraControl = CameraControl.Instance;
     }
 
-    public override void LoadData<T>(T data)
+    public override void OnSetData<T>(T data)
     {
         if (data is GameData) _gameSettingData = (data as GameData)._gameSettingsData;
         else if (data is GameSettingsData) _gameSettingData = data as GameSettingsData;
@@ -33,7 +33,7 @@ public class GameSettingStats : ObjectStats
     protected override void LoadNewData()
     {
         SaveData();
-        LoadData(GetData()); // mục đích cập nhập và thông báo
+        OnSetData(GetData()); // mục đích cập nhập và thông báo
     }
 
     protected override void SaveData()

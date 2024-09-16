@@ -10,7 +10,7 @@ namespace CuaHang
     {
 
         /// <summary> Load dữ liệu theo GameData </summary>
-        public override void LoadData<T>(T data)
+        public override void OnSetData<T>(T data)
         {
             List<StaffData> staffsData = (data as GameData)._gamePlayData.StaffsData;
 
@@ -21,13 +21,13 @@ namespace CuaHang
                 ObjectPool staff = GetComponent<StaffPooler>().GetObjectByID(staffData.Id);
                 if (staff)
                 {
-                    staff.GetComponent<StaffStats>().LoadData(staffData);
+                    staff.GetComponent<StaffStats>().OnSetData(staffData);
                 }
                 else
                 {
                     // tạo lại item slot
                     ObjectPool newStaff = GetComponent<StaffPooler>().GetOrCreateObjectPool(staffData.TypeID);
-                    newStaff.GetComponent<StaffStats>().LoadData(staffData);
+                    newStaff.GetComponent<StaffStats>().OnSetData(staffData);
                 }
             }
         }
@@ -54,7 +54,7 @@ namespace CuaHang
 
             foreach (var objP in GetComponent<StaffPooler>()._ObjectPools)
             {
-                if (objP && objP._ID != "" && objP.gameObject.activeInHierarchy)
+                if (objP && objP.ID != "" && objP.gameObject.activeInHierarchy)
                 {
                     staffsData.Add(objP.GetComponent<StaffStats>().GetData());
                 }
@@ -62,5 +62,7 @@ namespace CuaHang
 
             return staffsData;
         }
+
+        public override void OnLoadData() { }
     }
 }

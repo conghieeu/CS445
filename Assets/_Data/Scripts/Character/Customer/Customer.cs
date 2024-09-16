@@ -51,18 +51,12 @@ namespace CuaHang.AI
             _totalPay = 0;
         }
 
-        public override void OnCreate()
-        {
-            base.OnCreate();
-            _totalPay = 0;
-        }
-
         /// <summary> Set Properties with Item Data </summary>
         public void SetProperties(CustomerData data)
         {
-            _ID = data.Id;
+            ID = data.Id;
             _isDoneShopping = data.IsNotNeedBuy;
-            _name = data.Name;
+            Name = data.Name;
             _totalPay = data.TotalPay;
 
             IsPlayerConfirmPay = data.PlayerConfirmPay;
@@ -86,10 +80,10 @@ namespace CuaHang.AI
                 In($"Lấy item");
                 StartCoroutine(PickItem()); // trigger animation
 
-                _totalPay += _itemFinding._price;
+                _totalPay += _itemFinding.Price;
                 _itemsCard.Add(_itemFinding);
-                _listItemBuy.Remove(_itemFinding._typeID);
-                _itemFinding._itemParent._itemSlot.RemoveItemInList(_itemFinding);
+                _listItemBuy.Remove(_itemFinding.TypeID);
+                _itemFinding.ObjectParent.GetComponentInChildren<ItemSlot>().RemoveItemInList(_itemFinding);
                 _itemFinding.gameObject.SetActive(false);
                 _itemFinding = null;
 
@@ -212,7 +206,7 @@ namespace CuaHang.AI
 
             Item shelf = _itemPooler.GetItemContentItem(_itemFinding); // lấy cái bàn chứa quả táo
 
-            if (shelf && shelf._waitingPoint && !MoveToTarget(shelf._waitingPoint))
+            if (shelf && shelf.WaitingPoint && !MoveToTarget(shelf.WaitingPoint))
             {
                 return true;
             }
@@ -236,7 +230,7 @@ namespace CuaHang.AI
         /// <summary> Giá quá cao thì không đồng ý mua </summary>
         private bool IsAgreeItem()
         {
-            return _itemFinding && _itemFinding._price <= _itemFinding._SO._priceMarketMax;
+            return _itemFinding && _itemFinding.Price <= _itemFinding.SO._priceMarketMax;
         }
 
         /// <summary> trigger animation picking </summary>

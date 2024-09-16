@@ -10,7 +10,7 @@ namespace CuaHang
 
         public static event Action<PlayerData> _OnDataChange;
 
-        public override void LoadData<T>(T data)
+        public override void OnSetData<T>(T data)
         { 
             if (data is GameData) _playerData = (data as GameData)._gamePlayData.PlayerData;
             else if (data is PlayerData) _playerData = data as PlayerData;
@@ -31,14 +31,14 @@ namespace CuaHang
         {
             Debug.Log("Load new game");
             SaveData();
-            LoadData(GetData()); // mục đích cập nhập và thông báo
+            OnSetData(GetData()); // mục đích cập nhập và thông báo
         }
 
         protected override void LoadNewData()
         {
             Debug.Log("Load new data");
             SaveData();
-            LoadData(GetData());
+            OnSetData(GetData());
         }
 
         /// <summary> Lấy dữ liệu trạng thái hiện tại của đối tương này </summary>

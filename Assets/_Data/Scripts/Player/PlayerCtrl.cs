@@ -17,7 +17,7 @@ namespace CuaHang
         [SerializeField] float _money;
         [SerializeField] Transform _posHoldParcel; // vị trí đặt cái parcel này trên tay
 
-        PlayerManager _playerManager;
+        PlayerManager _playerManager => PlayerManager.Instance;
 
         public float CurrentMoney { get => _currentMoney; set => _currentMoney = value; }
         public int Reputation { get => _reputation; set => _reputation = value; }
@@ -39,12 +39,7 @@ namespace CuaHang
         {
             base.Awake();
             _anim = GetComponentInChildren<Animator>();
-        }
-
-        private void Start()
-        {
-            _playerManager = PlayerManager.Instance;
-        }
+        } 
 
         public void SetProperties(PlayerData data)
         { 

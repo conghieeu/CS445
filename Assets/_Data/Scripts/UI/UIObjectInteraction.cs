@@ -46,6 +46,7 @@ namespace CuaHang.UI
 
             RaycastCursor.ActionSelectItem += OnItemSelect;
             RaycastCursor.ActionEditItem += OnEditItem;
+            PlayerPlanting.ActionSenderItem += OnPlayerSenderItem;
 
             _inputImprove.DragItem += OnBtnDragItem;
 
@@ -79,11 +80,18 @@ namespace CuaHang.UI
             }
         }
 
+        private void OnPlayerSenderItem()
+        {
+            _btnOnDrag.EnableCanvasGroup(false);
+            OnItemSelect(_itemSelect);
+        }
+
         private void OnBtnDropItem()
         {
-            if (_itemDrag.DropItem())
+            if (_itemDrag.OnBtnDropItem())
             {
                 _btnOnDrag.EnableCanvasGroup(false);
+                OnItemSelect(_itemSelect);
             }
             else
             {
@@ -108,7 +116,7 @@ namespace CuaHang.UI
 
         private void OnBtnShowInfo()
         {
-            _infoPanel.EnableCanvasGroup(!_infoPanel.IsEnableCanvasGroup());
+            _infoPanel.EnableCanvasGroup(true);
             SetTxtContentItem();
         }
 
@@ -131,6 +139,7 @@ namespace CuaHang.UI
             if (item)
             {
                 _panelMenuContext.EnableCanvasGroup(true);
+                _infoPanel.EnableCanvasGroup(false);
 
                 if (item.CamHere)
                 {
@@ -146,17 +155,17 @@ namespace CuaHang.UI
                 _panelMenuContext.EnableCanvasGroup(false);
                 _infoPanel.EnableCanvasGroup(false);
             }
-            
+
             _itemSelect = item;
         }
 
         private void SetTxtContentItem()
         {
             // hiện thị stats
-            if (_itemSelect && _itemSelect._SO)
+            if (_itemSelect && _itemSelect.SO)
             {
-                string x = $"Name: {_itemSelect._name} \nPrice: {_itemSelect._price.ToString("F1")} \n";
-                _txtContentItem.text = _itemSelect._SO._isCanSell ? x + "Item có thể bán" : x + "Item không thể bán";
+                string x = $"Name: {_itemSelect.Name} \nPrice: {_itemSelect.Price.ToString("F1")} \n";
+                _txtContentItem.text = _itemSelect.SO._isCanSell ? x + "Item có thể bán" : x + "Item không thể bán";
             }
             else
             {

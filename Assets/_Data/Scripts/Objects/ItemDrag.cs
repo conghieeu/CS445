@@ -43,14 +43,14 @@ namespace CuaHang
 
         private void OnEnable()
         {
-            _input.Click += ClickDropItem;
-            _input.SnapPerformed += _ => SetSnap();
+            _input.Click += DropItem;
+            _input.SnapPerformed += SetSnap;
         }
 
         private void OnDisable()
         {
-            _input.Click -= ClickDropItem;
-            _input.SnapPerformed -= _ => SetSnap();
+            _input.Click -= DropItem;
+            _input.SnapPerformed -= SetSnap;
         }
 
         private void FixedUpdate()
@@ -64,18 +64,6 @@ namespace CuaHang
             RotationItemDrag();
         }
 
-        /// <summary> Dành cho nút nhấn drop item </summary>
-        public bool DropItem()
-        {
-            if (IsCanPlant())
-            {
-                OnDropItem();
-                _navMeshSurface.BuildNavMesh();
-                return true;
-            }
-            return false;
-        }
-
         /// <summary> để model temp đang dragging nó hiện giống model đang di chuyển ở thằng Player </summary>
         public void PickUpItem(Item item)
         {
@@ -83,7 +71,7 @@ namespace CuaHang
             gameObject.SetActive(true);
 
             // Tạo model giống otherModel ở vị trí 
-            _modelsHolding = Instantiate(item._models, _modelsHolder);
+            _modelsHolding = Instantiate(item.Models, _modelsHolder);
             _modelsHolder.localRotation = item.transform.rotation;
 
             // Cho item này lênh tay player
@@ -104,7 +92,7 @@ namespace CuaHang
             _modelsHolder.localRotation = Quaternion.Euler(0, newAngle, 0);
         }
 
-        public void SetSnap()
+        public void SetSnap(InputAction.CallbackContext ctx)
         {
             _enableSnapping = !_enableSnapping;
         }
@@ -119,7 +107,19 @@ namespace CuaHang
             gameObject.SetActive(false);
         }
 
-        void SetMaterial()
+        /// <summary> Dành cho nút nhấn drop item </summary>
+        public bool OnBtnDropItem()
+        {
+            if (IsCanPlant() && GameSystem.CurrentPlatform == Platform.Android)
+            {
+                OnDropItem();
+                _navMeshSurface.BuildNavMesh();
+                return true;
+            }
+            return false;
+        }
+
+        private void SetMaterial()
         {
             if (IsCanPlant())
             {
@@ -131,7 +131,7 @@ namespace CuaHang
             }
         }
 
-        void SetMaterialModel(Material color)
+        private void SetMaterialModel(Material color)
         {
             foreach (Renderer model in _modelsHolder.GetComponentsInChildren<Renderer>())
             {
@@ -139,14 +139,13 @@ namespace CuaHang
             }
         }
 
-        bool IsCanPlant()
+        private bool IsCanPlant()
         {
             return _sensorAround._hits.Count == 0 && IsTouchGround() && _itemDragging;
         }
-
-        bool IsTouchGround()
-        {
-            // Làm thế nào để cái sensor check ở dưới
+        
+        private bool IsTouchGround()
+        { 
             foreach (var obj in _sensorGround._hits)
             {
                 if (obj.CompareTag(_groundTag))
@@ -157,9 +156,9 @@ namespace CuaHang
             return false;
         }
 
-        void ClickDropItem(InputAction.CallbackContext context)
+        private void DropItem(InputAction.CallbackContext context)
         {
-            if (IsCanPlant() && GameSystem.CurrentPlatform != Platform.Android)
+            if (IsCanPlant() && GameSystem.CurrentPlatform == Platform.Standalone)
             {
                 OnDropItem();
                 _navMeshSurface.BuildNavMesh();
@@ -167,7 +166,7 @@ namespace CuaHang
         }
 
         /// <summary> Di chuyen item danh cho pc </summary>
-        void MoveItemDrag()
+        private void MoveItemDrag()
         {
             Vector3 hitPos = new();
             if (GameSystem.Instance._Platform == Platform.Standalone)
@@ -199,7 +198,7 @@ namespace CuaHang
         }
 
         /// <summary> Xoay item </summary>
-        void RotationItemDrag()
+        private void RotationItemDrag()
         {
             RaycastHit hit = new RaycastHit();
 

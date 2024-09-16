@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using Core;
-using CuaHang.Pooler;
 using UnityEngine;
 
 namespace CuaHang
@@ -10,39 +7,42 @@ namespace CuaHang
         [Header("ITEM STATS")]
         [SerializeField] ItemData _itemData;
 
+        public ItemData ItemData { get => _itemData; set => _itemData = value; }
+
         // Lay du lieu cua chinh cai nay de save
         public ItemData GetData()
         {
             Item item = GetComponent<Item>();
 
             string idItemParent = "";
-            if (item._itemParent) idItemParent = item._itemParent._ID;
+            if (item.ObjectParent) idItemParent = item.ObjectParent.ID;
 
-            _itemData = new ItemData(
-                item._ID,
+            ItemData = new ItemData(
+                item.ID,
                 idItemParent,
-                item._typeID,
-                item._price,
+                item.TypeID,
+                item.Price,
                 item.transform.position,
                 item.transform.rotation);
 
-            return _itemData;
+            return ItemData;
         }
 
-        /// <summary> Item Pooler gọi để tải dử liệu </summary>
-        public override void LoadData<T>(T data)
+        public void LoadData()
         {
-            _itemData = data as ItemData;
-            
-            if (_itemData == null) return;
-
-            GetComponent<Item>().SetProperties(_itemData);
+            GetComponent<Item>().SetVariables(ItemData);
         }
 
-        protected override void SaveData() { }
+        /// <summary> Item Pooler gọi để tải và load dử liệu </summary>
+        public override void OnSetData<T>(T data)
+        {
+            ItemData = data as ItemData;
+            LoadData();
+        }
 
-        protected override void LoadNewGame() { }
-
+        public override void OnLoadData() { }
         protected override void LoadNewData() { }
+        protected override void LoadNewGame() { }
+        protected override void SaveData() { }
     }
 }

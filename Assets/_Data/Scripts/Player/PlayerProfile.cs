@@ -7,7 +7,7 @@ public class PlayerProfile : ObjectStats
 
     public static event Action<PlayerProfileData> _OnDataChange;
 
-    public override void LoadData<T>(T data)
+    public override void OnSetData<T>(T data)
     {
         _playerProfileData = (data as GameData)._playerProfileData;
 
@@ -27,7 +27,7 @@ public class PlayerProfile : ObjectStats
     protected override void LoadNewData()
     {
         SaveData();
-        LoadData(GetData()); // mục đích cập nhập và thông báo
+        OnSetData(GetData()); // mục đích cập nhập và thông báo
     }
 
     protected override void LoadNewGame() { }

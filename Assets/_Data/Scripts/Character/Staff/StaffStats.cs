@@ -13,15 +13,15 @@ namespace CuaHang.AI
             Staff staff = GetComponent<Staff>();
 
             _staffData = new StaffData(
-                staff._ID,
-                staff._typeID,
-                staff._name,
+                staff.ID,
+                staff.TypeID,
+                staff.Name,
                 staff.transform.position);
 
             return _staffData;
         }
 
-        public override void LoadData<T>(T data)
+        public override void OnSetData<T>(T data)
         {
             _staffData = data as StaffData;
 
