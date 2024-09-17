@@ -26,7 +26,8 @@ namespace CuaHang.Pooler
             }
         }
 
-        public void OnSetData(List<ItemData> itemsData)
+        /// <summary> Tạo lại đối tượng ItemPool từ ItemsData </summary>
+        public void RecreateItemsData(List<ItemData> itemsData)
         {
             foreach (var itemData in itemsData)
             {
@@ -41,15 +42,6 @@ namespace CuaHang.Pooler
                     ObjectPool item = GetOrCreateObjectPool(itemData.TypeID);
                     item.GetComponent<ItemStats>().ItemData = itemData;
                 }
-            }
-        }
-
-        /// <summary> Cho các item con load dữ liệu theo data </summary>
-        public void OnLoadData()
-        {
-            foreach (ObjectPool objectPool in _ObjectPools)
-            {
-                objectPool.GetComponent<ItemStats>().LoadData();
             }
         }
 

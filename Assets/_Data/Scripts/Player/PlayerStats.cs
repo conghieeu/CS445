@@ -6,39 +6,25 @@ namespace CuaHang
     public class PlayerStats : ObjectStats
     {
         [Header("PlayerStats")]
-        public PlayerData _playerData;
-
-        public static event Action<PlayerData> _OnDataChange;
+        [SerializeField] PlayerData _playerData;
 
         public override void OnSetData<T>(T data)
-        { 
-            if (data is GameData) _playerData = (data as GameData)._gamePlayData.PlayerData;
-            else if (data is PlayerData) _playerData = data as PlayerData;
+        {
+            if (data is GamePlayData) _playerData = (data as GamePlayData).PlayerData;  
+        }
 
-            if (_playerData == null) return; 
- 
-            GetComponent<PlayerCtrl>().SetProperties(_playerData);
-            _OnDataChange?.Invoke(_playerData);
+        public override void OnLoadData()
+        {
+            if (GetGameData()._gamePlayData.IsInitialized)
+            {
+                GetComponent<PlayerCtrl>().SetProperties(_playerData);
+            }
         }
 
         protected override void SaveData()
         {
             _playerData = GetData();
             GetGameData()._gamePlayData.PlayerData = _playerData;
-        }
-
-        protected override void LoadNewGame()
-        {
-            Debug.Log("Load new game");
-            SaveData();
-            OnSetData(GetData()); // mục đích cập nhập và thông báo
-        }
-
-        protected override void LoadNewData()
-        {
-            Debug.Log("Load new data");
-            SaveData();
-            OnSetData(GetData());
         }
 
         /// <summary> Lấy dữ liệu trạng thái hiện tại của đối tương này </summary>

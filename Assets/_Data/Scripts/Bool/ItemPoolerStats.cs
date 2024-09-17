@@ -7,32 +7,25 @@ namespace CuaHang.Pooler
     {
         [Header("ITEM POOLER STATS")]
         [SerializeField] List<ItemData> _itemsData;
- 
+
         public override void OnSetData<T>(T data)
         {
-            List<ItemData> items = (data as GameData)._gamePlayData.ItemsData;
-            GetComponent<ItemPooler>().OnSetData(items);
+            if (!(data is GamePlayData)) return;
+
+            _itemsData = (data as GamePlayData).ItemsData;
+
+            GetComponent<ItemPooler>().RecreateItemsData(_itemsData);
         }
 
         public override void OnLoadData()
         {
-            GetComponent<ItemPooler>().OnLoadData();
+            
         }
 
         /// <summary> bắt tính hiệu save </summary>
         protected override void SaveData()
         {
             GetGameData()._gamePlayData.ItemsData = GetItemsData();
-        }
-
-        protected override void LoadNewGame()
-        {
-            SaveData();
-        }
-
-        protected override void LoadNewData()
-        {
-            SaveData();
         }
 
         /// <summary> Tìm và lọc item từ root data </summary>

@@ -9,7 +9,7 @@ namespace CuaHang
 
         public ItemData ItemData { get => _itemData; set => _itemData = value; }
 
-        // Lay du lieu cua chinh cai nay de save
+        /// <summary> Pooler lấy để save list item </summary>
         public ItemData GetData()
         {
             Item item = GetComponent<Item>();
@@ -28,21 +28,23 @@ namespace CuaHang
             return ItemData;
         }
 
-        public void LoadData()
-        {
-            GetComponent<Item>().SetVariables(ItemData);
-        }
-
         /// <summary> Item Pooler gọi để tải và load dử liệu </summary>
         public override void OnSetData<T>(T data)
         {
-            ItemData = data as ItemData;
-            LoadData();
+            if (data is ItemData)
+            {
+                ItemData = data as ItemData;
+            }
         }
 
-        public override void OnLoadData() { }
-        protected override void LoadNewData() { }
-        protected override void LoadNewGame() { }
+        public override void OnLoadData()
+        {
+            if (GetGameData()._gamePlayData.IsInitialized)
+            {
+                GetComponent<Item>().SetVariables(ItemData);
+            }
+        }
+
         protected override void SaveData() { }
     }
 }

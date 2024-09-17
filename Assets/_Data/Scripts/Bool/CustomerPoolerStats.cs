@@ -7,18 +7,18 @@ namespace CuaHang
     public class CustomerPoolerStats : ObjectStats
     {
         List<CustomerData> _customersData = new List<CustomerData>();
-
-        public List<CustomerData> CustomersData { get => _customersData; set => _customersData = value; }
-
+ 
         public override void OnSetData<T>(T data)
         {
-            CustomersData = (data as GameData)._gamePlayData.CustomersData;
+            if(!(data is GamePlayData)) return;
+
+            _customersData = (data as GamePlayData).CustomersData;
         }
 
         public override void OnLoadData()
         {
             // tái tạo items data
-            foreach (var cusData in CustomersData)
+            foreach (var cusData in _customersData)
             {
                 ObjectPool customer = GetComponent<CustomerPooler>().GetObjectByID(cusData.Id);
 
@@ -34,17 +34,7 @@ namespace CuaHang
                     newCustomer.GetComponent<CustomerStats>().OnSetData(cusData);
                 }
             }
-        }
-
-        protected override void LoadNewGame()
-        {
-            SaveData();
-        }
-
-        protected override void LoadNewData()
-        {
-            SaveData();
-        }
+        } 
 
         protected override void SaveData()
         {

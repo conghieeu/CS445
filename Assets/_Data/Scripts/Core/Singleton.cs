@@ -4,9 +4,10 @@ using UnityEngine.InputSystem.EnhancedTouch;
 
 public abstract class Singleton<T> : HieuBehavior where T : MonoBehaviour
 {
-    private static T instance;
-
+    [Header("Singleton")]
     [SerializeField] private bool _dontDestroyOnLoad;
+
+    private static T instance;
 
     public static T Instance
     {
@@ -14,7 +15,7 @@ public abstract class Singleton<T> : HieuBehavior where T : MonoBehaviour
         {
             if (instance == null)
             {
-                instance = FindObjectOfType<T>();
+                // instance = FindObjectOfType<T>();
 
                 if (instance == null)
                 {

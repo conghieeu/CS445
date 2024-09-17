@@ -18,22 +18,11 @@ public class GameSettingStats : ObjectStats
 
     public override void OnSetData<T>(T data)
     {
-        if (data is GameData) _gameSettingData = (data as GameData)._gameSettingsData;
-        else if (data is GameSettingsData) _gameSettingData = data as GameSettingsData;
-
-        // set properties
-        GetComponent<GameSettings>().SetProperties(_gameSettingData);
-
-        // Thong bao
-        _OnDataChange?.Invoke(_gameSettingData);
-    }
-
-    protected override void LoadNewGame() { }
-
-    protected override void LoadNewData()
-    {
-        SaveData();
-        OnSetData(GetData()); // mục đích cập nhập và thông báo
+        Debug.Log("Set Data");
+        if (data is GameSettingsData)
+        {
+            _gameSettingData = data as GameSettingsData;
+        }
     }
 
     protected override void SaveData()
@@ -59,4 +48,13 @@ public class GameSettingStats : ObjectStats
         return data;
     }
 
+    public override void OnLoadData()
+    { 
+        GameSettings gameSettings = GetComponent<GameSettings>();
+        if (gameSettings)
+        {
+            gameSettings.SetVariables(_gameSettingData); 
+            _OnDataChange?.Invoke(_gameSettingData);
+        }
+    }
 }

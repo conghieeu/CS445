@@ -8,38 +8,29 @@ namespace CuaHang
 {
     public class StaffPoolerStats : ObjectStats
     {
+        [SerializeField] List<StaffData> _staffsData;
 
         /// <summary> Load dữ liệu theo GameData </summary>
         public override void OnSetData<T>(T data)
         {
-            List<StaffData> staffsData = (data as GameData)._gamePlayData.StaffsData;
+            if(!(data is GamePlayData)) return;
+
+            _staffsData = (data as GamePlayData).StaffsData;
 
             // tái tạo items data
-            foreach (var staffData in staffsData)
+            foreach (var staffData in _staffsData)
             {
-                // load data những đối tượng có sẵn
                 ObjectPool staff = GetComponent<StaffPooler>().GetObjectByID(staffData.Id);
-                if (staff)
+                if (staff) // load data những đối tượng có sẵn
                 {
                     staff.GetComponent<StaffStats>().OnSetData(staffData);
                 }
-                else
+                else // tạo lại item slot
                 {
-                    // tạo lại item slot
                     ObjectPool newStaff = GetComponent<StaffPooler>().GetOrCreateObjectPool(staffData.TypeID);
                     newStaff.GetComponent<StaffStats>().OnSetData(staffData);
                 }
             }
-        }
-
-        protected override void LoadNewGame()
-        {
-            SaveData();
-        }
-
-        protected override void LoadNewData()
-        {
-            SaveData();
         }
 
         protected override void SaveData()
@@ -63,6 +54,9 @@ namespace CuaHang
             return staffsData;
         }
 
-        public override void OnLoadData() { }
+        public override void OnLoadData()
+        {
+
+        }
     }
 }

@@ -22,15 +22,15 @@ public class GameSettings : Singleton<GameSettings>
     public int _CurrentResolutionIndex { get => _currentResolutionIndex; set => _currentResolutionIndex = value; }
     public Quaternion _CamRotation { get => _camRotation; set => _camRotation = value; }
 
+    public static event Action<GameSettingsData> ActionDataChange;
+
     protected override void Awake()
     {
         base.Awake();
-
-        _gameSettingStats = GetComponentInChildren<GameSettingStats>();
     }
 
-    public void SetProperties(GameSettingsData data)
-    {
+    public void SetVariables(GameSettingsData data)
+    { 
         _isFullScreen = data.IsFullScreen;
         _qualityIndex = data.QualityIndex;
         _masterVolume = data.MasterVolume;

@@ -29,17 +29,22 @@ namespace CuaHang.AI
 
         /// <summary> CusomterPooler se yeu cau load </summary>
         public override void OnSetData<T>(T data)
-        { 
-            _customerData = data as CustomerData;
-
-            if (_customerData == null) return;
-            
-            GetComponent<Customer>().SetProperties(_customerData);
+        {
+            if (data is CustomerData)
+            {
+                _customerData = data as CustomerData;
+            }
         }
 
         protected override void SaveData() { }
-        protected override void LoadNewGame() { }
-        protected override void LoadNewData() { }
+
+        public override void OnLoadData()
+        {
+            if (GetGameData()._gamePlayData.IsInitialized)
+            {
+                GetComponent<Customer>().SetProperties(_customerData);
+            }
+        }
     }
 
 }

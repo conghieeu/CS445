@@ -7,7 +7,7 @@ namespace CuaHang.AI
     {
         [Header("ItemStats")]
         [SerializeField] StaffData _staffData;
-
+        
         public virtual StaffData GetData()
         {
             Staff staff = GetComponent<Staff>();
@@ -21,21 +21,25 @@ namespace CuaHang.AI
             return _staffData;
         }
 
+        /// <summary> Được Pooler gọi </summary>
         public override void OnSetData<T>(T data)
         {
-            _staffData = data as StaffData;
-
-            if (_staffData == null) return;
-
-            Staff staff = GetComponent<Staff>();
-            staff.SetProperties(_staffData);
+            if (data is StaffData)
+            {
+                _staffData = data as StaffData;
+            }
         }
 
         protected override void SaveData() { }
 
-        protected override void LoadNewGame() { }
-
-        protected override void LoadNewData() { }
+        public override void OnLoadData()
+        {
+            if (GetGameData()._gamePlayData.IsInitialized)
+            { 
+                Staff staff = GetComponent<Staff>();
+                staff.SetProperties(_staffData);
+            }
+        }
     }
 
 }

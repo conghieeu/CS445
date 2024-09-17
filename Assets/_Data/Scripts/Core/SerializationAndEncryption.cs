@@ -197,7 +197,7 @@ namespace Core
     /// <summary> Là GAMEDATA, chuỗi hoá và mã hoá lưu được nhiều loại dữ liệu của đối tượng </summary>
     public class SerializationAndEncryption : Singleton<SerializationAndEncryption>
     {
-        [Header("Data")]
+        [Header("Serialization And Encryption")]
         [SerializeField] GameData _gameData = new();
         [SerializeField] bool _isSaveFileExists;
         [SerializeField] string _saveName = "/gameData.save";
@@ -215,22 +215,35 @@ namespace Core
         public static event Action<GameData> ActionSetData;
         public static event Action ActionDataLoad;
 
-        void Start()
+        protected override void Awake()
         {
-            _filePath = Application.persistentDataPath + _saveName;
+            base.Awake();
             SetDontDestroyOnLoad(true);
-            _isSaveFileExists = File.Exists(_filePath);
+            _filePath = Application.persistentDataPath + _saveName;
             LoadData();
+
+            IsSaveFileExists = File.Exists(_filePath);
+
+            if (!IsSaveFileExists)
+            {
+                GameData._gamePlayData = new();
+            }
         }
 
         private void OnEnable()
         {
-            SceneManager.sceneLoaded += (scene, mode) => LoadData();
+            SceneManager.sceneLoaded += (scene, mode) =>
+            {
+                LoadData();
+            };
         }
 
         private void OnDisable()
         {
-            SceneManager.sceneLoaded -= (scene, mode) => LoadData();
+            SceneManager.sceneLoaded -= (scene, mode) =>
+            {
+                LoadData();
+            };
         }
 
         private void OnApplicationQuit()
@@ -246,10 +259,8 @@ namespace Core
 
         public void SaveData()
         {
-            GameData._gamePlayData.IsInitialized = true;
-
-            File.WriteAllText(_filePath, SerializeAndEncrypt(GameData));
             ActionSaveData?.Invoke();
+            File.WriteAllText(_filePath, SerializeAndEncrypt(GameData));
             Debug.Log("Game data saved to: " + _filePath);
         }
 

@@ -7,41 +7,43 @@ public abstract class ObjectStats : HieuBehavior
 
     protected virtual void OnEnable()
     {
-        SerializationAndEncryption.ActionSaveData += OnSaveData;
-        SerializationAndEncryption.ActionSetData += OnSetData;
-        SerializationAndEncryption.ActionDataLoad += OnLoadData;
+        SerializationAndEncryption.ActionSaveData += OnActionSaveData;
+        SerializationAndEncryption.ActionSetData += OnActionSetData;
+        SerializationAndEncryption.ActionDataLoad += OnActionLoadData;
     }
 
     protected virtual void OnDisable()
     {
-        SerializationAndEncryption.ActionSetData -= OnSetData;
-        SerializationAndEncryption.ActionSaveData -= OnSaveData;
-        SerializationAndEncryption.ActionDataLoad -= OnLoadData;
+        SerializationAndEncryption.ActionSetData -= OnActionSetData;
+        SerializationAndEncryption.ActionSaveData -= OnActionSaveData;
+        SerializationAndEncryption.ActionDataLoad -= OnActionLoadData;
     }
 
     protected GameData GetGameData() => _SAE.GameData;
 
-    private void OnSaveData()
+    private void OnActionSaveData()
     {
         if (this) SaveData();
     }
 
-    private void OnSetData(GameData data)
+    private void OnActionLoadData()
+    {
+        if(this) OnLoadData();
+    }
+
+    private void OnActionSetData(GameData data)
     {
         if (this == null) return;
 
-        if (_SAE.IsSaveFileExists == false)
+        if (_SAE.IsSaveFileExists)
         {
-            LoadNewData();
-            LoadNewGame();
+            OnSetData<GameSettingsData>(data._gameSettingsData);
+            OnSetData<PlayerProfileData>(data._playerProfileData);
         }
-        else if (_SAE.GameData._gamePlayData.IsInitialized == false)
+
+        if (_SAE.GameData._gamePlayData.IsInitialized)
         {
-            LoadNewGame();
-        }
-        else
-        {
-            OnSetData<GameData>(data);
+            OnSetData<GamePlayData>(data._gamePlayData);
         }
     }
 
@@ -51,10 +53,4 @@ public abstract class ObjectStats : HieuBehavior
 
     /// <summary> Truyền giá trị save vào _gameData </summary>
     protected abstract void SaveData();
-
-    /// <summary> Truyền giá trị save vào _gameData </summary>
-    protected abstract void LoadNewData();
-
-    /// <summary> sẽ load với các setting được chuẩn bị sẵn </summary>
-    protected abstract void LoadNewGame();
 }

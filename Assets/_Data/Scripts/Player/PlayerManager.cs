@@ -13,6 +13,8 @@ public class PlayerManager : Singleton<PlayerManager>
     public float HighestMoney { get => _highestMoney; set => _highestMoney = value; }
     public float PlayTime { get => _playTime; set => _playTime = value; }
 
+    public static event Action OnDataChange;
+
     protected override void Awake()
     {
         base.Awake();
@@ -24,6 +26,8 @@ public class PlayerManager : Singleton<PlayerManager>
         UserName = data.UserName;
         HighestMoney = data.HighestMoney;
         PlayTime = data.PlayTime;
+
+        OnDataChange?.Invoke();
     }
 }
 

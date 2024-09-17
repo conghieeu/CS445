@@ -1,3 +1,4 @@
+using Core;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,10 +10,20 @@ namespace CuaHang
         PlayerCtrl _playerCtrl;
         // Các hệ thống khác như UIManager, AudioManager, v.v.
 
+        private void OnEnable()
+        {
+            SerializationAndEncryption.ActionSaveData += SaveGame;
+        }
+
+        private void OnDisable()
+        {
+            SerializationAndEncryption.ActionSaveData -= SaveGame;
+        }
+
         protected override void Awake()
         {
             base.Awake();
-             // Khởi tạo các hệ thống khác nếu cần
+            // Khởi tạo các hệ thống khác nếu cần
         }
 
         void Start()
@@ -74,11 +85,16 @@ namespace CuaHang
         public void UpdatePlayerReputation(int reputation)
         {
             _playerCtrl.UpdateReputation(reputation);
-        } 
+        }
         public void LoadGame()
         {
             // Logic để tải trò chơi
             Debug.Log("Game Loaded");
+        }
+
+        public void SaveGame()
+        {
+            SerializationAndEncryption.Instance.GameData._gamePlayData.IsInitialized = true;
         }
 
     }
