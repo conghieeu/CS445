@@ -16,12 +16,27 @@ public class GameSettingStats : ObjectStats
         _cameraControl = CameraControl.Instance;
     }
 
+    private void FixedUpdate()
+    {
+        SaveData();
+    }
+
     public override void OnSetData<T>(T data)
     {
-        Debug.Log("Set Data");
+        Debug.Log(data);
         if (data is GameSettingsData)
         {
             _gameSettingData = data as GameSettingsData;
+        }
+    }
+
+    public override void OnLoadData()
+    {
+        GameSettings gameSettings = GetComponent<GameSettings>();
+        if (gameSettings)
+        {
+            gameSettings.SetVariables(_gameSettingData);
+            _OnDataChange?.Invoke(_gameSettingData);
         }
     }
 
@@ -48,13 +63,4 @@ public class GameSettingStats : ObjectStats
         return data;
     }
 
-    public override void OnLoadData()
-    { 
-        GameSettings gameSettings = GetComponent<GameSettings>();
-        if (gameSettings)
-        {
-            gameSettings.SetVariables(_gameSettingData); 
-            _OnDataChange?.Invoke(_gameSettingData);
-        }
-    }
 }

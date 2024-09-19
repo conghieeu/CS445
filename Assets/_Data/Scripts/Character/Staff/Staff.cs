@@ -6,17 +6,10 @@ namespace CuaHang.AI
     public class Staff : AIBehavior
     {
         [Header("STAFF")]
-        public Item _heldItem; // item đã nhặt và đang giữ trong người
+        [SerializeField] Item _heldItem; // item đã nhặt và đang giữ trong người
+        [SerializeField] Transform _itemHoldPos; // là vị trí mà nhân viên này đang giữ ObjectPlant trong người  
         
         Item _heldItemCurrent; // trigger của animation ngăn animation được gọi liên tục từ fixed Update
-
-        [SerializeField] Transform _itemHoldPos; // là vị trí mà nhân viên này đang giữ ObjectPlant trong người 
-
-        protected override void Start()
-        {
-            base.Start();
-            _itemHoldPos = transform.Find("ITEM_HOLD_POS");
-        }
 
         private void FixedUpdate()
         {
@@ -27,7 +20,7 @@ namespace CuaHang.AI
         /// <summary> Được gọi stats </summary>
         public void SetProperties(StaffData data)
         {
-            ID = data.Id;
+            _id = data.Id;
             _name = data.Name;
             transform.position = data.Position;
         }
@@ -96,7 +89,7 @@ namespace CuaHang.AI
 
         /// <summary> nhặt item carry lênh </summary>
         public void SetHeldItem(Item itemCarry)
-        {
+        { 
             itemCarry.SetParent(_itemHoldPos, this, false);
             itemCarry.IsCanDrag = false;
             _heldItem = itemCarry;

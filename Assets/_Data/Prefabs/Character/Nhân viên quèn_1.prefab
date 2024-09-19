@@ -466,7 +466,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3537924936178513097}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3.9, y: 0, z: 0.32}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -512,6 +512,7 @@ MonoBehaviour:
   enableDebugLog: 0
   _id: fa4254a8-794d-49b2-bc5d-e4d223fe9b2d
   _typeID: 0
+  _type: 0
   _name: 
   _isRecyclable: 0
   _stageAnim: 0
@@ -522,8 +523,8 @@ MonoBehaviour:
   _navMeshAgent: {fileID: 0}
   _gameManager: {fileID: 0}
   _anim: {fileID: 0}
-  _parcelHold: {fileID: 0}
-  _itemHoldPos: {fileID: 0}
+  _heldItem: {fileID: 0}
+  _itemHoldPos: {fileID: 7658574019991247145}
 --- !u!114 &1245842612736911933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -538,18 +539,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enableDebugLog: 0
   _staffData:
-    _id: 
-    _typeID: 0
-    _name: 
-    _parcelHold:
-      _id: 
-      _typeID: 0
-      _price: 0
-      _position: {x: 0, y: 0, z: 0}
-      _rotation: {x: 0, y: 0, z: 0, w: 0}
-      _itemSlot: []
-    _position: {x: 0, y: 0, z: 0}
-  _staff: {fileID: 0}
+    id: 
+    typeID: 0
+    name: 
+    position: {x: 0, y: 0, z: 0}
 --- !u!1 &3754596735648969814
 GameObject:
   m_ObjectHideFlags: 0
@@ -1290,7 +1283,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7658574019991247145}
   m_Layer: 0
-  m_Name: ITEM_HOLD_POS
+  m_Name: ItemHoldPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

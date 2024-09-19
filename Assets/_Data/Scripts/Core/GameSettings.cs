@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using CuaHang;
-using Core;
+using System; 
 using UnityEngine;
 
 public class GameSettings : Singleton<GameSettings>

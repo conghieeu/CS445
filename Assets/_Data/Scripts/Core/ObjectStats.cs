@@ -1,5 +1,6 @@
 using CuaHang;
 using Core;
+using UnityEngine;
 
 public abstract class ObjectStats : HieuBehavior
 {
@@ -28,7 +29,7 @@ public abstract class ObjectStats : HieuBehavior
 
     private void OnActionLoadData()
     {
-        if(this) OnLoadData();
+        if (this) OnLoadData();
     }
 
     private void OnActionSetData(GameData data)

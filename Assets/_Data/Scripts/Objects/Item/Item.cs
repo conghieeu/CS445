@@ -90,7 +90,7 @@ namespace CuaHang
         /// <summary> Set Properties with Item Data </summary>
         public virtual void SetVariables(ItemData data)
         {
-            if(data == null) return;
+            if (data == null) return;
 
             ID = data.Id;
             Price = data.Price;
@@ -103,9 +103,9 @@ namespace CuaHang
             {
                 _itemPooler.GetObjectByID(data.IdItemParent).GetComponentInChildren<ItemSlot>().TryAddItemToItemSlot(this, true);
             }
-            else if (_staffPooler.GetObjectByID(data.IdItemParent))// trường hợp cha là Nhân vật
-            {
-                _staffPooler.GetObjectByID(data.IdItemParent).GetComponentInChildren<Staff>().SetHeldItem(this);
+            else if (_staffPooler.GetObjectByID(data.IdItemParent))// trường hợp cha là nhân viên
+            { 
+                _staffPooler.GetObjectByID(data.IdItemParent).GetComponent<Staff>().SetHeldItem(this); 
             }
         }
 

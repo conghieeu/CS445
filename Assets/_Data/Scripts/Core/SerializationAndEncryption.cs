@@ -218,15 +218,20 @@ namespace Core
         protected override void Awake()
         {
             base.Awake();
+
             SetDontDestroyOnLoad(true);
+
             _filePath = Application.persistentDataPath + _saveName;
-            LoadData();
 
             IsSaveFileExists = File.Exists(_filePath);
 
             if (!IsSaveFileExists)
             {
-                GameData._gamePlayData = new();
+                GameData._gamePlayData = new GamePlayData();
+            }
+            else
+            {
+                LoadFileData();
             }
         }
 
@@ -251,7 +256,7 @@ namespace Core
             SaveData();
         }
 
-        public void StartNewGame()
+        public void OnStartNewGame()
         {
             GameData._gamePlayData = new();
             SaveData();
@@ -266,14 +271,18 @@ namespace Core
 
         public void LoadData()
         {
+            ActionSetData?.Invoke(GameData);
+            ActionDataLoad?.Invoke();
+        }
+
+        public void LoadFileData()
+        {
             if (File.Exists(_filePath))
             {
                 string stringData = File.ReadAllText(_filePath);
 
                 GameData = Deserialized(stringData);
-                ActionSetData?.Invoke(GameData);
-                ActionDataLoad?.Invoke();
-
+                LoadData();
                 Debug.Log("Game data loaded from: " + _filePath);
             }
             else

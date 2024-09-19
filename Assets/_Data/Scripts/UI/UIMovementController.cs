@@ -20,17 +20,13 @@ namespace CuaHang.UI
 
         private void OnEnable()
         {
-            RaycastCursor.ActionEditItem += EnableCanvasGroup;
+            RaycastCursor.ActionEditItem += item => EnableCanvasGroup(!item);
         }
 
         private void OnDisable()
         {
-            RaycastCursor.ActionEditItem += EnableCanvasGroup;
+            RaycastCursor.ActionEditItem -= item => EnableCanvasGroup(!item);
         }
 
-        private void EnableCanvasGroup(Item item)
-        {
-            base.EnableCanvasGroup(item != null);
-        }
     }
 }

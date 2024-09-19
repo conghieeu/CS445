@@ -11,7 +11,6 @@ namespace CuaHang
         public SensorCast _sensorForward; // cảm biến đằng trước
         public Animator _anim;
 
-        [SerializeField] float _currentMoney;
         [SerializeField] int _reputation;
         [SerializeField] string _name;
         [SerializeField] float _money;
@@ -19,45 +18,53 @@ namespace CuaHang
 
         PlayerManager _playerManager => PlayerManager.Instance;
 
-        public float CurrentMoney { get => _currentMoney; set => _currentMoney = value; }
-        public int Reputation { get => _reputation; set => _reputation = value; }
         public string Name { get => Name; private set => Name = value; }
+        public int Reputation
+        {
+            get => _reputation;
+            set
+            {
+                if (value >= 999999) _reputation = 999999;
+                else if (value <= 0) _reputation = 0;
+                else _reputation = value;
+
+                ActionReputationChange?.Invoke(_reputation);
+            }
+        }
         public float Money
         {
             get => _money;
             set
             {
-                if (value > 0 && value < 999999) _money = value;
-                OnChangeMoney?.Invoke(_money);
+                if (value >= 999999) _money = 999999;
+                else if (value <= 0) _money = 0;
+                else _money = value;
+
+                ActionMoneyChange?.Invoke(_money);
             }
         }
 
         public Transform PosHoldParcel { get => _posHoldParcel; }
-        public static event Action<float> OnChangeMoney;
+        public static event Action<float> ActionMoneyChange;
+        public static event Action<float> ActionReputationChange;
 
         protected override void Awake()
         {
             base.Awake();
             _anim = GetComponentInChildren<Animator>();
-        } 
+        }
 
         public void SetProperties(PlayerData data)
-        { 
-            _currentMoney = data.CurrentMoney;
-            _reputation = data.Reputation;
+        {
+            Money = data.CurrentMoney;
+            Reputation = data.Reputation;
             transform.position = data.Position;
-            transform.rotation = data.Rotation; 
+            transform.rotation = data.Rotation;
         }
 
         public void AddMoney(float amount)
         {
-            _currentMoney += amount;
-
-            // Kiểm tra và cập nhật highestMoney nếu cần
-            if (_playerManager.HighestMoney < _currentMoney)
-            {
-                _playerManager.HighestMoney = _currentMoney;
-            }
+            Money += amount;
         }
 
         public void UpdateReputation(int reputation)

@@ -15,7 +15,7 @@ public class UILobby : MonoBehaviour
 
     public void OnBtnChoiMoi()
     {
-        _SAE.StartNewGame();
+        _SAE.OnStartNewGame();
     }
 }
 

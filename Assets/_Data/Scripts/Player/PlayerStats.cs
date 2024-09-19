@@ -28,10 +28,10 @@ namespace CuaHang
         }
 
         /// <summary> Lấy dữ liệu trạng thái hiện tại của đối tương này </summary>
-        PlayerData GetData()
+        private PlayerData GetData()
         {
             PlayerCtrl playerCtrl = GetComponent<PlayerCtrl>();
-            PlayerData data = new PlayerData(playerCtrl.CurrentMoney, playerCtrl.Reputation, transform.position, transform.rotation);
+            PlayerData data = new PlayerData(playerCtrl.Money, playerCtrl.Reputation, transform.position, transform.rotation);
             return data;
         }
     }
