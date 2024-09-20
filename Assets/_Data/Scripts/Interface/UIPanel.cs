@@ -14,11 +14,6 @@ namespace CuaHang.UI
             _canvasGroup = GetComponent<CanvasGroup>();
         }
 
-        protected virtual void Start()
-        {
-
-        }
-
         public virtual void SetActiveContents(bool value)
         {
             if (_panelContent)

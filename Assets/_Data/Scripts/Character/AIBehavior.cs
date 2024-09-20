@@ -39,7 +39,7 @@ namespace CuaHang.AI
         {
             _itemPooler = ItemPooler.Instance;
             _gameManager = GameManager.Instance;
-            _mayTinh = GameObject.FindObjectOfType<MayTinh>();
+            _mayTinh = FindFirstObjectByType<MayTinh>();
         }
 
         protected virtual void SetAnim() => _anim.SetInteger("State", (int)_stageAnim);

@@ -7,14 +7,9 @@ public class GameSettingStats : ObjectStats
     [Header("GAME SETTING STATS")]
     [SerializeField] GameSettingsData _gameSettingData;
 
-    CameraControl _cameraControl;
+    CameraControl _cameraControl => CameraControl.Instance;
 
-    public static event Action<GameSettingsData> _OnDataChange;
-
-    private void Start()
-    {
-        _cameraControl = CameraControl.Instance;
-    }
+    public static event Action<GameSettingsData> ActionDataChange; 
 
     private void FixedUpdate()
     {
@@ -23,7 +18,6 @@ public class GameSettingStats : ObjectStats
 
     public override void OnSetData<T>(T data)
     {
-        Debug.Log(data);
         if (data is GameSettingsData)
         {
             _gameSettingData = data as GameSettingsData;
@@ -36,7 +30,7 @@ public class GameSettingStats : ObjectStats
         if (gameSettings)
         {
             gameSettings.SetVariables(_gameSettingData);
-            _OnDataChange?.Invoke(_gameSettingData);
+            ActionDataChange?.Invoke(_gameSettingData);
         }
     }
 

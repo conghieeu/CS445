@@ -4,10 +4,8 @@ namespace CuaHang.UI
 {
     public class UIMovementController : UIPanel
     {
-        protected override void Start()
+        private void Start()
         {
-            base.Start();
-
             if (GameSystem.CurrentPlatform == Platform.Standalone)
             {
                 EnableCanvasGroup(false);

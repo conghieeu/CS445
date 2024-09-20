@@ -6,7 +6,7 @@ public class UILobby : MonoBehaviour
 {
     [SerializeField] Button _btnTiepTuc; 
 
-    SerializationAndEncryption _SAE => SerializationAndEncryption.Instance;
+    DataManager _SAE => DataManager.Instance;
 
     private void Start()
     {  

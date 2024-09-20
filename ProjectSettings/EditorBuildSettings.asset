@@ -8,9 +8,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Scenes/Loading.unity
     guid: c505a9db19b31eb44925d836ca9c5550
-  - enabled: 0
-    path: Assets/_Scenes/OptionsMenu.unity
-    guid: d889d1a9f3e8acb4aa5ba1144cc794ad
   - enabled: 1
     path: Assets/_Scenes/DataHolder.unity
     guid: f801cdc02307fdd40a6791ad60927369
@@ -23,3 +20,4 @@ EditorBuildSettings:
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 6e2a676ea4763ec4f905ccb505942cb1, type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: a267436b923e92c4288798e7bdfe2126, type: 2}
+  m_UseUCBPForAssetBundles: 0

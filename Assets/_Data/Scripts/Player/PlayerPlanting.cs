@@ -9,15 +9,15 @@ namespace CuaHang
 {
     public class PlayerPlanting : HieuBehavior
     {
-        PlayerCtrl _ctrl;
+        PlayerCtrl _playerCtrl;
         InputImprove _input => InputImprove.Instance;
-        ItemDrag _itemDrag => RaycastCursor.Instance.ItemDrag;
+        ModuleDragItem _itemDrag => RaycastCursor.Instance.ItemDrag;
 
         public static event Action ActionSenderItem;
 
         private void Awake()
         {
-            _ctrl = GetComponent<PlayerCtrl>();
+            _playerCtrl = GetComponent<PlayerCtrl>();
         }
 
         private void OnEnable()
@@ -41,7 +41,7 @@ namespace CuaHang
         private void SenderItemSell(InputAction.CallbackContext ctx)
         {
             // có item ở cảm biến
-            Item shelf = _ctrl._sensorForward.GetItemTypeHit(Type.Shelf);
+            Item shelf = _playerCtrl._sensorForward.GetItemTypeHit(Type.Shelf);
             Item itemHold = _itemDrag._itemDragging;
 
             if (shelf && itemHold && !itemHold.IsCanSell) // gửi các apple trong parcel sang kệ
@@ -61,7 +61,7 @@ namespace CuaHang
         /// <summary> đưa parcel vào thùng rác </summary>
         private void SenderParcel(InputAction.CallbackContext ctx)
         {
-            Item trash = _ctrl._sensorForward.GetItemTypeHit(Type.Trash);
+            Item trash = _playerCtrl._sensorForward.GetItemTypeHit(Type.Trash);
             Item parcel = _itemDrag._itemDragging;
 
             if (trash && parcel && parcel.Type == Type.Parcel)

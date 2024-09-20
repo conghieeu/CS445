@@ -23,7 +23,7 @@ namespace CuaHang
 
         Coroutine _zoomCoroutine;
         Camera _cam => Camera.main;
-        ItemDrag _itemDrag => RaycastCursor.Instance.ItemDrag;
+        ModuleDragItem _itemDrag => RaycastCursor.Instance.ItemDrag;
         InputImprove _input => InputImprove.Instance;
         PlayerCtrl _playerCtrl => PlayerCtrl.Instance;
 
@@ -38,7 +38,7 @@ namespace CuaHang
 
         private void OnEnable()
         {
-            GameSettingStats._OnDataChange += SetSettingLoad;
+            GameSettingStats.ActionDataChange += SetSettingLoad;
 
             RaycastCursor.ActionEditItem += SetItemEdit;
             RaycastCursor.ActionFollowItem += SetFollowItem;
@@ -50,7 +50,7 @@ namespace CuaHang
 
         private void OnDisable()
         {
-            GameSettingStats._OnDataChange -= SetSettingLoad;
+            GameSettingStats.ActionDataChange -= SetSettingLoad;
 
             RaycastCursor.ActionEditItem -= SetItemEdit;
             RaycastCursor.ActionFollowItem -= SetFollowItem;

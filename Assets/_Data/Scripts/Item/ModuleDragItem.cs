@@ -1,7 +1,7 @@
+using CuaHang.UI;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using CuaHang.UI;
+using System.Collections.Generic; 
 using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -11,7 +11,7 @@ using UnityEngine.UI;
 namespace CuaHang
 {
     /// <summary> ObjectTemp là đối tượng đại diện cho object Plant khi di dời đối tượng </summary>
-    public class ItemDrag : MonoBehaviour
+    public class ModuleDragItem : MonoBehaviour
     {
         [Header("Drag")]
         public bool _isDragging;

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class PlayerProfile : ObjectStats
+public class UserStats : ObjectStats
 {
     [SerializeField] PlayerProfileData _playerProfileData;
 
@@ -18,7 +18,7 @@ public class PlayerProfile : ObjectStats
         if (_playerProfileData == null) return;
 
         // set properties
-        GetComponent<PlayerManager>().SetProperties(_playerProfileData);
+        GetComponent<User>().SetProperties(_playerProfileData);
         
     }
 
@@ -30,7 +30,7 @@ public class PlayerProfile : ObjectStats
 
     private PlayerProfileData GetData()
     {
-        PlayerManager playerManager = GetComponent<PlayerManager>();
+        User playerManager = GetComponent<User>();
         PlayerProfileData data = new(playerManager.UserName, playerManager.HighestMoney, playerManager.PlayTime);
         return data;
     }

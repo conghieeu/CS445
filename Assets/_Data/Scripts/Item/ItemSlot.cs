@@ -17,6 +17,7 @@ namespace CuaHang
             public Item _item; // object đang gáng trong boolingObject đó
             public Transform _slot;
 
+
             // Constructor với tham số
             public ItemsSlots(Item item, Transform slot)
             {

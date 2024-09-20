@@ -1,36 +1,39 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+using System; 
+using CuaHang.AI;
+using QFSW.QC;
 using UnityEngine;
 
 namespace CuaHang
 {
     public class PlayerCtrl : Singleton<PlayerCtrl>
     {
-        public SensorCast _sensorForward; // cảm biến đằng trước
+        public SensorCast _sensorForward;
         public Animator _anim;
 
-        [SerializeField] int _reputation;
         [SerializeField] string _name;
         [SerializeField] float _money;
-        [SerializeField] Transform _posHoldParcel; // vị trí đặt cái parcel này trên tay
-
-        PlayerManager _playerManager => PlayerManager.Instance;
+        [SerializeField] Transform _posHoldParcel;
+        
+        [Header("Reputation")]
+        [SerializeField] int _currentReputation; // danh tieng
+        [SerializeField] int maxReputation = 100;
+        [SerializeField] int minReputation = 0;
 
         public string Name { get => Name; private set => Name = value; }
+        [Command]
         public int Reputation
         {
-            get => _reputation;
+            get => _currentReputation;
             set
             {
-                if (value >= 999999) _reputation = 999999;
-                else if (value <= 0) _reputation = 0;
-                else _reputation = value;
+                if (value >= maxReputation) _currentReputation = maxReputation;
+                else if (value <= minReputation) _currentReputation = minReputation;
+                else _currentReputation = value;
 
-                ActionReputationChange?.Invoke(_reputation);
+                ActionReputationChange?.Invoke(_currentReputation);
             }
         }
+        [Command]
         public float Money
         {
             get => _money;
@@ -44,32 +47,46 @@ namespace CuaHang
             }
         }
 
-        public Transform PosHoldParcel { get => _posHoldParcel; }
+        public Transform PosHoldParcel { get => _posHoldParcel; } 
         public static event Action<float> ActionMoneyChange;
         public static event Action<float> ActionReputationChange;
 
         protected override void Awake()
         {
             base.Awake();
-            _anim = GetComponentInChildren<Animator>();
+            _anim = GetComponent<Animator>();
         }
 
         public void SetProperties(PlayerData data)
-        {
+        { 
             Money = data.CurrentMoney;
+            Debug.Log(data.Reputation);
             Reputation = data.Reputation;
             transform.position = data.Position;
             transform.rotation = data.Rotation;
-        }
+        } 
 
-        public void AddMoney(float amount)
+        public void UpdateReputation(CustomerAction action)
         {
-            Money += amount;
-        }
-
-        public void UpdateReputation(int reputation)
-        {
-            _reputation += reputation;
+            Debug.Log(action);
+            switch (action)
+            {
+                case CustomerAction.Buy:
+                    Reputation += 10;
+                    break;
+                case CustomerAction.Return:
+                    Reputation -= 5;
+                    break;
+                case CustomerAction.Complain:
+                    Reputation -= 15;
+                    break;
+                case CustomerAction.Praise:
+                    Reputation += 10;
+                    break;
+                default:
+                    Debug.Log("Hành động không xác định");
+                    break;
+            }
         }
     }
 }

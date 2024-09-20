@@ -7,20 +7,21 @@ using UnityEngine;
 
 namespace CuaHang.AI
 {
+
     public class Customer : AIBehavior
     {
         [Header("Customer")]
         [SerializeField] float _totalPay;
         [SerializeField] Item _itemFinding; // item mà khách hàng đang tìm
         [SerializeField] Transform _slotWaiting; // Hàng chờ (WaitingLine) modun của máy tính sẽ SET thứ này
-        [SerializeField] Transform _outShopPoint; // Là điểm sẽ tới nếu rời shop
         [SerializeField] bool _isDoneShopping; // Không cần mua gì nữa
         [SerializeField] bool _isPlayerConfirmPay;
         [SerializeField] bool _isPickingItem; // để set animation
         [SerializeField] List<TypeID> _listItemBuy; // Cac item can lay, giới hạn là 15 item
         [SerializeField] List<Item> _itemsCard; // cac item da mua
 
-        ReputationSystem _reputationSystem; // Thêm tham chiếu đến ReputationSystem
+        Transform _goOutShopPoint;
+        PlayerCtrl _playerCtrl => PlayerCtrl.Instance;
 
         public float TotalPay { get => _totalPay; }
         public bool IsDoneShopping { get => _isDoneShopping; }
@@ -31,8 +32,7 @@ namespace CuaHang.AI
         protected override void Start()
         {
             base.Start();
-            _outShopPoint = CustomerPooler.Instance.GoOutShopPoint.transform;
-            _reputationSystem = ReputationSystem.Instance;
+            _goOutShopPoint = CustomerPooler.Instance.GoOutShopPoint.transform;
         }
 
         private void FixedUpdate()
@@ -40,7 +40,7 @@ namespace CuaHang.AI
             SetItemNeed();
             Behavior();
             SetAnimation();
-        } 
+        }
 
         private void OnDisable()
         {
@@ -89,20 +89,19 @@ namespace CuaHang.AI
 
                 return;
             }
-            else
-            {
-                if (_isDoneShopping == false)
-                {
-                    In($"Giá quá cao");
-                    _isDoneShopping = true;
 
-                    // Cập nhật danh tiếng khi phàn nàn
-                    _reputationSystem.UpdateReputation(ReputationSystem.CustomerAction.Complain);
-                }
+            if (!IsAgreeItem() && _isDoneShopping)
+            {
+                In($"Giá quá cao");
+                _isDoneShopping = true;
+
+                // Cập nhật danh tiếng khi phàn nàn
+                _playerCtrl.UpdateReputation(CustomerAction.Complain);
             }
 
+
             // delay cho animation pick up item
-            if(_isPickingItem) return;
+            if (_isPickingItem) return;
 
             // không mua được gì Out shop
             if (_totalPay == 0 && (!_itemFinding || _isDoneShopping))
@@ -125,7 +124,7 @@ namespace CuaHang.AI
                 else
                 {
                     // Cập nhật danh tiếng khi mua hàng
-                    _reputationSystem.UpdateReputation(ReputationSystem.CustomerAction.Buy);
+                    _playerCtrl.UpdateReputation(CustomerAction.Buy);
 
                     _mayTinh._waitingLine.CancelRegisterSlot(this);
                     GoOutShop();
@@ -216,7 +215,7 @@ namespace CuaHang.AI
         /// <summary> Ra về khách tìm điểm đến là ngoài ở shop </summary>
         private void GoOutShop()
         {
-            if (MoveToTarget(_outShopPoint))
+            if (MoveToTarget(_goOutShopPoint))
             {
                 // xoá tắt cả item dang giữ
                 foreach (var item in ItemsCard)
@@ -241,5 +240,15 @@ namespace CuaHang.AI
             _isPickingItem = false;
 
         }
+    }
+
+    // Định nghĩa enum cho các hành động của khách hàng
+    public enum CustomerAction
+    {
+        Buy,
+        Return,
+        Complain,
+        Praise
+
     }
 }

@@ -10,29 +10,31 @@ namespace CuaHang.UI
 
         private void Start()
         {
-            UpdateTextCoin(PlayerCtrl.Instance.Money);
-            UpdateReputation(PlayerCtrl.Instance.Reputation);
+            OnChangeMoney(PlayerCtrl.Instance.Money);
+            OnChangeReputation(PlayerCtrl.Instance.Reputation);
         }
 
         private void OnEnable()
         {
-            PlayerCtrl.ActionMoneyChange += UpdateTextCoin;
+            PlayerCtrl.ActionMoneyChange += OnChangeMoney;
+            PlayerCtrl.ActionReputationChange += OnChangeReputation;
         }
 
         private void OnDisable()
         {
-            PlayerCtrl.ActionMoneyChange -= UpdateTextCoin;
+            PlayerCtrl.ActionMoneyChange -= OnChangeMoney;
+            PlayerCtrl.ActionReputationChange -= OnChangeReputation;
         }
 
-        private void UpdateTextCoin(float money)
+        private void OnChangeReputation(float reputation)
+        {
+            _txtReputation.text = $"Uy tín: {reputation.ToString()}";
+        } 
+
+        private void OnChangeMoney(float money)
         {
             _txtMoney.text = $"Coin: {money.ToString("F1")}";
         }
-
-        private void UpdateReputation(int reputation)
-        {
-            _txtMoney.text = $"Uy tín: {reputation.ToString()}";
-        }
+ 
     }
-
 }

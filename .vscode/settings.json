@@ -51,5 +51,7 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "CS455CK_Nhom3_TapHoaMini.sln"
+    "dotnet.defaultSolution": "CS455CK_Nhom3_TapHoaMini.sln",
+    "dotnet.preferCSharpExtension": true,
+    "workbench.colorTheme": "Visual Studio 2019 Dark", 
 }

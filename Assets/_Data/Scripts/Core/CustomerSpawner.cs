@@ -5,34 +5,37 @@ using UnityEngine;
 
 namespace CuaHang.Core
 {
-
     public class CustomerSpawner : MonoBehaviour
     {
         [SerializeField] List<Customer> _customerPrefabs;
         [SerializeField] List<Transform> _spawnPoint;
-        [SerializeField] ReputationSystem _reputationSystem; // Tham chiếu đến hệ thống danh tiếng
         [SerializeField] float _baseSpawnInterval = 50.0f;    // Khoảng thời gian spawn cơ bản
         [SerializeField] float _randomRange = 2.0f;          // Khoảng thời gian ngẫu nhiên thêm vào
         [SerializeField] float _currentSpawnInterval;       // Thời gian spawn hiện tại
         [SerializeField] float _spawnTimer;                 // Bộ đếm thời gian cho spawn khách hàng
 
-        void Start()
+        private void Start()
         {
-            _reputationSystem = ReputationSystem.Instance;
-
-            _reputationSystem.OnReputationChanged += AdjustSpawnRate;
-            AdjustSpawnRate(_reputationSystem.Reputation); // Điều chỉnh spawn rate ban đầu
-
             _spawnTimer = _currentSpawnInterval;
         }
 
-        void FixedUpdate()
+        private void FixedUpdate()
         {
             SpawnCustomerOverTime();
         }
 
+        private void OnEnable()
+        {
+            PlayerCtrl.ActionReputationChange += AdjustSpawnRate;
+        }
+
+        private void OnDisable()
+        {
+            PlayerCtrl.ActionReputationChange -= AdjustSpawnRate;
+        }
+
         /// <summary> Điều chỉnh tỷ lệ spawn dựa trên danh tiếng </summary>
-        private void AdjustSpawnRate(int reputation)
+        private void AdjustSpawnRate(float reputation)
         {
             float spawnRateMultiplier = 1.0f + (reputation / 100.0f); // Danh tiếng cao -> spawn nhanh hơn
             _currentSpawnInterval = _baseSpawnInterval / spawnRateMultiplier;

@@ -4,20 +4,20 @@ using UnityEngine;
 
 public abstract class ObjectStats : HieuBehavior
 {
-    public SerializationAndEncryption _SAE => SerializationAndEncryption.Instance;
+    public DataManager _SAE => DataManager.Instance;
 
     protected virtual void OnEnable()
     {
-        SerializationAndEncryption.ActionSaveData += OnActionSaveData;
-        SerializationAndEncryption.ActionSetData += OnActionSetData;
-        SerializationAndEncryption.ActionDataLoad += OnActionLoadData;
+        DataManager.ActionSaveData += OnActionSaveData;
+        DataManager.ActionSetData += OnActionSetData;
+        DataManager.ActionDataLoad += OnActionLoadData;
     }
 
     protected virtual void OnDisable()
     {
-        SerializationAndEncryption.ActionSetData -= OnActionSetData;
-        SerializationAndEncryption.ActionSaveData -= OnActionSaveData;
-        SerializationAndEncryption.ActionDataLoad -= OnActionLoadData;
+        DataManager.ActionSetData -= OnActionSetData;
+        DataManager.ActionSaveData -= OnActionSaveData;
+        DataManager.ActionDataLoad -= OnActionLoadData;
     }
 
     protected GameData GetGameData() => _SAE.GameData;

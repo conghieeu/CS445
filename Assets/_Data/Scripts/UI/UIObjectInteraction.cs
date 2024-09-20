@@ -28,7 +28,7 @@ namespace CuaHang.UI
         [SerializeField] BtnPressHandler _btnDiscountPrice;
 
         InputImprove _inputImprove => InputImprove.Instance;
-        ItemDrag _itemDrag => RaycastCursor.Instance.ItemDrag;
+        ModuleDragItem _itemDrag => RaycastCursor.Instance.ItemDrag;
 
         private void Start()
         {

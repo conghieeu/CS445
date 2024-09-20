@@ -33,15 +33,15 @@ namespace Core
 
         private void OnEnable()
         {
-            GameSettingStats._OnDataChange += OnGameSettingLoad;
+            GameSettingStats.ActionDataChange += OnGameSettingChange;
         }
 
         private void OnDisable()
         {
-            GameSettingStats._OnDataChange -= OnGameSettingLoad;
+            GameSettingStats.ActionDataChange -= OnGameSettingChange;
         }
 
-        private void OnGameSettingLoad(GameSettingsData data)
+        private void OnGameSettingChange(GameSettingsData data)
         {
             // Load UI
             _toggleFullScreen.isOn = data.IsFullScreen;
@@ -89,6 +89,7 @@ namespace Core
 
         public void SetVolume(float volume)
         {
+            Debug.Log(volume + "  " + audioMixer);
             audioMixer.SetFloat("volume", volume);
             _gameSettings._MasterVolume = volume;
         }

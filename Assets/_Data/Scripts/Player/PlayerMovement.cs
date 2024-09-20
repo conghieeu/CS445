@@ -8,7 +8,7 @@ using UnityEngine;
 namespace CuaHang.Player
 {
     public class PlayerMovement : HieuBehavior
-    { 
+    {
         [SerializeField] float _moveSpeed;
         [SerializeField] Transform _cam;
         [SerializeField] STATE_ANIM _stageAnim;
@@ -16,17 +16,21 @@ namespace CuaHang.Player
         [SerializeField] Vector3 _moveDir;
 
         Rigidbody _rb;
-        PlayerCtrl _ctrl;
+        Animator _animator;
         InputImprove _input;
-        ItemDrag _itemDrag;
+        ModuleDragItem _itemDrag;
+
+        private void Awake()
+        {
+            _animator = GetComponentInChildren<Animator>();
+            _rb = GetComponent<Rigidbody>();
+            _rb.angularDamping = 0.0f;
+        }
 
         private void Start()
         {
             _input = InputImprove.Instance;
-            _ctrl = GetComponent<PlayerCtrl>();
-            _rb = GetComponent<Rigidbody>();
             _cam = Camera.main.transform;
-            _rb.angularDrag = 0.0f; // lực cản khi xoay vật
             _itemDrag = RaycastCursor.Instance.ItemDrag;
         }
 
@@ -56,12 +60,12 @@ namespace CuaHang.Player
             _moveDir = (forwardRelative + rightRelative).normalized;
 
             // movement 
-            Vector3 velocity = new Vector3(_moveDir.x, _rb.velocity.y, _moveDir.z) * _moveSpeed;
+            Vector3 velocity = new Vector3(_moveDir.x, _rb.linearVelocity.y, _moveDir.z) * _moveSpeed;
 
-            _rb.velocity = velocity;
+            _rb.linearVelocity = velocity;
 
             // Trường hợp đang kéo thả Item nào đó
-            if (_rb.velocity.magnitude > 0 && !_itemDrag._isDragging)
+            if (_rb.linearVelocity.magnitude > 0 && !_itemDrag._isDragging)
             {
                 velocity.y = 0;
                 transform.forward = velocity;
@@ -93,6 +97,6 @@ namespace CuaHang.Player
             }
         }
 
-        private void SetAnim() => _ctrl._anim.SetInteger("State", (int)_stageAnim);
+        private void SetAnim() => _animator.SetInteger("State", (int)_stageAnim);
     }
 }

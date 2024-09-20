@@ -16,12 +16,12 @@ namespace CuaHang
         [SerializeField] Item _itemEdit; // item dang editing
         [SerializeField] Item _itemFollow; // item dang follow
         [SerializeField] Item _itemSelect; // item dang target
-        [SerializeField] ItemDrag _itemDrag;
+        [SerializeField] ModuleDragItem _itemDrag;
 
         InputImprove _input => InputImprove.Instance;
         Camera _cam => Camera.main;
 
-        public ItemDrag ItemDrag { get => _itemDrag;}
+        public ModuleDragItem ItemDrag { get => _itemDrag;}
         public Item ItemSelect
         {
             get => _itemSelect;

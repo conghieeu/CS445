@@ -10,9 +10,8 @@ public class PointDragItem : UIPanel, IPointerDownHandler, IPointerUpHandler
     InputImprove _inputImprove;
     Coroutine _movementCoroutine;
 
-    protected override void Start()
+    private void Start()
     {
-        base.Start();
 
         EnableCanvasGroup(GameSystem.CurrentPlatform == Platform.Android);
 
