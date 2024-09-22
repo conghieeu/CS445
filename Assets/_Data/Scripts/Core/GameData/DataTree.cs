@@ -145,6 +145,7 @@ public class GamePlayData
 
     public GamePlayData()
     {
+        Debug.Log("Load new");
         _isInitialized = false;
         _customersData = new();
         _staffsData = new();

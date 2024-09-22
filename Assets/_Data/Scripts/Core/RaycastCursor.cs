@@ -41,6 +41,7 @@ namespace CuaHang
             get => _itemEdit; set
             {
                 _itemEdit = value;
+                _enableRaycast = !value;
                 ActionEditItem?.Invoke(value);
             }
         }
@@ -101,6 +102,7 @@ namespace CuaHang
         {
             if (ItemEdit)  // thoát item dang edit
             {
+                ItemSelect = ItemEdit;  
                 ItemEdit = null;
             }
             else  // thoát item follow
@@ -160,6 +162,7 @@ namespace CuaHang
             if (ItemSelect && ItemSelect.CamHere)
             {
                 ItemEdit = ItemSelect;
+                ItemSelect = null;
             }
             else
             {

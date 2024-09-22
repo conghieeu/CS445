@@ -1,4 +1,4 @@
-using System; 
+using System;
 using UnityEngine;
 
 public class GameSettings : Singleton<GameSettings>
@@ -12,13 +12,13 @@ public class GameSettings : Singleton<GameSettings>
     [SerializeField] int _currentResolutionIndex;
     [SerializeField] Quaternion _camRotation;
 
-    public bool _IsFullScreen { get => _isFullScreen; set => _isFullScreen = value; }
-    public int _QualityIndex { get => _qualityIndex; set => _qualityIndex = value; }
-    public float _MasterVolume { get => _masterVolume; set => _masterVolume = value; }
-    public int _CurrentResolutionIndex { get => _currentResolutionIndex; set => _currentResolutionIndex = value; }
-    public Quaternion _CamRotation { get => _camRotation; set => _camRotation = value; }
+    public bool IsFullScreen { get => _isFullScreen; set => _isFullScreen = value; }
+    public int QualityIndex { get => _qualityIndex; set => _qualityIndex = value; }
+    public float MasterVolume { get => _masterVolume; set => _masterVolume = value; }
+    public int CurrentResolutionIndex { get => _currentResolutionIndex; set => _currentResolutionIndex = value; }
+    public Quaternion CamRotation { get => _camRotation; set => _camRotation = value; }
 
-    public static event Action<GameSettingsData> ActionDataChange;
+    public static event Action<GameSettings> ActionDataChange;
 
     protected override void Awake()
     {
@@ -26,11 +26,13 @@ public class GameSettings : Singleton<GameSettings>
     }
 
     public void SetVariables(GameSettingsData data)
-    { 
+    {
         _isFullScreen = data.IsFullScreen;
         _qualityIndex = data.QualityIndex;
         _masterVolume = data.MasterVolume;
         _currentResolutionIndex = data.CurrentResolutionIndex;
         _camRotation = data.CamRotation;
+
+        ActionDataChange?.Invoke(this);
     }
 }

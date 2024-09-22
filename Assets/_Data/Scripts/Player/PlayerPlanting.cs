@@ -46,7 +46,6 @@ namespace CuaHang
 
             if (shelf && itemHold && !itemHold.IsCanSell) // gửi các apple trong parcel sang kệ
             {
-                ActionSenderItem?.Invoke();
                 shelf.ItemSlot.ReceiverItems(itemHold.ItemSlot, true);
             }
             else if (shelf && itemHold && itemHold.IsCanSell) // để item lênh kệ

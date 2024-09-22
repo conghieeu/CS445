@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using CuaHang.AI;
 using CuaHang.Pooler;
+using QFSW.QC;
+using UnityEngine;
 
 namespace CuaHang
 {
@@ -17,21 +19,23 @@ namespace CuaHang
 
         public override void OnLoadData()
         {
+            Debug.Log("Customer load");
+
             // tái tạo items data
             foreach (var cusData in _customersData)
             {
                 ObjectPool customer = GetComponent<CustomerPooler>().GetObjectByID(cusData.Id);
-
-                // load data những đối tượng đã tồn tại
-                if (customer)
+ 
+                if (customer) // load data những đối tượng đã tồn tại
                 {
                     customer.GetComponent<CustomerStats>().OnSetData(cusData);
                 }
-                else
-                {
-                    // tạo mới
+                else // tạo mới
+                { 
                     ObjectPool newCustomer = GetComponent<CustomerPooler>().GetOrCreateObjectPool(cusData.TypeID);
+                    Debug.Log("Cus 1", newCustomer);
                     newCustomer.GetComponent<CustomerStats>().OnSetData(cusData);
+                    Debug.Log("Cus 2", newCustomer);
                 }
             }
         } 

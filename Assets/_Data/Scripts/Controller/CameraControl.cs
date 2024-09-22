@@ -38,7 +38,7 @@ namespace CuaHang
 
         private void OnEnable()
         {
-            GameSettingStats.ActionDataChange += SetSettingLoad;
+            GameSettings.ActionDataChange += OnGameSettingChange;
 
             RaycastCursor.ActionEditItem += SetItemEdit;
             RaycastCursor.ActionFollowItem += SetFollowItem;
@@ -50,7 +50,7 @@ namespace CuaHang
 
         private void OnDisable()
         {
-            GameSettingStats.ActionDataChange -= SetSettingLoad;
+            GameSettings.ActionDataChange -= OnGameSettingChange;
 
             RaycastCursor.ActionEditItem -= SetItemEdit;
             RaycastCursor.ActionFollowItem -= SetFollowItem;
@@ -63,7 +63,7 @@ namespace CuaHang
         private void FixedUpdate()
         {
             // save cam rotation
-            GameSettings.Instance._CamRotation = _camshaft.rotation;
+            GameSettings.Instance.CamRotation = _camshaft.rotation;
         }
 
         private void Update()
@@ -147,7 +147,7 @@ namespace CuaHang
             _itemSelect = item;
         }
 
-        void SetSettingLoad(GameSettingsData data)
+        void OnGameSettingChange(GameSettings data)
         {
             if (_camshaft)
             {
@@ -186,12 +186,10 @@ namespace CuaHang
             if (item) // zoom in
             {
                 item.CamHere.SetCamFocusHere(_cam);
-                item.Coll.enabled = false;
             }
             else // zoom out
             {
                 if (_objectFollow) SetObjectFollow(_objectFollow.transform);
-                if (_itemEdit) _itemEdit.Coll.enabled = true;
             }
 
             _itemEdit = item;

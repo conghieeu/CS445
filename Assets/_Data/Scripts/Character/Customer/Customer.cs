@@ -191,7 +191,8 @@ namespace CuaHang.AI
 
         private TypeID GetRandomItemBuy()
         {
-            Debug.LogWarning($"Chỗ này chưa xong");
+            TypeID[] items = { TypeID.apple_1, TypeID.milk_1, TypeID.banana_1 };
+            int randomIndex = UnityEngine.Random.Range(0, items.Length);
             return TypeID.apple_1;
         }
 

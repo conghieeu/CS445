@@ -9,7 +9,6 @@ public class GameSettingStats : ObjectStats
 
     CameraControl _cameraControl => CameraControl.Instance;
 
-    public static event Action<GameSettingsData> ActionDataChange; 
 
     private void FixedUpdate()
     {
@@ -30,7 +29,6 @@ public class GameSettingStats : ObjectStats
         if (gameSettings)
         {
             gameSettings.SetVariables(_gameSettingData);
-            ActionDataChange?.Invoke(_gameSettingData);
         }
     }
 
@@ -48,10 +46,10 @@ public class GameSettingStats : ObjectStats
         if (_cameraControl) camAngle = _cameraControl.CamshaftRotation;
 
         GameSettingsData data = new(
-            gSet._IsFullScreen,
-            gSet._QualityIndex,
-            gSet._MasterVolume,
-            gSet._CurrentResolutionIndex,
+            gSet.IsFullScreen,
+            gSet.QualityIndex,
+            gSet.MasterVolume,
+            gSet.CurrentResolutionIndex,
             camAngle);
 
         return data;

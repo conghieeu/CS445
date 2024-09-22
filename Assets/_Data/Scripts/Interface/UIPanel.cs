@@ -6,11 +6,12 @@ namespace CuaHang.UI
     public class UIPanel : HieuBehavior
     {
         [Header("UI PANEL")]
-        [SerializeField] protected CanvasGroup _canvasGroup;
         [SerializeField] protected RectTransform _panelContent;
 
-        private void Awake()
-        { 
+        protected CanvasGroup _canvasGroup;
+
+        protected virtual void Awake()
+        {
             _canvasGroup = GetComponent<CanvasGroup>();
         }
 

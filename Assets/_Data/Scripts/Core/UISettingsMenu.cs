@@ -11,7 +11,7 @@ namespace Core
 {
     public class UISettingsMenu : UIPanel
     {
-        [SerializeField] AudioMixer audioMixer;
+        [SerializeField] AudioMixer _audioMixer;
         [SerializeField] bool _enableMenuSettings;
         [SerializeField] TMP_Dropdown resolutionDropdown;
         [SerializeField] TMP_Dropdown _dropDownGraphics;
@@ -19,29 +19,31 @@ namespace Core
         [SerializeField] Slider _sliderVolume;
         [SerializeField] Resolution[] resolutions; // Array to store available screen resolutions
 
-        GameSettings _gameSettings;
+        GameSettings _gameSettings => GameSettings.Instance;
 
-        private void Awake()
+        protected override void Awake()
         {
-            // tắt menu setting khi mới bắt đầu 
+            base.Awake();
             _enableMenuSettings = false;
             _panelContent.gameObject.SetActive(_enableMenuSettings);
+        }
 
-            _gameSettings = GameSettings.Instance;
-            SetResolution();
+        private void Start()
+        {
+            SetDropDownResolution();
         }
 
         private void OnEnable()
         {
-            GameSettingStats.ActionDataChange += OnGameSettingChange;
+            GameSettings.ActionDataChange += OnGameSettingChange;
         }
 
         private void OnDisable()
         {
-            GameSettingStats.ActionDataChange -= OnGameSettingChange;
+            GameSettings.ActionDataChange -= OnGameSettingChange;
         }
 
-        private void OnGameSettingChange(GameSettingsData data)
+        private void OnGameSettingChange(GameSettings data)
         {
             // Load UI
             _toggleFullScreen.isOn = data.IsFullScreen;
@@ -54,7 +56,7 @@ namespace Core
             SetResolutionCurrent(data.CurrentResolutionIndex);
         }
 
-        private void SetResolution()
+        private void SetDropDownResolution()
         {
             resolutions = Screen.resolutions; // Get all available screen resolutions from the system
 
@@ -84,26 +86,25 @@ namespace Core
             resolutionDropdown.value = current;
             resolutionDropdown.RefreshShownValue();
 
-            _gameSettings._CurrentResolutionIndex = current;
+            _gameSettings.CurrentResolutionIndex = current;
         }
 
         public void SetVolume(float volume)
         {
-            Debug.Log(volume + "  " + audioMixer);
-            audioMixer.SetFloat("volume", volume);
-            _gameSettings._MasterVolume = volume;
+            _audioMixer.SetFloat("volume", volume);
+            _gameSettings.MasterVolume = volume;
         }
 
         public void SetQuality(int qualityIndex)
         {
             QualitySettings.SetQualityLevel(qualityIndex);
-            _gameSettings._QualityIndex = qualityIndex;
+            _gameSettings.QualityIndex = qualityIndex;
         }
 
         public void SetFullscreen(bool isFullscreen)
         {
             Screen.fullScreen = isFullscreen;
-            _gameSettings._IsFullScreen = isFullscreen;
+            _gameSettings.IsFullScreen = isFullscreen;
         }
 
 

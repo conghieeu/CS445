@@ -73,6 +73,7 @@ public class DataManager : Singleton<DataManager>
     public void OnStartNewGame()
     {
         GameData._gamePlayData = new();
+        File.WriteAllText(_filePath, SerializeAndEncrypt(GameData));
     }
 
     public void SaveData()
