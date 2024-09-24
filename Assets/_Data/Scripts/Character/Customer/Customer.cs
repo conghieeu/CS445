@@ -23,8 +23,8 @@ namespace CuaHang.AI
         Transform _goOutShopPoint;
         PlayerCtrl _playerCtrl => PlayerCtrl.Instance;
 
-        public float TotalPay { get => _totalPay; }
-        public bool IsDoneShopping { get => _isDoneShopping; }
+        public float TotalPay { get => _totalPay; set => _totalPay = value; }
+        public bool IsDoneShopping { get => _isDoneShopping; set => _isDoneShopping = value; }
         public Transform SlotWaiting { get => _slotWaiting; set => _slotWaiting = value; }
         public List<Item> ItemsCard { get => _itemsCard; }
         public bool IsPlayerConfirmPay { get => _isPlayerConfirmPay; set => _isPlayerConfirmPay = value; }
@@ -51,17 +51,12 @@ namespace CuaHang.AI
             _totalPay = 0;
         }
 
-        /// <summary> Set Properties with Item Data </summary>
-        public void SetProperties(CustomerData data)
+        // Lay du lieu cua chinh cai nay de save
+        public CustomerData GetCustomerData()
         {
-            ID = data.Id;
-            _isDoneShopping = data.IsNotNeedBuy;
-            Name = data.Name;
-            _totalPay = data.TotalPay;
+            CustomerData customerData = new CustomerData(GetEntityData(), IsDoneShopping, IsPlayerConfirmPay);
 
-            IsPlayerConfirmPay = data.PlayerConfirmPay;
-            transform.position = data.Position;
-            transform.rotation = data.Rotation;
+            return customerData;
         }
 
         /// <summary> Hành vi </summary>
@@ -83,7 +78,7 @@ namespace CuaHang.AI
                 _totalPay += _itemFinding.Price;
                 _itemsCard.Add(_itemFinding);
                 _listItemBuy.Remove(_itemFinding.TypeID);
-                _itemFinding.ObjectParent.GetComponentInChildren<ItemSlot>().RemoveItemInList(_itemFinding);
+                _itemFinding.EntityParent.GetComponentInChildren<ItemSlot>().RemoveItemInList(_itemFinding);
                 _itemFinding.gameObject.SetActive(false);
                 _itemFinding = null;
 
@@ -241,6 +236,25 @@ namespace CuaHang.AI
             _isPickingItem = false;
 
         }
+
+        #region SaveData
+        public override void SetVariables<T, V>(T data)
+        {
+            if (data is CustomerData customerData)
+            {
+                base.SetVariables<T, V>(data);
+                TotalPay = customerData.TotalPay;
+                IsDoneShopping = customerData.IsNotNeedBuy;
+                IsPlayerConfirmPay = customerData.PlayerConfirmPay;
+            }
+        }
+
+        public override T GetData<T, D>()
+        {
+            CustomerData data = new CustomerData(GetEntityData(), IsDoneShopping, IsPlayerConfirmPay);
+            return (T)(object)(data);
+        }
+        #endregion
     }
 
     // Định nghĩa enum cho các hành động của khách hàng

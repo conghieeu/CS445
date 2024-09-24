@@ -1,16 +1,18 @@
 using System;
+using CuaHang;
 using UnityEngine;
 
-public class GameSettings : Singleton<GameSettings>
+public class GameSettings : Singleton<GameSettings>, ISaveData
 {
     [Header("GameSettings")]
-    public GameSettingStats _gameSettingStats;
-
     [SerializeField] bool _isFullScreen;
     [SerializeField] int _qualityIndex;
     [SerializeField] float _masterVolume;
     [SerializeField] int _currentResolutionIndex;
     [SerializeField] Quaternion _camRotation;
+
+    GameSettingsData _gameSettingsData;
+    CameraControl _cameraControl => CameraControl.Instance;
 
     public bool IsFullScreen { get => _isFullScreen; set => _isFullScreen = value; }
     public int QualityIndex { get => _qualityIndex; set => _qualityIndex = value; }
@@ -20,19 +22,46 @@ public class GameSettings : Singleton<GameSettings>
 
     public static event Action<GameSettings> ActionDataChange;
 
-    protected override void Awake()
+    private void Start()
     {
-        base.Awake();
-    }
-
-    public void SetVariables(GameSettingsData data)
-    {
-        _isFullScreen = data.IsFullScreen;
-        _qualityIndex = data.QualityIndex;
-        _masterVolume = data.MasterVolume;
-        _currentResolutionIndex = data.CurrentResolutionIndex;
-        _camRotation = data.CamRotation;
-
         ActionDataChange?.Invoke(this);
     }
+
+    #region SaveData
+    public void SetVariables<T, V>(T data)
+    {
+        if (data is GameSettingsData gsData)
+        {
+            IsFullScreen = gsData.IsFullScreen;
+            QualityIndex = gsData.QualityIndex;
+            MasterVolume = gsData.MasterVolume;
+            CurrentResolutionIndex = gsData.CurrentResolutionIndex;
+            CamRotation = gsData.CamRotation;
+            _gameSettingsData = gsData;
+
+            ActionDataChange?.Invoke(this);
+        }
+    }
+
+    public void LoadVariables()
+    {
+        // throw new NotImplementedException();
+    }
+
+    public void SaveData()
+    {
+        DataManager.Instance.GameData._gameSettingsData = GetData<GameSettingsData, object>();
+    }
+
+    public T GetData<T, D>()
+    {
+        GameSettingsData data = new GameSettingsData(
+            IsFullScreen, 
+            QualityIndex, 
+            MasterVolume, 
+            CurrentResolutionIndex, 
+            _cameraControl ? _cameraControl.CamshaftRotation : _gameSettingsData.CamRotation);
+        return (T)(object)(data);
+    }
+    #endregion
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 namespace CuaHang.UI
 {
     [RequireComponent(typeof(CanvasGroup))]
-    public class UIPanel : HieuBehavior
+    public class UIPanel : GameBehavior
     {
         [Header("UI PANEL")]
         [SerializeField] protected RectTransform _panelContent;

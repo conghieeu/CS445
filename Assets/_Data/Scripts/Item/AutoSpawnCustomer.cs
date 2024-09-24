@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace CuaHang
 {
-    public class AutoSpawnCustomer : HieuBehavior
+    public class AutoSpawnCustomer : GameBehavior
     {
         public List<Customer> _customerPrefabs;
         public List<Transform> _spawnPoint;

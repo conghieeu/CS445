@@ -1,18 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
-using CuaHang.AI;
 using UnityEngine;
 
 namespace CuaHang.Pooler
 {
-    public class StaffPooler : ObjectPooler
+    public class StaffPooler : EntityPooler, ISaveData
     {
         public static StaffPooler Instance;
 
         protected override void Awake()
         {
             base.Awake();
-            
+
             if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
@@ -23,5 +22,9 @@ namespace CuaHang.Pooler
             }
         }
 
+        public override void SaveData()
+        {
+            DataManager.Instance.GameData._gamePlayData.StaffsData = GetData<List<StaffData>, StaffData>();
+        }
     }
 }

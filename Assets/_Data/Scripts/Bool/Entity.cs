@@ -3,9 +3,8 @@ using UnityEngine;
 
 namespace CuaHang
 {
-    public abstract class ObjectPool : HieuBehavior
+    public class Entity : GameBehavior, ISaveData
     {
-        [Header("OBJECT POOL")]
         [SerializeField] protected string _id; // định danh đốit tượng
         [SerializeField] protected TypeID _typeID; // mẫu mã của từng loại
         [SerializeField] protected Type _type; // dùng để sếp loại
@@ -34,5 +33,36 @@ namespace CuaHang
             _id = System.Guid.NewGuid().ToString();
         }
 
+        public virtual EntityData GetEntityData()
+        {
+            return new EntityData(ID, Name, TypeID, transform.position, transform.rotation);
+        }
+
+        public virtual void SetVariables<T, V>(T data)
+        {
+            if (data is EntityData entityData)
+            {
+                ID = entityData.Id;
+                Name = entityData.Name;
+                TypeID = entityData.TypeID;
+                transform.position = entityData.Position;
+                transform.rotation = entityData.Rotation;
+            }
+        }
+
+        public virtual void LoadVariables()
+        {
+            // throw new NotImplementedException();
+        }
+
+        public virtual void SaveData()
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual T GetData<T, D>()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

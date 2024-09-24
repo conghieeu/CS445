@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6980699417451268597}
   - component: {fileID: 3120186017779074193}
   - component: {fileID: 3834298405080049511}
-  - component: {fileID: 1689800185754155307}
   m_Layer: 9
   m_Name: Milk 1
   m_TagString: Untagged
@@ -69,48 +68,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableDebugLog: 0
-  _ID: 
+  _id: 
   _typeID: 9
+  _type: 5
   _name: "Qu\u1EA3 t\xE1o"
   _isRecyclable: 0
   _SO: {fileID: 11400000, guid: 3ca4e2e912fbb594c868ae9d68301647, type: 2}
-  _type: 5
   _price: 0
-  _isBlockPrice: 0
-  _interactionPrompt: 
+  _idParent: 
   _isCanDrag: 1
   _isCanSell: 1
-  _isOnEditMode: 0
+  _isBlockPrice: 0
   _isSamePrice: 0
   _thisParent: {fileID: 0}
   _itemSlot: {fileID: 0}
-  _itemParent: {fileID: 0}
-  _itemStats: {fileID: 0}
+  _entityParent: {fileID: 0}
   _waitingPoint: {fileID: 0}
   _models: {fileID: 7711493204450977710}
-  _camHere: {fileID: 0}
-  _txtPrice: {fileID: 0}
-  _coll: {fileID: 0}
---- !u!114 &1689800185754155307
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 766938376866764243}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f416c5debd79f7443b586636a0d4253f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enableDebugLog: 0
-  _data:
-    _id: 
-    _typeID: 0
-    _price: 0
-    _position: {x: 0, y: 0, z: 0}
-    _rotation: {x: 0, y: 0, z: 0, w: 0}
-  _item: {fileID: 0}
 --- !u!1 &6894708002103116621
 GameObject:
   m_ObjectHideFlags: 0

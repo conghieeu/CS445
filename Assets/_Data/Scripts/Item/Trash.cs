@@ -32,9 +32,9 @@ namespace CuaHang
             CountDownRemove();
         }
 
-        public override void SetVariables(ItemData data)
+        public override void LoadVariables()
         {
-            base.SetVariables(data);
+            base.LoadVariables();
             AddTrashFromSlot();
         }
 

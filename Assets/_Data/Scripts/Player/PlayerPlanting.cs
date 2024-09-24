@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 
 namespace CuaHang
 {
-    public class PlayerPlanting : HieuBehavior
+    public class PlayerPlanting : GameBehavior
     {
         PlayerCtrl _playerCtrl;
         InputImprove _input => InputImprove.Instance;

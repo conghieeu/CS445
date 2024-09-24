@@ -29,7 +29,7 @@ namespace CuaHang
 
         public bool IsMoveStick { get => _isMoveStick; set => _isMoveStick = value; }
         public bool IsTouchRotationArea { get => _isTouchRotationArea; set => _isTouchRotationArea = value; }
-        public Quaternion CamshaftRotation { get => _camshaft.rotation; }
+        public Quaternion CamshaftRotation { get => _camshaft.rotation; set => _camshaft.rotation = value;}
 
         private void Start()
         {

@@ -2,9 +2,9 @@ using UnityEngine;
 
 namespace CuaHang
 {
-    public class HieuBehavior : MonoBehaviour
+    public class GameBehavior : MonoBehaviour
     {
-        [Header("HIEU BEHAVIOR")]
+        [Header("GAME BEHAVIOR")]
         [SerializeField] private bool enableDebugLog;
 
         protected void In(object value)
@@ -18,6 +18,8 @@ namespace CuaHang
             transform.position = location.position;
             transform.rotation = location.rotation;
         }
+
+        
     }
 
 }

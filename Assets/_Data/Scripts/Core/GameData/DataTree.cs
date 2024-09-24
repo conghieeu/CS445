@@ -1,89 +1,112 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine; 
+using UnityEngine;
 
 [Serializable]
-public class ItemData
+public class EntityData
 {
-    [SerializeField] string _id;
-    [SerializeField] string _idItemParent; // id item cha
-    [SerializeField] TypeID _typeID;
-    [SerializeField] float _price;
-    [SerializeField] Vector3 _position;
-    [SerializeField] Quaternion _rotation;
+    [SerializeField] string id;
+    [SerializeField] string name;
+    [SerializeField] TypeID typeID;
+    [SerializeField] Vector3 position;
+    [SerializeField] Quaternion rotation;
 
-    public ItemData(string id, string idItemParent, TypeID typeID, float price, Vector3 position, Quaternion rotation)
+    public EntityData(string id, string name, TypeID typeID, Vector3 position, Quaternion rotation)
     {
         Id = id;
-        IdItemParent = idItemParent;
+        Name = name;
         TypeID = typeID;
-        Price = price;
         Position = position;
         Rotation = rotation;
     }
 
-    public string Id { get => _id; set => _id = value; }
-    public string IdItemParent { get => _idItemParent; set => _idItemParent = value; }
-    public TypeID TypeID { get => _typeID; set => _typeID = value; }
-    public float Price { get => _price; set => _price = value; }
-    public Vector3 Position { get => _position; set => _position = value; }
-    public Quaternion Rotation { get => _rotation; set => _rotation = value; }
+    public string Id { get => id; set => id = value; }
+    public string Name { get => name; set => name = value; }
+    public TypeID TypeID { get => typeID; set => typeID = value; }
+    public Vector3 Position { get => position; set => position = value; }
+    public Quaternion Rotation { get => rotation; set => rotation = value; }
 }
 
 [Serializable]
-public class StaffData
+public class ItemData : EntityData
 {
-    [SerializeField] string id;
-    [SerializeField] TypeID typeID;
-    [SerializeField] string name;
-    [SerializeField] Vector3 position;
+    [SerializeField] string _idItemParent; // id item cha
+    [SerializeField] float _price;
 
-    public string Id { get => id; set => id = value; }
-    public TypeID TypeID { get => typeID; set => typeID = value; }
-    public string Name { get => name; set => name = value; }
-    public Vector3 Position { get => position; set => position = value; }
-
-    public StaffData(string id, TypeID typeID, string name, Vector3 position)
+    public ItemData(EntityData entityData, string idItemParent, float price)
+    : base(entityData.Id, entityData.Name, entityData.TypeID, entityData.Position, entityData.Rotation)
     {
-        Id = id;
-        TypeID = typeID;
-        Name = name;
-        Position = position;
+        IdItemParent = idItemParent;
+        Price = price;
+    }
+
+    public ItemData(string id, string name, TypeID typeID, Vector3 position, Quaternion rotation, string idItemParent, float price)
+    : base(id, name, typeID, position, rotation)
+    {
+        IdItemParent = idItemParent;
+        Price = price;
+    }
+
+    public string IdItemParent { get => _idItemParent; set => _idItemParent = value; }
+    public float Price { get => _price; set => _price = value; }
+}
+
+[Serializable]
+public class StaffData : EntityData
+{
+    public StaffData(EntityData entityData)
+    : base(entityData.Id, entityData.Name, entityData.TypeID, entityData.Position, entityData.Rotation)
+    { 
     }
 }
 
 [Serializable]
-public class CustomerData
+public class CustomerData : EntityData
 {
-    [SerializeField] string _id;
-    [SerializeField] TypeID _typeID;
-    [SerializeField] string _name;
     [SerializeField] float _totalPay;
     [SerializeField] bool _isNotNeedBuy; // Không cần mua gì nữa 
     [SerializeField] bool _playerConfirmPay; // Player xác nhận thanh toán
-    [SerializeField] Vector3 _position;
-    [SerializeField] Quaternion _rotation;
 
-    public CustomerData(string id, TypeID typeID, string name, float totalPay, bool isNotNeedBuy, bool playerConfirmPay, Vector3 position, Quaternion rotation)
+    public CustomerData(EntityData entityData, bool isNotNeedBuy, bool playerConfirmPay)
+    : base(entityData.Id, entityData.Name, entityData.TypeID, entityData.Position, entityData.Rotation)
     {
-        Id = id;
-        TypeID = typeID;
-        Name = name;
-        TotalPay = totalPay;
         IsNotNeedBuy = isNotNeedBuy;
         PlayerConfirmPay = playerConfirmPay;
-        Position = position;
-        Rotation = rotation;
     }
 
-    public string Id { get => _id; set => _id = value; }
-    public TypeID TypeID { get => _typeID; set => _typeID = value; }
-    public string Name { get => _name; set => _name = value; }
+    public CustomerData(string id, string name, TypeID typeID, Vector3 position, Quaternion rotation, bool isNotNeedBuy, bool playerConfirmPay) : base(id, name, typeID, position, rotation)
+    {
+        IsNotNeedBuy = isNotNeedBuy;
+        PlayerConfirmPay = playerConfirmPay;
+    }
+
     public float TotalPay { get => _totalPay; set => _totalPay = value; }
     public bool IsNotNeedBuy { get => _isNotNeedBuy; set => _isNotNeedBuy = value; }
     public bool PlayerConfirmPay { get => _playerConfirmPay; set => _playerConfirmPay = value; }
-    public Vector3 Position { get => _position; set => _position = value; }
-    public Quaternion Rotation { get => _rotation; set => _rotation = value; }
+}
+
+[Serializable]
+public class PlayerData : EntityData
+{
+    [SerializeField] float _currentMoney;
+    [SerializeField] int _reputation;
+
+    public PlayerData(EntityData entityData, float currentMoney, int reputation)
+    : base(entityData.Id, entityData.Name, entityData.TypeID, entityData.Position, entityData.Rotation)
+    {
+        CurrentMoney = currentMoney;
+        Reputation = reputation;
+    }
+
+    public PlayerData(string id, string name, TypeID typeID, Vector3 position, Quaternion rotation, float currentMoney, int reputation) 
+    : base(id, name, typeID, position, rotation)
+    {
+        CurrentMoney = currentMoney;
+        Reputation = reputation;
+    }
+
+    public float CurrentMoney { get => _currentMoney; set => _currentMoney = value; }
+    public int Reputation { get => _reputation; set => _reputation = value; }
 }
 
 [Serializable]
@@ -113,28 +136,6 @@ public class GameSettingsData
 }
 
 [Serializable]
-public class PlayerData
-{
-    [SerializeField] float _currentMoney;
-    [SerializeField] int _reputation;
-    [SerializeField] Vector3 _position;
-    [SerializeField] Quaternion _rotation;
-
-    public PlayerData(float currentMoney, int reputation, Vector3 position, Quaternion rotation)
-    {
-        CurrentMoney = currentMoney;
-        Reputation = reputation;
-        Position = position;
-        Rotation = rotation;
-    }
-
-    public float CurrentMoney { get => _currentMoney; set => _currentMoney = value; }
-    public int Reputation { get => _reputation; set => _reputation = value; }
-    public Vector3 Position { get => _position; set => _position = value; }
-    public Quaternion Rotation { get => _rotation; set => _rotation = value; }
-}
-
-[Serializable]
 public class GamePlayData
 {
     [SerializeField] bool _isInitialized;
@@ -144,8 +145,7 @@ public class GamePlayData
     [SerializeField] List<ItemData> _itemsData;
 
     public GamePlayData()
-    {
-        Debug.Log("Load new");
+    { 
         _isInitialized = false;
         _customersData = new();
         _staffsData = new();

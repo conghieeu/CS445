@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace CuaHang.Pooler
 {
-    public class ItemPooler : ObjectPooler
+    public class ItemPooler : EntityPooler
     {
         [SerializeField] Transform _itemSpawnerPoint;
 
@@ -26,29 +27,10 @@ namespace CuaHang.Pooler
             }
         }
 
-        /// <summary> Tạo lại đối tượng ItemPool từ ItemsData </summary>
-        public void RecreateItemsData(List<ItemData> itemsData)
-        {
-            foreach (var itemData in itemsData)
-            {
-                ObjectPool existID = GetObjectByID(itemData.Id);
-
-                if (existID) // object bool da co san
-                {
-                    existID.GetComponent<ItemStats>().ItemData = itemData;
-                }
-                else // tao lai object bool
-                {
-                    ObjectPool item = GetOrCreateObjectPool(itemData.TypeID);
-                    item.GetComponent<ItemStats>().ItemData = itemData;
-                }
-            }
-        }
-
         /// <summary> Tìm item có item Slot và còn chỗ trống </summary>
         public Item GetItemEmptySlot(TypeID typeID)
         {
-            foreach (var o in _ObjectPools)
+            foreach (var o in ListEntity)
             {
                 Item item = o.GetComponent<Item>();
                 if (item && item.ItemSlot && item.TypeID == typeID && item.ItemSlot.IsHasSlotEmpty()) return item;
@@ -59,7 +41,7 @@ namespace CuaHang.Pooler
         /// <summary> Tìm item có itemSlot có chứa itemProduct cần lấy </summary>
         public virtual Item GetItemContentItem(Item item)
         {
-            foreach (var objectBool in _ObjectPools)
+            foreach (var objectBool in ListEntity)
             {
                 Item i = objectBool.GetComponent<Item>();
 
@@ -74,17 +56,32 @@ namespace CuaHang.Pooler
         /// <summary> Tìm item lần lượt theo mục đang muốn mua </summary>
         public Item ShuffleFindItem(TypeID typeID)
         {
-            List<ObjectPool> poolsO = _ObjectPools.ToList();
-            poolsO.Shuffle<ObjectPool>();
+            List<Entity> poolsO = ListEntity.ToList();
+            poolsO.Shuffle<Entity>();
 
             foreach (var o in poolsO)
             {
                 Item item = o.GetComponent<Item>();
 
-                if (item && item.ObjectParent && o.TypeID == typeID && item.ObjectParent.Type == Type.Shelf && item.gameObject.activeSelf) return item;
+                if (item && item.EntityParent && o.TypeID == typeID && item.EntityParent.Type == Type.Shelf && item.gameObject.activeSelf) return item;
             }
 
             return null;
         }
+
+        #region Save Data
+        public override void SetVariables<T, V>(T data)
+        {
+            if (data is GamePlayData gamePlayData)
+            {
+                base.SetVariables<List<ItemData>, ItemData>(gamePlayData.ItemsData);
+            }
+        }
+        
+        public override void SaveData()
+        {
+            DataManager.Instance.GameData._gamePlayData.ItemsData = GetData<List<ItemData>, ItemData>();
+        }
+        #endregion
     }
 }

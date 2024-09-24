@@ -1,25 +1,26 @@
-using System; 
+using System;
 using CuaHang.AI;
+using CuaHang.Pooler;
 using QFSW.QC;
 using UnityEngine;
+using UnityEngine.Pool;
 
 namespace CuaHang
 {
-    public class PlayerCtrl : Singleton<PlayerCtrl>
+    public class PlayerCtrl : Entity, ISaveData
     {
+        public static PlayerCtrl Instance;
         public SensorCast _sensorForward;
         public Animator _anim;
 
-        [SerializeField] string _name;
-        [SerializeField] float _money;
         [SerializeField] Transform _posHoldParcel;
-        
-        [Header("Reputation")]
+
+        [Header("Variablies")]
+        [SerializeField] float _money;
         [SerializeField] int _currentReputation; // danh tieng
         [SerializeField] int maxReputation = 100;
         [SerializeField] int minReputation = 0;
 
-        public string Name { get => Name; private set => Name = value; }
         [Command]
         public int Reputation
         {
@@ -47,28 +48,18 @@ namespace CuaHang
             }
         }
 
-        public Transform PosHoldParcel { get => _posHoldParcel; } 
+        public Transform PosHoldParcel { get => _posHoldParcel; }
         public static event Action<float> ActionMoneyChange;
         public static event Action<float> ActionReputationChange;
 
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
             _anim = GetComponent<Animator>();
+            if (Instance) Destroy(this); else { Instance = this; }
         }
-
-        public void SetProperties(PlayerData data)
-        { 
-            Money = data.CurrentMoney;
-            Debug.Log(data.Reputation);
-            Reputation = data.Reputation;
-            transform.position = data.Position;
-            transform.rotation = data.Rotation;
-        } 
 
         public void UpdateReputation(CustomerAction action)
         {
-            Debug.Log(action);
             switch (action)
             {
                 case CustomerAction.Buy:
@@ -88,5 +79,29 @@ namespace CuaHang
                     break;
             }
         }
+
+        #region Save Data
+        public override void SetVariables<T, V>(T data)
+        {
+            if (data is GamePlayData gamePlayData)
+            {
+                PlayerData playerData = gamePlayData.PlayerData;
+                base.SetVariables<PlayerData, object>(playerData);
+                Money = playerData.CurrentMoney;
+                Reputation = playerData.Reputation;
+            }
+        }
+
+        public override void SaveData()
+        {
+            DataManager.Instance.GameData._gamePlayData.PlayerData = GetData<PlayerData, object>();
+        }
+
+        public override T GetData<T, D>()
+        {
+            PlayerData data = new PlayerData(GetEntityData(), Money, Reputation);
+            return (T)(object)(data);
+        }
+        #endregion
     }
 }

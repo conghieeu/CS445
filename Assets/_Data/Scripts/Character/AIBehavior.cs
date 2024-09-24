@@ -16,7 +16,7 @@ namespace CuaHang.AI
         Walk_Carrying = 4,
     }
 
-    public class AIBehavior : ObjectPool
+    public class AIBehavior : Entity
     {
         [Header("AIBehavior")]
         public STATE_ANIM _stageAnim;

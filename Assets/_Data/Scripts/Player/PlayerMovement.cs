@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace CuaHang.Player
 {
-    public class PlayerMovement : HieuBehavior
+    public class PlayerMovement : GameBehavior
     {
         [SerializeField] float _moveSpeed;
         [SerializeField] Transform _cam;

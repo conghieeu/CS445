@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using CuaHang.AI;
 using UnityEngine;
 namespace CuaHang.Pooler
-{      
-    public class CustomerPooler : ObjectPooler
+{
+    public class CustomerPooler : EntityPooler, ISaveData
     {
         [SerializeField] Transform _goOutShopPoint;
         public static CustomerPooler Instance { get; private set; }
@@ -24,7 +24,9 @@ namespace CuaHang.Pooler
             }
         }
 
-
-
+        public override void SaveData()
+        {
+            DataManager.Instance.GameData._gamePlayData.CustomersData = GetData<List<CustomerData>, CustomerData>();
+        }
     }
 }

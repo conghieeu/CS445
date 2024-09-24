@@ -1,9 +1,9 @@
 using System;
+using Firebase.Auth;
 using UnityEngine;
 
-public class User : Singleton<User>
+public class User : Singleton<User>, ISaveData
 {
-
     [SerializeField] string _name;
     [SerializeField] float _highestMoney;
     [SerializeField] float _playTime; // Tổng thời gian chơi tính bằng phút  
@@ -12,7 +12,7 @@ public class User : Singleton<User>
     public float HighestMoney { get => _highestMoney; set => _highestMoney = value; }
     public float PlayTime { get => _playTime; set => _playTime = value; }
 
-    public static event Action OnDataChange; 
+    public static event Action OnDataChange;
 
     public void SetProperties(PlayerProfileData data)
     {
@@ -22,4 +22,38 @@ public class User : Singleton<User>
 
         OnDataChange?.Invoke();
     }
+
+    public PlayerProfileData GetData()
+    {
+        return new PlayerProfileData(UserName, HighestMoney, PlayTime);
+    }
+
+    #region Save Game
+    public void SetVariables<T, V>(T data)
+    {
+        if (data is PlayerProfileData playerProfileData)
+        {
+            UserName = playerProfileData.UserName;
+            HighestMoney = playerProfileData.HighestMoney;
+            PlayTime = playerProfileData.PlayTime;
+        }
+    }
+
+    public void LoadVariables()
+    {
+        // throw new NotImplementedException();
+    }
+
+    public void SaveData()
+    {
+        DataManager.Instance.GameData._playerProfileData = GetData<PlayerProfileData, object>();
+    }
+
+    public T GetData<T, V>()
+    {
+        PlayerProfileData playerProfileData = new PlayerProfileData(UserName, HighestMoney, PlayTime);
+        return (T)(object)(playerProfileData);
+    }
+
+    #endregion
 }

@@ -13,24 +13,21 @@ namespace Core
     {
         [SerializeField] AudioMixer _audioMixer;
         [SerializeField] bool _enableMenuSettings;
-        [SerializeField] TMP_Dropdown resolutionDropdown;
+        [SerializeField] TMP_Dropdown _resolutionDropdown;
         [SerializeField] TMP_Dropdown _dropDownGraphics;
         [SerializeField] Toggle _toggleFullScreen;
         [SerializeField] Slider _sliderVolume;
-        [SerializeField] Resolution[] resolutions; // Array to store available screen resolutions
+        [SerializeField] Resolution[] _resolutions; // Array to store available screen resolutions
 
+        bool _isFullScreen;
         GameSettings _gameSettings => GameSettings.Instance;
 
         protected override void Awake()
         {
             base.Awake();
+            SetDropDownResolution();
             _enableMenuSettings = false;
             _panelContent.gameObject.SetActive(_enableMenuSettings);
-        }
-
-        private void Start()
-        {
-            SetDropDownResolution();
         }
 
         private void OnEnable()
@@ -45,10 +42,13 @@ namespace Core
 
         private void OnGameSettingChange(GameSettings data)
         {
+            _isFullScreen = data.IsFullScreen;
+
             // Load UI
             _toggleFullScreen.isOn = data.IsFullScreen;
             _sliderVolume.value = data.MasterVolume;
             _dropDownGraphics.value = data.QualityIndex;
+            _resolutionDropdown.value = data.CurrentResolutionIndex;
 
             SetVolume(data.MasterVolume);
             SetQuality(data.QualityIndex);
@@ -58,20 +58,16 @@ namespace Core
 
         private void SetDropDownResolution()
         {
-            resolutions = Screen.resolutions; // Get all available screen resolutions from the system
-
-            resolutionDropdown.ClearOptions(); // Clear any existing options in the dropdown
-
+            _resolutions = Screen.resolutions;
+            _resolutionDropdown.ClearOptions(); 
             List<string> options = new List<string>(); // Create a list to store resolution strings
-
-            for (int i = 0; i < resolutions.Length; i++)
+            for (int i = 0; i < _resolutions.Length; i++)
             {
-                string option = resolutions[i].width + " x " + resolutions[i].height; // Format resolution as a string
-
+                string option = _resolutions[i].width + "x" + _resolutions[i].height; // Format resolution as a string
                 options.Add(option);
             }
 
-            resolutionDropdown.AddOptions(options); // Add the resolution options to the dropdown
+            _resolutionDropdown.AddOptions(options);
         }
 
         /// <summary> Được sử dụng để bật tắt khi nhấn phím </summary>
@@ -83,9 +79,7 @@ namespace Core
 
         public void SetResolutionCurrent(int current)
         {
-            resolutionDropdown.value = current;
-            resolutionDropdown.RefreshShownValue();
-
+            Screen.SetResolution(_resolutions[current].width, _resolutions[current].height, _isFullScreen);
             _gameSettings.CurrentResolutionIndex = current;
         }
 

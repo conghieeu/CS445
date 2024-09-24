@@ -1,28 +1,21 @@
 using UnityEngine;
 using CuaHang.Pooler;
+using System;
 
 namespace CuaHang.AI
 {
-    public class Staff : AIBehavior
+    public class Staff : AIBehavior, ISaveData
     {
         [Header("STAFF")]
         [SerializeField] Item _heldItem; // item đã nhặt và đang giữ trong người
         [SerializeField] Transform _itemHoldPos; // là vị trí mà nhân viên này đang giữ ObjectPlant trong người  
-        
+
         Item _heldItemCurrent; // trigger của animation ngăn animation được gọi liên tục từ fixed Update
 
         private void FixedUpdate()
         {
             Behavior();
             Animation();
-        }
-
-        /// <summary> Được gọi stats </summary>
-        public void SetProperties(StaffData data)
-        {
-            _id = data.Id;
-            _name = data.Name;
-            transform.position = data.Position;
         }
 
         /// <summary>  Khi đáp ứng sự kiện hãy gọi vào đây nên nó đưa phán đoán hành vi tiếp theo nhân viên cần làm </summary>
@@ -89,7 +82,7 @@ namespace CuaHang.AI
 
         /// <summary> nhặt item carry lênh </summary>
         public void SetHeldItem(Item itemCarry)
-        { 
+        {
             itemCarry.SetParent(_itemHoldPos, this, false);
             itemCarry.IsCanDrag = false;
             _heldItem = itemCarry;
@@ -124,7 +117,7 @@ namespace CuaHang.AI
         /// <summary> Nhân viên này tìm item cần mang vác xử lý </summary>
         private Item FindCarryItem()
         {
-            foreach (var objectPool in ItemPooler.Instance._ObjectPools)
+            foreach (var objectPool in ItemPooler.Instance.ListEntity)
             {
                 Item item = objectPool.GetComponent<Item>();
 
@@ -134,6 +127,12 @@ namespace CuaHang.AI
                 }
             }
             return null;
+        }
+
+        public override T GetData<T, D>()
+        {
+            StaffData data = new StaffData(GetEntityData());
+            return (T)(object)(data);
         }
     }
 }
