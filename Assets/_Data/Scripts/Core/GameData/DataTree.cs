@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CuaHang;
 using UnityEngine;
 
 [Serializable]
@@ -7,14 +8,16 @@ public class EntityData
 {
     [SerializeField] string id;
     [SerializeField] string name;
+    [SerializeField] bool isDestroyed;
     [SerializeField] TypeID typeID;
     [SerializeField] Vector3 position;
     [SerializeField] Quaternion rotation;
 
-    public EntityData(string id, string name, TypeID typeID, Vector3 position, Quaternion rotation)
+    public EntityData(string id, string name, bool isDestroyed, TypeID typeID, Vector3 position, Quaternion rotation)
     {
         Id = id;
         Name = name;
+        IsDestroyed = isDestroyed;
         TypeID = typeID;
         Position = position;
         Rotation = rotation;
@@ -25,6 +28,7 @@ public class EntityData
     public TypeID TypeID { get => typeID; set => typeID = value; }
     public Vector3 Position { get => position; set => position = value; }
     public Quaternion Rotation { get => rotation; set => rotation = value; }
+    public bool IsDestroyed { get => isDestroyed; set => isDestroyed = value; }
 }
 
 [Serializable]
@@ -34,14 +38,7 @@ public class ItemData : EntityData
     [SerializeField] float _price;
 
     public ItemData(EntityData entityData, string idItemParent, float price)
-    : base(entityData.Id, entityData.Name, entityData.TypeID, entityData.Position, entityData.Rotation)
-    {
-        IdItemParent = idItemParent;
-        Price = price;
-    }
-
-    public ItemData(string id, string name, TypeID typeID, Vector3 position, Quaternion rotation, string idItemParent, float price)
-    : base(id, name, typeID, position, rotation)
+    : base(entityData.Id, entityData.Name, entityData.IsDestroyed, entityData.TypeID, entityData.Position, entityData.Rotation)
     {
         IdItemParent = idItemParent;
         Price = price;
@@ -55,8 +52,8 @@ public class ItemData : EntityData
 public class StaffData : EntityData
 {
     public StaffData(EntityData entityData)
-    : base(entityData.Id, entityData.Name, entityData.TypeID, entityData.Position, entityData.Rotation)
-    { 
+    : base(entityData.Id, entityData.Name, entityData.IsDestroyed, entityData.TypeID, entityData.Position, entityData.Rotation)
+    {
     }
 }
 
@@ -64,24 +61,19 @@ public class StaffData : EntityData
 public class CustomerData : EntityData
 {
     [SerializeField] float _totalPay;
-    [SerializeField] bool _isNotNeedBuy; // Không cần mua gì nữa 
+    [SerializeField] List<TypeID> _listItemBuy;
     [SerializeField] bool _playerConfirmPay; // Player xác nhận thanh toán
 
-    public CustomerData(EntityData entityData, bool isNotNeedBuy, bool playerConfirmPay)
-    : base(entityData.Id, entityData.Name, entityData.TypeID, entityData.Position, entityData.Rotation)
+    public CustomerData(EntityData entityData, float totalPay, List<TypeID> listItemBuy, bool playerConfirmPay)
+    : base(entityData.Id, entityData.Name, entityData.IsDestroyed, entityData.TypeID, entityData.Position, entityData.Rotation)
     {
-        IsNotNeedBuy = isNotNeedBuy;
-        PlayerConfirmPay = playerConfirmPay;
-    }
-
-    public CustomerData(string id, string name, TypeID typeID, Vector3 position, Quaternion rotation, bool isNotNeedBuy, bool playerConfirmPay) : base(id, name, typeID, position, rotation)
-    {
-        IsNotNeedBuy = isNotNeedBuy;
+        TotalPay = totalPay;
+        ListItemBuy = listItemBuy;
         PlayerConfirmPay = playerConfirmPay;
     }
 
     public float TotalPay { get => _totalPay; set => _totalPay = value; }
-    public bool IsNotNeedBuy { get => _isNotNeedBuy; set => _isNotNeedBuy = value; }
+    public List<TypeID> ListItemBuy { get => _listItemBuy; set => _listItemBuy = value; }
     public bool PlayerConfirmPay { get => _playerConfirmPay; set => _playerConfirmPay = value; }
 }
 
@@ -91,15 +83,16 @@ public class PlayerData : EntityData
     [SerializeField] float _currentMoney;
     [SerializeField] int _reputation;
 
+
     public PlayerData(EntityData entityData, float currentMoney, int reputation)
-    : base(entityData.Id, entityData.Name, entityData.TypeID, entityData.Position, entityData.Rotation)
+    : base(entityData.Id, entityData.Name, entityData.IsDestroyed, entityData.TypeID, entityData.Position, entityData.Rotation)
     {
         CurrentMoney = currentMoney;
         Reputation = reputation;
     }
 
-    public PlayerData(string id, string name, TypeID typeID, Vector3 position, Quaternion rotation, float currentMoney, int reputation) 
-    : base(id, name, typeID, position, rotation)
+    public PlayerData(string id, string name, bool isDestroyed, TypeID typeID, Vector3 position, Quaternion rotation, float currentMoney, int reputation)
+    : base(id, name, isDestroyed, typeID, position, rotation)
     {
         CurrentMoney = currentMoney;
         Reputation = reputation;
@@ -127,12 +120,12 @@ public class GameSettingsData
         CamRotation = camRotation;
     }
 
-    public Quaternion CamRotation { get => CamRotation1; set => CamRotation1 = value; }
+    public Quaternion CamRotation { get => _camRotation; set => _camRotation = value; }
     public bool IsFullScreen { get => _isFullScreen; set => _isFullScreen = value; }
     public int QualityIndex { get => _qualityIndex; set => _qualityIndex = value; }
     public float MasterVolume { get => _masterVolume; set => _masterVolume = value; }
     public int CurrentResolutionIndex { get => _currentResolutionIndex; set => _currentResolutionIndex = value; }
-    public Quaternion CamRotation1 { get => _camRotation; set => _camRotation = value; }
+
 }
 
 [Serializable]
@@ -145,7 +138,7 @@ public class GamePlayData
     [SerializeField] List<ItemData> _itemsData;
 
     public GamePlayData()
-    { 
+    {
         _isInitialized = false;
         _customersData = new();
         _staffsData = new();

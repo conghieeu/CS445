@@ -21,7 +21,7 @@ namespace CuaHang.AI
         [Header("AIBehavior")]
         public STATE_ANIM _stageAnim;
         [SerializeField] private float _stopDistance = 0.5f;
-        [SerializeField] protected MayTinh _mayTinh;
+        [SerializeField] protected MayTinh _computer;
         [SerializeField] protected ItemPooler _itemPooler;
         [SerializeField] protected SensorCast _boxSensor;
         [SerializeField] protected NavMeshAgent _navMeshAgent;
@@ -39,7 +39,7 @@ namespace CuaHang.AI
         {
             _itemPooler = ItemPooler.Instance;
             _gameManager = GameManager.Instance;
-            _mayTinh = FindFirstObjectByType<MayTinh>();
+            _computer = FindFirstObjectByType<MayTinh>();
         }
 
         protected virtual void SetAnim() => _anim.SetInteger("State", (int)_stageAnim);

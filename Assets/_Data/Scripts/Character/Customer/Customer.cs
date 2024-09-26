@@ -7,27 +7,23 @@ using UnityEngine;
 
 namespace CuaHang.AI
 {
-
     public class Customer : AIBehavior
     {
         [Header("Customer")]
         [SerializeField] float _totalPay;
         [SerializeField] Item _itemFinding; // item mà khách hàng đang tìm
         [SerializeField] Transform _slotWaiting; // Hàng chờ (WaitingLine) modun của máy tính sẽ SET thứ này
-        [SerializeField] bool _isDoneShopping; // Không cần mua gì nữa
         [SerializeField] bool _isPlayerConfirmPay;
         [SerializeField] bool _isPickingItem; // để set animation
         [SerializeField] List<TypeID> _listItemBuy; // Cac item can lay, giới hạn là 15 item
-        [SerializeField] List<Item> _itemsCard; // cac item da mua
 
         Transform _goOutShopPoint;
         PlayerCtrl _playerCtrl => PlayerCtrl.Instance;
 
         public float TotalPay { get => _totalPay; set => _totalPay = value; }
-        public bool IsDoneShopping { get => _isDoneShopping; set => _isDoneShopping = value; }
         public Transform SlotWaiting { get => _slotWaiting; set => _slotWaiting = value; }
-        public List<Item> ItemsCard { get => _itemsCard; }
         public bool IsPlayerConfirmPay { get => _isPlayerConfirmPay; set => _isPlayerConfirmPay = value; }
+        public List<TypeID> ListItemBuy { get => _listItemBuy; set => _listItemBuy = value; }
 
         protected override void Start()
         {
@@ -35,104 +31,87 @@ namespace CuaHang.AI
             _goOutShopPoint = CustomerPooler.Instance.GoOutShopPoint.transform;
         }
 
-        private void FixedUpdate()
+        private void OnEnable()
         {
-            SetItemNeed();
-            Behavior();
-            SetAnimation();
+            _totalPay = 0;
+            SetItemsBuy();
         }
 
         private void OnDisable()
         {
-            _itemsCard.Clear();
-            _listItemBuy.Clear();
-            _isDoneShopping = false;
-            _isPlayerConfirmPay = false;
-            _totalPay = 0;
+            ListItemBuy.Clear();
+            _isPlayerConfirmPay = false; 
         }
 
-        // Lay du lieu cua chinh cai nay de save
-        public CustomerData GetCustomerData()
+        private void FixedUpdate()
         {
-            CustomerData customerData = new CustomerData(GetEntityData(), IsDoneShopping, IsPlayerConfirmPay);
-
-            return customerData;
+            Behavior();
+            SetAnimation();
         }
 
         /// <summary> Hành vi </summary>
         private void Behavior()
         {
-            // đi lấy item thứ cần mua
-            if (GoToItemNeed())
-            {
-                In($"Đi tới item muốn mua");
-                return;
-            }
-
-            // chấp nhận thông số item và mua item
-            if (IsAgreeItem())
-            {
-                In($"Lấy item");
-                StartCoroutine(PickItem()); // trigger animation
-
-                _totalPay += _itemFinding.Price;
-                _itemsCard.Add(_itemFinding);
-                _listItemBuy.Remove(_itemFinding.TypeID);
-                _itemFinding.EntityParent.GetComponentInChildren<ItemSlot>().RemoveItemInList(_itemFinding);
-                _itemFinding.gameObject.SetActive(false);
-                _itemFinding = null;
-
-                return;
-            }
-
-            if (!IsAgreeItem() && _isDoneShopping)
-            {
-                In($"Giá quá cao");
-                _isDoneShopping = true;
-
-                // Cập nhật danh tiếng khi phàn nàn
-                _playerCtrl.UpdateReputation(CustomerAction.Complain);
-            }
-
-
-            // delay cho animation pick up item
             if (_isPickingItem) return;
 
-            // không mua được gì Out shop
-            if (_totalPay == 0 && (!_itemFinding || _isDoneShopping))
+            // set item finding
+            if (ListItemBuy.Count > 0 && !_itemFinding)
             {
-                In("không mua được gì Out shop");
-                GoOutShop();
+                _itemFinding = _itemPooler.GetItemByTypeID(ListItemBuy[0]);
+            }
+
+            if (_itemFinding && _itemFinding.gameObject.activeInHierarchy == false) // item muốn lấy bị xoá rồi
+            {
+                _itemFinding = null;
                 return;
             }
 
-            // không mua được nữa nhưng có item nên là thanh toán
-            if (_totalPay > 0 && (!_itemFinding || _isDoneShopping))
+            if (_itemFinding && MoveToItemFinding())
             {
-                In("Mua được vài thứ, đi thanh toán");
-                _listItemBuy.Clear();
-
-                if (!_isPlayerConfirmPay)
+                if (IsAgreeItem())
                 {
-                    GoToWating();
+                    In($"Lấy item mua");
+                    StartCoroutine(PickItem()); // trigger animation 
+                    _totalPay += _itemFinding.Price;
+                    ListItemBuy.Remove(_itemFinding.TypeID);
+                    _itemFinding.EntityParent.GetComponentInChildren<ItemSlot>().RemoveItemInList(_itemFinding);
+                    _itemFinding.RemoveThis();
+                    _itemFinding = null;
                 }
                 else
                 {
-                    // Cập nhật danh tiếng khi mua hàng
-                    _playerCtrl.UpdateReputation(CustomerAction.Buy);
-
-                    _mayTinh._waitingLine.CancelRegisterSlot(this);
-                    GoOutShop();
+                    In($"Giá quá cao");
+                    ListItemBuy.Clear();
+                    _playerCtrl.UpdateReputation(CustomerAction.Complain);
                 }
             }
-        }
 
-        private void GoToWating()
-        {
-            _mayTinh._waitingLine.RegisterSlot(this); // Đăng ký slot 
-            if (_slotWaiting)
+            if (_itemFinding == null) // không có item muốn mua nữa
             {
-                MoveToTarget(_slotWaiting);
+                _listItemBuy.Clear();
+
+                if (_totalPay == 0) // không mua được gì Out shop
+                {
+                    In("Không có gì để mua");
+                    GoOutShop();
+                }
+                else if (_totalPay > 0) // đi thanh toán
+                {
+                    In("Thanh toán");
+                    if (_isPlayerConfirmPay)
+                    {
+                        _computer._waitingLine.CancelRegisterSlot(this);
+                        GoOutShop();
+                    }
+                    else
+                    {
+                        _computer._waitingLine.RegisterSlot(this); // Đăng ký slot ĐỢI
+                        if (_slotWaiting)
+                        {
+                            MoveToTarget(_slotWaiting);
+                        }
+                    }
+                }
             }
         }
 
@@ -164,22 +143,22 @@ namespace CuaHang.AI
         }
 
         /// <summary> Chọn ngẫu nhiên item mà khách hàng này muốn lấy </summary>
-        private void SetItemNeed()
+        private void SetItemsBuy()
         {
-            if (_listItemBuy.Count == 0 && ItemsCard.Count == 0) // đk để được set danh sách mua
+            if (ListItemBuy.Count == 0) // đk để được set danh sách mua
             {
-                if (_listItemBuy.Count >= 0)
+                if (ListItemBuy.Count >= 0)
                 {
-                    _listItemBuy.Clear(); // Item muốn mua không còn thì reset ds
+                    ListItemBuy.Clear(); // Item muốn mua không còn thì reset ds
                 }
 
                 // Tạo một số ngẫu nhiên giữa minCount và maxCount
-                int countBuy = UnityEngine.Random.Range(3, 3);
+                int countBuy = UnityEngine.Random.Range(2, 5);
 
                 // Thêm danh sach item muon mua
                 for (int i = 0; i < countBuy; i++)
                 {
-                    _listItemBuy.Add(GetRandomItemBuy());
+                    ListItemBuy.Add(GetRandomItemBuy());
                 }
             }
         }
@@ -188,20 +167,15 @@ namespace CuaHang.AI
         {
             TypeID[] items = { TypeID.apple_1, TypeID.milk_1, TypeID.banana_1 };
             int randomIndex = UnityEngine.Random.Range(0, items.Length);
-            return TypeID.apple_1;
+            return items[randomIndex];
         }
 
         /// <summary> Chạy tới vị trí item cần lấy </summary>
-        private bool GoToItemNeed()
+        private bool MoveToItemFinding()
         {
-            if (_isDoneShopping || _isPickingItem) return false;
-
-            // set item finding
-            if (_listItemBuy.Count > 0 && !_itemFinding) _itemFinding = ItemPooler.Instance.ShuffleFindItem(_listItemBuy[0]);
-
             Item shelf = _itemPooler.GetItemContentItem(_itemFinding); // lấy cái bàn chứa quả táo
 
-            if (shelf && shelf.WaitingPoint && !MoveToTarget(shelf.WaitingPoint))
+            if (shelf && shelf.WaitingPoint && MoveToTarget(shelf.WaitingPoint))
             {
                 return true;
             }
@@ -213,12 +187,7 @@ namespace CuaHang.AI
         {
             if (MoveToTarget(_goOutShopPoint))
             {
-                // xoá tắt cả item dang giữ
-                foreach (var item in ItemsCard)
-                {
-                    ItemPooler.Instance.RemoveObjectFromPool(item);
-                }
-                CustomerPooler.Instance.RemoveObjectFromPool(this);
+                CustomerPooler.Instance.RemoveEntityFromPool(this);
             }
         }
 
@@ -232,7 +201,7 @@ namespace CuaHang.AI
         private IEnumerator PickItem()
         {
             _isPickingItem = true;
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(3f);
             _isPickingItem = false;
 
         }
@@ -244,14 +213,14 @@ namespace CuaHang.AI
             {
                 base.SetVariables<T, V>(data);
                 TotalPay = customerData.TotalPay;
-                IsDoneShopping = customerData.IsNotNeedBuy;
+                ListItemBuy = customerData.ListItemBuy;
                 IsPlayerConfirmPay = customerData.PlayerConfirmPay;
             }
         }
 
         public override T GetData<T, D>()
         {
-            CustomerData data = new CustomerData(GetEntityData(), IsDoneShopping, IsPlayerConfirmPay);
+            CustomerData data = new CustomerData(GetEntityData(), TotalPay, ListItemBuy, IsPlayerConfirmPay);
             return (T)(object)(data);
         }
         #endregion

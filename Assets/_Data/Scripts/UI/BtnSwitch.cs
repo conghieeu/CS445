@@ -1,23 +1,53 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace CuaHang.UI
 {
-    public class BtnSwitch : MonoBehaviour
+    public class BtnSwitch : GameBehavior
     {
-        [Header("Open new panels")]
-        public UIPanel _panelOpen;
-        public UIPanel _panelClose;
+        [Header("UI Panel")]
+        [SerializeField] UIPanel _panelOpen;
+        [SerializeField] UIPanel _panelClose;
+
+        [Header("Active Object")]
+        [SerializeField] Transform _objectCloseHolder;
+        [SerializeField] GameObject _objectOpen;
+        [SerializeField] List<GameObject> _listObjectClose;
 
         Button _button;
 
         private void Start()
         {
             _button = GetComponent<Button>();
-            _button.onClick.AddListener(_OpenNewPanel);
+            _button.onClick.AddListener(OnClick);
         }
 
-        public void _OpenNewPanel()
+        private void OnClick()
+        {
+            CloseAllPanels();
+            OpenNewPanel();
+        }
+
+        private void CloseAllPanels()
+        {
+            foreach (var panel in _listObjectClose)
+            {
+                if (panel != null) // Kiểm tra xem đối tượng có khác null không
+                {
+                    panel.SetActive(false); // Tắt đối tượng
+                }
+            }
+
+            if(_objectCloseHolder)
+            {
+                CloseAllChildren(_objectCloseHolder);
+            }
+
+            if (_objectOpen) _objectOpen.SetActive(true);
+        }
+
+        private void OpenNewPanel()
         {
             if (_panelClose)
             {

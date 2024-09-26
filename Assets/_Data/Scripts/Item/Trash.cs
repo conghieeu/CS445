@@ -19,12 +19,15 @@ namespace CuaHang
         public float _timeDelete; // thời gian để xoá đi đối tượng bênh trong kho
         public List<ParcelTrash> _listTrash; // thời gian để xoá đi đối tượng bênh trong kho
 
-        private void Start()
+        private void OnEnable()
         {
-            for (int i = 0; i < ItemSlot._itemsSlots.Count; i++)
-            {
-                _listTrash.Add(new ParcelTrash());
-            }
+            ItemSlot.ActionAddItem += AddItemToTrash;
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            ItemSlot.ActionAddItem -= AddItemToTrash;
         }
 
         private void FixedUpdate()
@@ -32,36 +35,17 @@ namespace CuaHang
             CountDownRemove();
         }
 
-        public override void LoadVariables()
-        {
-            base.LoadVariables();
-            AddTrashFromSlot();
-        }
-
         /// <summary> Thêm item rác vào thùng rác </summary>
         public void AddItemToTrash(Item item)
         {
-            foreach (var trash in _listTrash)
-            {
-                if (trash._item == null)
-                {
-                    trash._time = _timeDelete;
-                    trash._item = item;
-                    break;
-                }
-            }
-        }
-
-        void AddTrashFromSlot()
-        {
-            foreach (var item in ItemSlot._itemsSlots)
-            {
-                AddItemToTrash(item._item);
-            }
+            ParcelTrash trash = new ParcelTrash();
+            trash._time = _timeDelete;
+            trash._item = item;
+            _listTrash.Add(trash);
         }
 
         /// <summary> thùng rác đếm ngược về 0 sẽ xoá item </summary>
-        void CountDownRemove()
+        private void CountDownRemove()
         {
             for (int i = 0; i < _listTrash.Count; i++)
             {

@@ -1,8 +1,6 @@
 using UnityEngine;
 using CuaHang.Pooler;
 using System.Collections.Generic;
-using TMPro;
-using System;
 using CuaHang.AI;
 
 namespace CuaHang
@@ -61,7 +59,7 @@ namespace CuaHang
             _isBlockPrice = SO._isBlockPrice;
         }
 
-        void OnDisable()
+        protected virtual void OnDisable()
         {
             _isCanDrag = true;
             _isRecyclable = false;
@@ -89,7 +87,7 @@ namespace CuaHang
         /// <summary> Tạo item trong itemSlot </summary>
         public void CreateItemInSlot(List<ItemSO> items)
         {
-            for (int i = 0; i < ItemSlot._itemsSlots.Count && i < items.Count; i++)
+            for (int i = 0; i < ItemSlot._itemsSlot.Count && i < items.Count; i++)
             {
                 if (items[i])
                 {
@@ -166,9 +164,7 @@ namespace CuaHang
         }
 
         public override void LoadVariables()
-        {
-            base.LoadVariables();
-
+        { 
             // tìm item cha và tự chui vào đó
             if (_itemPooler.GetObjectByID(IdParent))
             {

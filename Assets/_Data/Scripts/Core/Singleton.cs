@@ -2,7 +2,7 @@ using CuaHang;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
 
-public abstract class Singleton<T> : GameBehavior where T : MonoBehaviour
+public abstract class Singleton<T> : GameBehavior where T : GameBehavior
 {
     [Header("Singleton")]
     [SerializeField] private bool _dontDestroyOnLoad;

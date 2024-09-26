@@ -21,39 +21,63 @@ namespace CuaHang
         InputImprove _input => InputImprove.Instance;
         Camera _cam => Camera.main;
 
-        public ModuleDragItem ItemDrag { get => _itemDrag;}
+        public ModuleDragItem ItemDrag
+        {
+            get => _itemDrag;
+            private set
+            {
+                _itemDrag = value;
+            }
+        }
+
         public Item ItemSelect
         {
             get => _itemSelect;
             private set
             {
-                if (_itemSelect && _itemSelect != value) SetOutlines(_itemSelect.transform, false);
+                if (_itemSelect && _itemSelect != value)
+                {
+                    SetOutlines(_itemSelect.transform, false);
+                }
+                if (value)
+                {
+                    SetOutlines(value.transform, value);
+                }
 
                 _itemSelect = value;
-
-                if (value) SetOutlines(value.transform, value);
 
                 ActionSelectItem?.Invoke(value);
             }
         }
         public Item ItemEdit
         {
-            get => _itemEdit; set
+            get => _itemEdit;
+            set
             {
+                if (value != _itemEdit && _itemEdit)
+                {
+                    _itemEdit.GetComponent<Collider>().enabled = true;
+                }
+                if (value)
+                {
+                    value.GetComponent<Collider>().enabled = false;
+                }
+
                 _itemEdit = value;
-                _enableRaycast = !value;
                 ActionEditItem?.Invoke(value);
             }
         }
         public Item ItemFollow
         {
-            get => _itemFollow; set
+            get => _itemFollow;
+            set
             {
                 _itemFollow = value;
                 ActionFollowItem?.Invoke(value);
             }
         }
 
+        public static event Action<Item> ActionDragItem;
         public static event Action<Item> ActionSelectItem;
         public static event Action<Item> ActionEditItem;
         public static event Action<Item> ActionFollowItem;
@@ -102,7 +126,7 @@ namespace CuaHang
         {
             if (ItemEdit)  // thoát item dang edit
             {
-                ItemSelect = ItemEdit;  
+                ItemSelect = ItemEdit;
                 ItemEdit = null;
             }
             else  // thoát item follow
@@ -126,13 +150,12 @@ namespace CuaHang
         {
             if (!ItemDrag || ItemDrag._isDragging || !ItemSelect) return;
 
-            Item item = ItemSelect.transform.GetComponent<Item>();
-
-            if (item && item.IsCanDrag)
+            if (ItemSelect && ItemSelect.IsCanDrag)
             {
                 ItemEdit = null;
-                item.SetDragState(true);
-                ItemDrag.PickUpItem(item);
+                ItemSelect.SetDragState(true);
+                ItemDrag.PickUpItem(ItemSelect);
+                ActionDragItem?.Invoke(ItemSelect);
             }
         }
 
@@ -151,7 +174,7 @@ namespace CuaHang
 
         private void SetFollowItem(InputAction.CallbackContext ctx)
         {
-            if (ItemSelect != null) 
+            if (ItemSelect != null)
             {
                 ItemFollow = ItemSelect;
             }
@@ -171,6 +194,6 @@ namespace CuaHang
         }
 
 
-        
+
     }
 }

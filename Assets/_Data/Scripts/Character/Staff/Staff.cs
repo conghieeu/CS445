@@ -72,8 +72,6 @@ namespace CuaHang.AI
                 if (MoveToTarget(trash.transform))
                 {
                     trash.ItemSlot.TryAddItemToItemSlot(_heldItem, true);
-                    trash.AddItemToTrash(_heldItem);
-                    _heldItem.IsCanDrag = true;
                     _heldItem = null;
                 }
                 return;

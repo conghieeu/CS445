@@ -46,9 +46,9 @@ namespace CuaHang.UI
 
             RaycastCursor.ActionSelectItem += OnItemSelect;
             RaycastCursor.ActionEditItem += OnEditItem;
+            RaycastCursor.ActionDragItem += OnBtnDragItem;
             PlayerPlanting.ActionSenderItem += OnPlayerSenderItem;
 
-            _inputImprove.DragItem += OnBtnDragItem;
 
             _btnIncreasePrice.OnButtonDown += IncreasePrice;
             _btnDiscountPrice.OnButtonDown += DiscountPrice;
@@ -60,7 +60,7 @@ namespace CuaHang.UI
         {
             RaycastCursor.ActionSelectItem -= OnItemSelect;
             RaycastCursor.ActionEditItem -= OnEditItem;
-            _inputImprove.DragItem -= OnBtnDragItem;
+            RaycastCursor.ActionDragItem -= OnBtnDragItem;
 
             _btnIncreasePrice.OnButtonDown -= IncreasePrice;
             _btnDiscountPrice.OnButtonDown -= DiscountPrice;
@@ -70,7 +70,6 @@ namespace CuaHang.UI
 
         private void FixedUpdate()
         {
-
             // panel context follow item select
             if (_itemSelect)
             {
@@ -99,19 +98,15 @@ namespace CuaHang.UI
             }
         }
 
-        private void OnBtnDragItem(InputAction.CallbackContext ctx)
+        private void OnBtnDragItem(Item item)
         {
-            if (_itemSelect == null) return;
-
-            _panelMenuContext.EnableCanvasGroup(false);
-
-            if (GameSystem.CurrentPlatform == Platform.Android)
-            {
+            if (GameSystem.CurrentPlatform == Platform.Android && item)
+            { 
+                _panelMenuContext.EnableCanvasGroup(false);
                 _btnOnDrag.EnableCanvasGroup(true);
                 _btnOnDrag.transform.position = _inputImprove.MousePosition();
                 _btnOnDrag.transform.position = _btnSetDrag.transform.position;
             }
-
         }
 
         private void OnBtnShowInfo()

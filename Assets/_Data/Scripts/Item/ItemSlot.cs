@@ -12,14 +12,14 @@ namespace CuaHang
     {
         /// <summary> đại diện cho mỗi phần tử của danh sách slot </summary>
         [Serializable]
-        public class ItemsSlots
+        public class ItemsSlot
         {
             public Item _item; // object đang gáng trong boolingObject đó
             public Transform _slot;
 
 
             // Constructor với tham số
-            public ItemsSlots(Item item, Transform slot)
+            public ItemsSlot(Item item, Transform slot)
             {
                 _item = item;
                 _slot = slot;
@@ -29,7 +29,9 @@ namespace CuaHang
 
         [Header("Item Slots")]
         public Item _item;
-        public List<ItemsSlots> _itemsSlots;
+        public List<ItemsSlot> _itemsSlot;
+
+        public event Action<Item> ActionAddItem;
 
         void Awake()
         {
@@ -41,15 +43,15 @@ namespace CuaHang
         {
             for (int i = 0; i < transform.childCount; i++)
             {
-                ItemsSlots newSlot = new ItemsSlots(null, transform.GetChild(i));
-                if (_itemsSlots.Count < transform.childCount) _itemsSlots.Add(newSlot);
+                ItemsSlot newSlot = new ItemsSlot(null, transform.GetChild(i));
+                if (_itemsSlot.Count < transform.childCount) _itemsSlot.Add(newSlot);
             }
         }
 
         /// <summary> Trong List item slot thì chỉnh tất cả các bool drag item </summary>
         public void SetDragItems(bool active)
         {
-            foreach (var i in _itemsSlots)
+            foreach (var i in _itemsSlot)
             {
                 if (i._item)
                 {
@@ -60,14 +62,14 @@ namespace CuaHang
 
         public bool IsContentItem(Item item)
         {
-            foreach (var i in _itemsSlots) if (i._item == item) return true;
+            foreach (var i in _itemsSlot) if (i._item == item) return true;
             return false;
         }
 
         /// <summary> Có slot nào đang trống không </summary>
         public bool IsHasSlotEmpty()
         {
-            foreach (var slot in _itemsSlots)
+            foreach (var slot in _itemsSlot)
             {
                 if (slot._item == null)
                 {
@@ -80,19 +82,20 @@ namespace CuaHang
         /// <summary> Có item nào có trong slot không </summary>
         public bool IsAnyItem()
         {
-            foreach (var i in _itemsSlots) if (i._item != null) return true;
+            foreach (var i in _itemsSlot) if (i._item != null) return true;
             return false;
         }
 
         /// <summary> Thêm 1 item vào danh sách </summary>
         public bool TryAddItemToItemSlot(Item item, bool isCanDrag)
         {
-            foreach (var i in _itemsSlots)
+            foreach (var slot in _itemsSlot)
             {
-                if (i._item == null)
+                if (!slot._item)
                 {
-                    i._item = item;
-                    item.SetParent(i._slot, GetComponentInParent<Item>(), isCanDrag);
+                    slot._item = item;
+                    item.SetParent(slot._slot, GetComponentInParent<Item>(), isCanDrag);
+                    ActionAddItem?.Invoke(item);
                     return true;
                 }
             }
@@ -102,12 +105,12 @@ namespace CuaHang
         /// <summary> Xoá item ra khỏi danh sách và ẩn item nó ở thế giới </summary>
         public bool RemoveItemInWorld(Item item)
         {
-            for (int i = _itemsSlots.Count - 1; i >= 0; i--)
+            for (int i = _itemsSlot.Count - 1; i >= 0; i--)
             {
-                if (_itemsSlots[i]._item == item && _itemsSlots[i]._item != null)
+                if (_itemsSlot[i]._item == item && _itemsSlot[i]._item != null)
                 {
-                    ItemPooler.Instance.RemoveObjectFromPool(item);
-                    _itemsSlots[i]._item = null;
+                    ItemPooler.Instance.RemoveEntityFromPool(item);
+                    _itemsSlot[i]._item = null;
                     return true;
                 }
             }
@@ -116,11 +119,11 @@ namespace CuaHang
 
         public bool RemoveItemInList(Item item)
         {
-            for (int i = _itemsSlots.Count - 1; i >= 0; i--)
+            for (int i = _itemsSlot.Count - 1; i >= 0; i--)
             {
-                if (_itemsSlots[i]._item == item && _itemsSlots[i]._item != null)
+                if (_itemsSlot[i]._item == item && _itemsSlot[i]._item != null)
                 {
-                    _itemsSlots[i]._item = null;
+                    _itemsSlot[i]._item = null;
                     return true;
                 }
             }
@@ -130,12 +133,12 @@ namespace CuaHang
         /// <summary> Lấy toàn bộ item từ sender đang có nạp vào _itemSlot này </summary>
         public virtual void ReceiverItems(ItemSlot sender, bool isCanDrag)
         {
-            for (int i = 0; i < sender._itemsSlots.Count; i++)
+            for (int i = 0; i < sender._itemsSlot.Count; i++)
             {
-                if (sender._itemsSlots[i]._item && IsHasSlotEmpty())
+                if (sender._itemsSlot[i]._item && IsHasSlotEmpty())
                 {
-                    TryAddItemToItemSlot(sender._itemsSlots[i]._item, isCanDrag);
-                    sender.RemoveItemInList(sender._itemsSlots[i]._item);
+                    TryAddItemToItemSlot(sender._itemsSlot[i]._item, isCanDrag);
+                    sender.RemoveItemInList(sender._itemsSlot[i]._item);
                 }
             }
         }

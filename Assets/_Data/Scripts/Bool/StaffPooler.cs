@@ -4,21 +4,13 @@ using UnityEngine;
 
 namespace CuaHang.Pooler
 {
-    public class StaffPooler : EntityPooler, ISaveData
+    public class StaffPooler : EntityPooler<StaffPooler>
     {
-        public static StaffPooler Instance;
-
-        protected override void Awake()
+        public override void SetVariables<T, V>(T data)
         {
-            base.Awake();
-
-            if (Instance != null && Instance != this)
+            if (data is GamePlayData gamePlayData)
             {
-                Destroy(gameObject);
-            }
-            else
-            {
-                Instance = this;
+                base.SetVariables<List<StaffData>, StaffData>(gamePlayData.StaffsData);
             }
         }
 

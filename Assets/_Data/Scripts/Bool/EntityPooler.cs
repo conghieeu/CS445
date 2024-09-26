@@ -3,24 +3,17 @@ using UnityEngine;
 
 namespace CuaHang.Pooler
 {
-    public enum TypePool
+    public class EntityPooler<S> : Singleton<S>, ISaveData where S : GameBehavior
     {
-        Item,
-        Customer,
-        Staff,
-    }
-
-    public class EntityPooler : GameBehavior, ISaveData
-    {
-        [Header("BoolingObjects")]
-        public TypePool _poolType;
+        [Header("Entity Pooler")]
         [SerializeField] protected List<Transform> _prefabs;
         [SerializeField] protected List<Entity> _objectPools;
 
         public List<Entity> ListEntity { get => _objectPools; private set => _objectPools = value; }
 
-        protected virtual void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             // Save child
             foreach (Transform child in transform)
             {
@@ -29,10 +22,9 @@ namespace CuaHang.Pooler
         }
 
         /// <summary> Xoá object khỏi pool và đánh dấu là có thể tái sử dụng  </summary>
-        public virtual void RemoveObjectFromPool(Entity objectPool)
+        public virtual void RemoveEntityFromPool(Entity entity)
         {
-            objectPool.gameObject.SetActive(false);
-            objectPool.IsRecyclable = true;
+            entity.RemoveThis();
         }
 
         /// <summary> Kiểm tra xem pool có chứa object với ID cụ thể hay không  </summary>
@@ -108,10 +100,12 @@ namespace CuaHang.Pooler
         }
 
         #region SaveData
+        /// <summary> Entity sẽ truyền loại data vào đây set dữ liệu từ data, T: Kiểu dữ liệu trả về, V: kiểu dữ liệu muốn lấy </summary>
         public virtual void SetVariables<T, V>(T data)
         {
+            // T: là list<V>
             if (data is List<V> dataList == false) return;
-            
+
             foreach (var iData in dataList)
             {
                 if (iData is EntityData entityData)
@@ -123,8 +117,11 @@ namespace CuaHang.Pooler
                     }
                     else
                     {
-                        entity = GetOrCreateObjectPool(entityData.TypeID);
-                        entity.GetComponent<ISaveData>().SetVariables<V, object>(iData);
+                        if (!entityData.IsDestroyed) // không tạo những đối tuọng bị phá huỷ
+                        {
+                            entity = GetOrCreateObjectPool(entityData.TypeID);
+                            entity.GetComponent<ISaveData>().SetVariables<V, object>(iData); 
+                        }
                     }
                 }
             }
@@ -144,7 +141,7 @@ namespace CuaHang.Pooler
 
             foreach (var entity in ListEntity)
             {
-                if (entity && entity.ID != "" && entity.gameObject.activeInHierarchy)
+                if (entity && entity.ID != "")
                 {
                     listStaffData.Add(entity.GetComponent<ISaveData>().GetData<D, object>());
                 }
@@ -158,5 +155,4 @@ namespace CuaHang.Pooler
         }
         #endregion
     }
-
 }

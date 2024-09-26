@@ -5,27 +5,11 @@ using UnityEngine;
 
 namespace CuaHang.Pooler
 {
-    public class ItemPooler : EntityPooler
+    public class ItemPooler : EntityPooler<ItemPooler>
     {
         [SerializeField] Transform _itemSpawnerPoint;
 
-        public static ItemPooler Instance;
-
         public Transform ItemSpawnerPoint { get => _itemSpawnerPoint; }
-
-        protected override void Awake()
-        {
-            base.Awake();
-
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-            }
-            else
-            {
-                Instance = this;
-            }
-        }
 
         /// <summary> Tìm item có item Slot và còn chỗ trống </summary>
         public Item GetItemEmptySlot(TypeID typeID)
@@ -54,18 +38,19 @@ namespace CuaHang.Pooler
         }
 
         /// <summary> Tìm item lần lượt theo mục đang muốn mua </summary>
-        public Item ShuffleFindItem(TypeID typeID)
+        public Item GetItemByTypeID(TypeID typeID)
         {
-            List<Entity> poolsO = ListEntity.ToList();
-            poolsO.Shuffle<Entity>();
+            List<Entity> entityList = ListEntity.ToList();
 
-            foreach (var o in poolsO)
+            foreach (var entity in entityList)
             {
-                Item item = o.GetComponent<Item>();
+                Item item = entity.GetComponent<Item>();
 
-                if (item && item.EntityParent && o.TypeID == typeID && item.EntityParent.Type == Type.Shelf && item.gameObject.activeSelf) return item;
+                if (item && item.EntityParent && entity.TypeID == typeID && item.EntityParent.Type == Type.Shelf && item.gameObject.activeSelf)
+                {
+                    return item;
+                }
             }
-
             return null;
         }
 
@@ -77,7 +62,7 @@ namespace CuaHang.Pooler
                 base.SetVariables<List<ItemData>, ItemData>(gamePlayData.ItemsData);
             }
         }
-        
+
         public override void SaveData()
         {
             DataManager.Instance.GameData._gamePlayData.ItemsData = GetData<List<ItemData>, ItemData>();

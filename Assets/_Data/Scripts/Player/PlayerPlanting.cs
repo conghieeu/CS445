@@ -10,7 +10,7 @@ namespace CuaHang
     public class PlayerPlanting : GameBehavior
     {
         PlayerCtrl _playerCtrl;
-        InputImprove _input => InputImprove.Instance;
+        InputImprove _inputImprove => InputImprove.Instance;
         ModuleDragItem _itemDrag => RaycastCursor.Instance.ItemDrag;
 
         public static event Action ActionSenderItem;
@@ -22,14 +22,12 @@ namespace CuaHang
 
         private void OnEnable()
         {
-            _input.SenderItem += SenderParcel;
-            _input.SenderItem += SenderItemSell;
+            _inputImprove.SenderItem += SendItem;
         }
 
         private void OnDisable()
         {
-            _input.SenderItem -= SenderParcel;
-            _input.SenderItem -= SenderItemSell;
+            _inputImprove.SenderItem -= SendItem;
         }
 
         private void FixedUpdate()
@@ -38,37 +36,37 @@ namespace CuaHang
         }
 
         /// <summary> chạm vào kệ, người chơi có thể truyền item từ parcel sang table đó </summary>
-        private void SenderItemSell(InputAction.CallbackContext ctx)
+        private void SendItem(InputAction.CallbackContext ctx)
         {
             // có item ở cảm biến
             Item shelf = _playerCtrl._sensorForward.GetItemTypeHit(Type.Shelf);
+            Item trash = _playerCtrl._sensorForward.GetItemTypeHit(Type.Trash);
+            Item storage = _playerCtrl._sensorForward.GetItemTypeHit(Type.Storage);
             Item itemHold = _itemDrag._itemDragging;
 
-            if (shelf && itemHold && !itemHold.IsCanSell) // gửi các apple trong parcel sang kệ
+            if (!itemHold) return; 
+
+            if (shelf && !itemHold.IsCanSell) // gửi các item trong parcel sang kệ
             {
                 shelf.ItemSlot.ReceiverItems(itemHold.ItemSlot, true);
             }
-            else if (shelf && itemHold && itemHold.IsCanSell) // để item lênh kệ
+            else if (shelf && itemHold.IsCanSell && shelf.ItemSlot.IsHasSlotEmpty()) // để item lênh kệ
             {
-                In($"Player để quá táo lênh kệ");
-                ActionSenderItem?.Invoke();
                 _itemDrag.OnDropItem();
                 shelf.ItemSlot.TryAddItemToItemSlot(itemHold, true);
-            }
-        }
-
-        /// <summary> đưa parcel vào thùng rác </summary>
-        private void SenderParcel(InputAction.CallbackContext ctx)
-        {
-            Item trash = _playerCtrl._sensorForward.GetItemTypeHit(Type.Trash);
-            Item parcel = _itemDrag._itemDragging;
-
-            if (trash && parcel && parcel.Type == Type.Parcel)
-            {
                 ActionSenderItem?.Invoke();
+            }
+            else if (trash && itemHold.Type == Type.Parcel && trash.ItemSlot.IsHasSlotEmpty()) // de parcel vao thung rac
+            {
                 _itemDrag.OnDropItem();
-                trash.ItemSlot.TryAddItemToItemSlot(parcel, true);
-
+                trash.ItemSlot.TryAddItemToItemSlot(itemHold, true);
+                ActionSenderItem?.Invoke();
+            }
+            else if (storage && itemHold.Type == Type.Parcel && storage.ItemSlot.IsHasSlotEmpty()) // de parcel vao kho
+            {
+                _itemDrag.OnDropItem();
+                storage.ItemSlot.TryAddItemToItemSlot(itemHold, true);
+                ActionSenderItem?.Invoke();
             }
         }
 
@@ -79,8 +77,6 @@ namespace CuaHang
             direction.y = 0;
             transform.forward = direction;
         }
-
-
 
     }
 }

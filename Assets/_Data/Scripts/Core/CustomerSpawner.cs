@@ -6,19 +6,14 @@ using UnityEngine;
 
 namespace CuaHang.Core
 {
-    public class CustomerSpawner : MonoBehaviour
+    public class CustomerSpawner : GameBehavior
     {
         [SerializeField] List<Customer> _customerPrefabs;
         [SerializeField] List<Transform> _spawnPoint;
         [SerializeField] float _baseSpawnInterval = 30.0f;    // Khoảng thời gian spawn cơ bản
         [SerializeField] float _randomRange = 10f;          // Khoảng thời gian ngẫu nhiên thêm vào
-        [SerializeField] float _currentSpawnInterval;       // Thời gian spawn hiện tại
-        [SerializeField] float _spawnTimer;                 // Bộ đếm thời gian cho spawn khách hàng
-
-        private void Start()
-        {
-            _spawnTimer = _currentSpawnInterval;
-        }
+        [SerializeField] float _currentSpawnInterval = 10f;       // Thời gian spawn hiện tại
+        [SerializeField] float _spawnTimer = 10f;                 // Bộ đếm thời gian cho spawn khách hàng
 
         private void FixedUpdate()
         {
@@ -40,9 +35,9 @@ namespace CuaHang.Core
             _spawnTimer -= Time.fixedDeltaTime;
 
             if (_spawnTimer <= 0)
-            {
-                 // Đặt lại bộ đếm thời gian với yếu tố ngẫu nhiên
-                _spawnTimer = _currentSpawnInterval + Random.Range(-_randomRange, _randomRange); 
+            { 
+                // Đặt lại bộ đếm thời gian với yếu tố ngẫu nhiên
+                _spawnTimer = _currentSpawnInterval + Random.Range(-_randomRange, _randomRange);
 
                 if (_customerPrefabs.Count > 0 && _spawnPoint.Count > 0)
                 {

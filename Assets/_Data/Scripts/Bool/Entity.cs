@@ -35,7 +35,13 @@ namespace CuaHang
 
         public virtual EntityData GetEntityData()
         {
-            return new EntityData(ID, Name, TypeID, transform.position, transform.rotation);
+            return new EntityData(ID, Name, _isRecyclable, TypeID, transform.position, transform.rotation);
+        }
+
+        public virtual void RemoveThis()
+        {
+            gameObject.SetActive(false);
+            IsRecyclable = true;
         }
 
         public virtual void SetVariables<T, V>(T data)
@@ -47,6 +53,7 @@ namespace CuaHang
                 TypeID = entityData.TypeID;
                 transform.position = entityData.Position;
                 transform.rotation = entityData.Rotation;
+                if (entityData.IsDestroyed) RemoveThis();
             }
         }
 

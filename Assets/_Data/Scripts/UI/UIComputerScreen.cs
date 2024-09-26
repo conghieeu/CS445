@@ -19,38 +19,30 @@ namespace CuaHang.UI
         [SerializeField] MayTinh _mayTinh;
 
         [Header("Buy Panel")]
-        [SerializeField] Button _btnGoPayPanel;
         [SerializeField] RectTransform _panelBuyItem;
 
         [Header("Payment Panel")]
         [SerializeField] bool _isCanPay;
-        [SerializeField] Button _btnGoBuyPanel;
         [SerializeField] Button _btnPay;
         [SerializeField] RectTransform _panelPayment;
         [SerializeField] RectTransform _panelSlotHolder;
         [SerializeField] RectTransform _prefabBtnSlot;
         [SerializeField] TextMeshProUGUI _txtCustomerValue;
         [SerializeField] TextMeshProUGUI _txtReport;
-        [SerializeField] Customer _customerSelectMark;
         [SerializeField] TMP_InputField _infRefund;
-        [SerializeField] float _tienThoi;
+        [SerializeField] float _profit;
         [SerializeField] List<WaitingLine.WaitingSlot> _comSlot;
         [SerializeField] List<SlotBar> _barSlots;
 
-        PlayerCtrl _playerCtrl;
-
-        public Customer CustomerSelectMark { get => _customerSelectMark; set => _customerSelectMark = value; }
-        public TextMeshProUGUI TxtCustomerValue { get => _txtCustomerValue; set => _txtCustomerValue = value; }
+        BtnBarCustomer _btnCustomerSelected;
+        PlayerCtrl _playerCtrl => PlayerCtrl.Instance;
 
         void Start()
-        {
-            _playerCtrl = PlayerCtrl.Instance;
+        { 
             SetActiveContent(null);
 
-            _btnGoPayPanel.onClick.AddListener(OnClickGoPayPanel);
-            _btnGoBuyPanel.onClick.AddListener(OnClickGoBuyPanel);
-            _btnPay.onClick.AddListener(OnClickPayBtn);
-            _infRefund.onValueChanged.AddListener(ValidateInput);
+            _btnPay.onClick.AddListener(OnClickPay);
+            _infRefund.onValueChanged.AddListener(OnInfRefund);
 
             for (int i = 0; i < 10; i++) _barSlots.Add(new SlotBar());
         }
@@ -67,7 +59,7 @@ namespace CuaHang.UI
 
         void FixedUpdate()
         {
-            CreateBtnSlot();
+            UpdateBtnSlot();
         }
 
         public void SetActiveContent(Item item)
@@ -85,40 +77,48 @@ namespace CuaHang.UI
             }
         }
 
-        /// <summary> được gọi mỗi khi giá trị trong inputField thay đổi </summary>
-        private void ValidateInput(string input)
+        public void ClickBarCustomer(BtnBarCustomer btnBarCustomer)
         {
-            if (float.TryParse(input, out float tienThoi))
+            _btnCustomerSelected = btnBarCustomer;
+            _txtCustomerValue.text = $"Name: {this.name}\nTổng mua: {btnBarCustomer.CustomerSelected.TotalPay}\nTiền đưa bạn: {btnBarCustomer.CustomerChange}";
+        }
+
+        public void OnInfRefund(string input)
+        {
+            _isCanPay = false; 
+
+            if (float.TryParse(input, out float changeAmount) == false)
             {
-                if (CustomerSelectMark && 300 - tienThoi <= CustomerSelectMark.TotalPay)
-                {
-                    if (_playerCtrl.Money < tienThoi)
-                    {
-                        _txtReport.text = "Cảnh báo: Không đủ tiền để thối";
-                    }
-                    else
-                    {
-                        _txtReport.text = "Bạn có thể thanh toán, tính đúng nếu không mún bị mất tiền";
-                        _tienThoi = tienThoi;
-                        _isCanPay = true;
-                        return;
-                    }
-                }
-                else
-                {
-                    _txtReport.text = "Bạn đang lấy tiền của khách hoặc bạn chưa lựa chọn khách hàng để giao dịch";
-                }
+                _txtReport.text = "Chuỗi ko hợp lệ: Chỉ chứa số.";
+                return;
+            }
+
+            if (_btnCustomerSelected == null)
+            {
+                _txtReport.text = "Cảnh báo: Chưa chọn khách để thanh toán";
+                return;
+            }
+
+            if (changeAmount < _btnCustomerSelected.CustomerChange - _btnCustomerSelected.CustomerSelected.TotalPay)
+            {
+                _txtReport.text = "Bạn đang lấy tiền của khách hoặc bạn chưa lựa chọn khách hàng để giao dịch";
+                return;
+            }
+
+            if (changeAmount > _playerCtrl.Money)
+            {
+                _txtReport.text = "Cảnh báo: Không đủ tiền để thối";
             }
             else
             {
-                _txtReport.text = "Chuỗi ko hợp lệ: Chỉ chứa số.";
+                _txtReport.text = "Bạn có thể thanh toán, tính đúng nếu không mún bị mất tiền";
+                _profit = _btnCustomerSelected.CustomerChange - changeAmount;
+                _isCanPay = true;
             }
-
-            _isCanPay = false;
         }
 
         // tạo slot trong panel slot holder cho cho hop voi khach hang o hang cho
-        private void CreateBtnSlot()
+        private void UpdateBtnSlot()
         {
             if (_mayTinh == null) return;
 
@@ -140,62 +140,22 @@ namespace CuaHang.UI
                     {
                         BtnBarCustomer btnBar = Instantiate(_prefabBtnSlot, _panelSlotHolder).GetComponentInChildren<BtnBarCustomer>();
                         _barSlots[i]._bar = btnBar;
-                        if (_comSlot[i]._customer) btnBar.SetCustomer(_comSlot[i]._customer);
+                        if (_comSlot[i]._customer) btnBar.SetVariables(_comSlot[i]._customer);
                     }
                 }
             }
         }
 
-        private void OnClickPayBtn()
+        private void OnClickPay()
         {
-            if (!CustomerSelectMark) return;
-
-            if (_playerCtrl.Money < _tienThoi)
-            {
-                _txtReport.text = "Cảnh báo: Không đủ tiền để thối";
-                return;
-            }
-
             if (_isCanPay)
             {
-                CustomerSelectMark.IsPlayerConfirmPay = true;
-
-                float coinAdd = 300 - _tienThoi;
-
-                if (_playerCtrl.Money >= _tienThoi)
-                {
-                    _playerCtrl.Money += coinAdd;
-                }
-
-                CustomerSelectMark = null;
+                _btnCustomerSelected.CustomerSelected.IsPlayerConfirmPay = true;
+                _playerCtrl.Money += _profit;
+                _btnCustomerSelected = null;
+                _playerCtrl.UpdateReputation(CustomerAction.Buy);
             }
         }
 
-        private void OnClickGoPayPanel()
-        {
-            SetAtivePanel(_panelPayment);
-        }
-
-        private void OnClickGoBuyPanel()
-        {
-            SetAtivePanel(_panelBuyItem);
-        }
-
-        private void SetAtivePanel(Transform panel)
-        {
-            if (panel == _panelPayment)
-            {
-                _panelPayment.gameObject.SetActive(true);
-                _panelBuyItem.gameObject.SetActive(false);
-                return;
-            }
-
-            if (panel == _panelBuyItem)
-            {
-                _panelBuyItem.gameObject.SetActive(true);
-                _panelPayment.gameObject.SetActive(false);
-                return;
-            }
-        }
     }
 }

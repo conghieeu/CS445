@@ -4,23 +4,16 @@ using CuaHang.AI;
 using UnityEngine;
 namespace CuaHang.Pooler
 {
-    public class CustomerPooler : EntityPooler, ISaveData
+    public class CustomerPooler : EntityPooler<CustomerPooler>
     {
-        [SerializeField] Transform _goOutShopPoint;
-        public static CustomerPooler Instance { get; private set; }
-        public Transform GoOutShopPoint { get => _goOutShopPoint; }
-
-        protected override void Awake()
+        [SerializeField] Transform _goOutShopPoint; 
+        public Transform GoOutShopPoint { get => _goOutShopPoint; } 
+ 
+        public override void SetVariables<T, V>(T data)
         {
-            base.Awake();
-
-            if (Instance != null && Instance != this)
+            if (data is GamePlayData gamePlayData)
             {
-                Destroy(gameObject);
-            }
-            else
-            {
-                Instance = this;
+                base.SetVariables<List<CustomerData>, CustomerData>(gamePlayData.CustomersData);
             }
         }
 

@@ -17,7 +17,6 @@ namespace CuaHang
         public bool _isDragging;
         [SerializeField] bool _enableSnapping; // bật chế độ snapping
         [SerializeField] float _rotationSpeed = 0.1f;// Tốc độ xoay
-        [SerializeField] float _snapDistance = 6f; // Khoảng cách cho phép đặt 
         [SerializeField] float _tileSize = 1; // ô snap tỷ lệ snap
         [SerializeField] Vector3 _tileOffset = Vector3.zero; // tỷ lệ snap + sai số này
 
