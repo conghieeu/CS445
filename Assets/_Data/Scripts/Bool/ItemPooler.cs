@@ -12,12 +12,12 @@ namespace CuaHang.Pooler
         public Transform ItemSpawnerPoint { get => _itemSpawnerPoint; }
 
         /// <summary> Tìm item có item Slot và còn chỗ trống </summary>
-        public Item GetItemEmptySlot(TypeID typeID)
+        public Item GetItemEmptySlot(Type type)
         {
             foreach (var o in ListEntity)
             {
                 Item item = o.GetComponent<Item>();
-                if (item && item.ItemSlot && item.TypeID == typeID && item.ItemSlot.IsHasSlotEmpty()) return item;
+                if (item && item.ItemSlot && item.Type == type && item.ItemSlot.IsHasSlotEmpty()) return item;
             }
             return null;
         }

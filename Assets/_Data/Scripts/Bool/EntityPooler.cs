@@ -63,11 +63,11 @@ namespace CuaHang.Pooler
             {
                 foreach (var prefab in _prefabs)
                 {
-                    Entity pO = prefab.GetComponent<Entity>();
+                    Entity entity = prefab.GetComponent<Entity>();
 
-                    if (pO && pO.TypeID == typeID)
+                    if (entity && entity.TypeID == typeID)
                     {
-                        objectPool = Instantiate(pO, transform);
+                        objectPool = Instantiate(entity, transform);
                         _objectPools.Add(objectPool);
                         break;
                     }

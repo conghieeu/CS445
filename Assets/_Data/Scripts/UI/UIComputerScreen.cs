@@ -38,7 +38,7 @@ namespace CuaHang.UI
         PlayerCtrl _playerCtrl => PlayerCtrl.Instance;
 
         void Start()
-        { 
+        {
             SetActiveContent(null);
 
             _btnPay.onClick.AddListener(OnClickPay);
@@ -79,13 +79,20 @@ namespace CuaHang.UI
 
         public void ClickBarCustomer(BtnBarCustomer btnBarCustomer)
         {
-            _btnCustomerSelected = btnBarCustomer;
-            _txtCustomerValue.text = $"Name: {this.name}\nTổng mua: {btnBarCustomer.CustomerSelected.TotalPay}\nTiền đưa bạn: {btnBarCustomer.CustomerChange}";
+            if (btnBarCustomer)
+            {
+                _btnCustomerSelected = btnBarCustomer;
+                _txtCustomerValue.text = $"Name: {btnBarCustomer.CustomerSelected.Name}\nTổng mua: {btnBarCustomer.CustomerSelected.TotalPay}\nTiền đưa bạn: {btnBarCustomer.CustomerChange}";
+            }
+            else
+            {
+                _txtCustomerValue.text = $"Name:...\nTổng mua:...\nTiền đưa bạn:...";
+            }
         }
 
         public void OnInfRefund(string input)
         {
-            _isCanPay = false; 
+            _isCanPay = false;
 
             if (float.TryParse(input, out float changeAmount) == false)
             {
@@ -154,6 +161,8 @@ namespace CuaHang.UI
                 _playerCtrl.Money += _profit;
                 _btnCustomerSelected = null;
                 _playerCtrl.UpdateReputation(CustomerAction.Buy);
+                ClickBarCustomer(null);
+                _infRefund.text = string.Empty;
             }
         }
 

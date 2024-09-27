@@ -34,19 +34,6 @@ namespace CuaHang
                 _waitingLine._waitingSlots[i]._slot.transform.position = iPos;
             }
         }
-
-        /// <summary> tạo vật thể với SO mới trùng vs SO mẫu nào đó </summary>
-        private bool CreateObjectPlant()
-        {
-            Item parcel = ItemPooler.Instance.GetOrCreateObjectPool(TypeID.parcel_1).GetComponent<Item>();
-
-            if (parcel)
-            {
-                parcel.transform.position = _spawnTrans.position;
-                return true;
-            }
-            return false;
-        }
  
 
     }

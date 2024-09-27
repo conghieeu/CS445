@@ -101,17 +101,6 @@ namespace CuaHang
             }
         }
 
-        public void SetRandomPos()
-        {
-            float size = 2f;
-            float rx = UnityEngine.Random.Range(-size, size);
-            float rz = UnityEngine.Random.Range(-size, size);
-
-            Vector3 p = ItemPooler.Instance.ItemSpawnerPoint.position;
-
-            transform.position = new Vector3(p.x + rx, p.y, p.z + rz);
-        }
-
         public void SetPrice(float price)
         {
             if (_isBlockPrice) return;

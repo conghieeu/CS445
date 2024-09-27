@@ -42,7 +42,7 @@ namespace CuaHang.AI
             if (_heldItem == null) return;
 
             // Đưa item lênh kệ
-            Item shelf = ItemPooler.Instance.GetItemEmptySlot(TypeID.shelf_1);
+            Item shelf = ItemPooler.Instance.GetItemEmptySlot(Type.Shelf);
             if (shelf && parcelHasItem)
             {
                 if (MoveToTarget(shelf.WaitingPoint.transform))
@@ -53,7 +53,7 @@ namespace CuaHang.AI
             }
 
             // Đặt ObjectPlant vào kho
-            Item storage = ItemPooler.Instance.GetItemEmptySlot(TypeID.storage_1);
+            Item storage = ItemPooler.Instance.GetItemEmptySlot(Type.Storage);
             if (storage && parcelHasItem)
             {
                 if (MoveToTarget(storage.transform))
@@ -66,7 +66,7 @@ namespace CuaHang.AI
             }
 
             // Đặt ObjectPlant vào thùng rác 
-            Trash trash = ItemPooler.Instance.GetItemEmptySlot(TypeID.trash_1).GetComponent<Trash>();
+            Trash trash = ItemPooler.Instance.GetItemEmptySlot(Type.Trash).GetComponent<Trash>();
             if (!parcelHasItem && trash)
             {
                 if (MoveToTarget(trash.transform))
@@ -119,7 +119,7 @@ namespace CuaHang.AI
             {
                 Item item = objectPool.GetComponent<Item>();
 
-                if (item && item.TypeID == TypeID.parcel_1 && !item.ThisParent && item.gameObject.activeSelf)
+                if (item && item.Type == Type.Parcel && !item.ThisParent && item.gameObject.activeSelf)
                 {
                     return item;
                 }

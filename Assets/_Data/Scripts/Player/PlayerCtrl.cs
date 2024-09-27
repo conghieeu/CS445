@@ -7,7 +7,7 @@ using UnityEngine.Pool;
 
 namespace CuaHang
 {
-    public class PlayerCtrl : Entity, ISaveData
+    public class PlayerCtrl : Entity
     {
         public static PlayerCtrl Instance;
         public SensorCast _sensorForward;
@@ -82,9 +82,9 @@ namespace CuaHang
 
         #region Save Data
         public override void SetVariables<T, V>(T data)
-        {
+        { 
             if (data is GamePlayData gamePlayData)
-            {
+            { 
                 PlayerData playerData = gamePlayData.PlayerData;
                 base.SetVariables<PlayerData, object>(playerData);
                 Money = playerData.CurrentMoney;

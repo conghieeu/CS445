@@ -3,7 +3,7 @@ using UnityEngine;
 namespace CuaHang
 {
     [CreateAssetMenu(fileName = "ItemSO", menuName = "ScriptableObjects/ItemSO")]
-    public class ItemSO : ObjectSO
+    public class ItemSO : EntitySO
     {
         public float _priceDefault;
         public float _priceMarketMin, _priceMarketMax;

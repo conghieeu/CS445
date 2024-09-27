@@ -38,7 +38,7 @@ public class EntityStats : GameBehavior
                 GetComponent<ISaveData>().SetVariables<GameSettingsData, object>(gameData._gameSettingsData);
             }
             if (_dataManager.GameData._gamePlayData.IsInitialized)
-            {
+            { 
                 GetComponent<ISaveData>().SetVariables<GamePlayData, object>(gameData._gamePlayData);
             }
         }
