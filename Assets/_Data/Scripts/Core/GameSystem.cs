@@ -18,7 +18,7 @@ public class GameSystem : Singleton<GameSystem>
 
     public Platform _Platform { get => _platform; private set => _platform = value; }
 
-    public static event Action<bool> _OnCheckConnect;
+    public static event Action<bool> ActionInternetConnect;
 
     protected override void Awake()
     {
@@ -26,8 +26,6 @@ public class GameSystem : Singleton<GameSystem>
         
         StartCoroutine(CheckInternetConnection());
         CurrentPlatform = _platform;
-
-        InputImprove.ResetInstance();
     } 
 
     IEnumerator CheckInternetConnection()
@@ -39,7 +37,7 @@ public class GameSystem : Singleton<GameSystem>
             Debug.LogWarning("Mất kết nối Internet!");
         }
 
-        _OnCheckConnect?.Invoke(_IsConnectedInternet);
+        ActionInternetConnect?.Invoke(_IsConnectedInternet);
 
         // Kiểm tra lại sau mỗi 5 giây
         yield return new WaitForSecondsRealtime(5);

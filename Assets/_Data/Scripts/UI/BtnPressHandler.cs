@@ -5,10 +5,7 @@ using System;
 /// <summary> Delay khi an </summary>
 public class BtnPressHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    public event Action OnButtonDown;
-    public event Action OnButtonUp;
-    public event Action OnButtonHolding;
-
+    public event Action ActionButtonDown;
 
     [SerializeField] bool _isHolding = false;
     [SerializeField] float _timeDelayDefault = 0.7f;
@@ -27,19 +24,18 @@ public class BtnPressHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
         if (_timeDelay <= 0)
         {
-            OnButtonHolding?.Invoke();
+            ActionButtonDown?.Invoke();
         }
     } 
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        OnButtonDown?.Invoke();
+        ActionButtonDown?.Invoke();
         _isHolding = true;
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        OnButtonUp?.Invoke();
         _isHolding = false;
         _timeDelay = _timeDelayDefault;
     }

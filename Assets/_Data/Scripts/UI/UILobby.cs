@@ -7,12 +7,12 @@ public class UILobby : MonoBehaviour
     [SerializeField] Button _btnTiepTuc; 
     [SerializeField] Button _btnThoatGame; // Thêm biến _btnThoatGame
 
-    DataManager _SAE => DataManager.Instance;
+    DataManager dataManager => DataManager.Instance;
     ScenesManager scenesManager;
 
     private void Start()
     {  
-        _btnTiepTuc.gameObject.SetActive(_SAE.GameData._gamePlayData.IsInitialized);
+        _btnTiepTuc.gameObject.SetActive(dataManager.IsNewGame() == false);
         _btnNewGame.onClick.AddListener(OnClickNewGame);
         _btnThoatGame.onClick.AddListener(OnClickThoatGame); // Thêm AddListener cho _btnThoatGame
         scenesManager = ScenesManager.Instance;
@@ -20,7 +20,7 @@ public class UILobby : MonoBehaviour
 
     public void OnClickNewGame()
     {
-        _SAE.OnStartNewGame();
+        dataManager.OnStartNewGame();
         scenesManager.LoadSceneDemo();
     }
 

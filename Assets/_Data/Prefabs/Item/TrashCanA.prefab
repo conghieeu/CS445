@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6957991796345949063}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Slot_2
   m_TagString: Untagged
-  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -40,10 +40,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3153567062403471286}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Slot_4
   m_TagString: Untagged
-  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -71,10 +71,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3311455801014080971}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Slot_3
   m_TagString: Untagged
-  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -102,10 +102,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2629601666244232177}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Slot_1
   m_TagString: Untagged
-  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -222,7 +222,7 @@ GameObject:
   m_Component:
   - component: {fileID: 493025137536366160}
   - component: {fileID: 3001307040701644737}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -271,7 +271,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4195420379939522378}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Models
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -356,11 +356,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8391222552659086748, guid: 4d9d59f5ad537244e824fa74bba8536f, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: -516098083770646512, guid: 4d9d59f5ad537244e824fa74bba8536f, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 4d9d59f5ad537244e824fa74bba8536f, type: 3}
       propertyPath: m_Name
@@ -368,11 +368,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 4d9d59f5ad537244e824fa74bba8536f, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8416272007918961125, guid: 4d9d59f5ad537244e824fa74bba8536f, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

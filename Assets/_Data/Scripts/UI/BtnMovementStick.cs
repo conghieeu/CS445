@@ -3,15 +3,17 @@ using CuaHang;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class BtnMovementStick : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
-{ 
+public class BtnMovementStick : GameBehavior, IPointerDownHandler, IPointerUpHandler
+{
+    [SerializeField] CameraControl cameraControl => ObjectsManager.Instance.CameraControl; 
+
     public void OnPointerDown(PointerEventData eventData)
-    { 
-        CameraControl.Instance.IsMoveStick = true;
-    } 
+    {
+        cameraControl.IsMoveStick = true;
+    }
 
     public void OnPointerUp(PointerEventData eventData)
-    { 
-        CameraControl.Instance.IsMoveStick = false;
-    } 
+    {
+        cameraControl.IsMoveStick = false;
+    }
 }

@@ -2,29 +2,21 @@ using UnityEngine;
 
 namespace CuaHang.UI
 {
-    public class UIMovementController : UIPanel
+    public class UIMovementController : GameBehavior
     {
         private void Start()
         {
-            if (GameSystem.CurrentPlatform == Platform.Standalone)
-            {
-                EnableCanvasGroup(false);
-            }
-            else if (GameSystem.CurrentPlatform == Platform.Android)
-            {
-                EnableCanvasGroup(true);
-            }
-        }
+            RaycastCursor.ActionEditItem += item => SetActive(item != null);
 
-        private void OnEnable()
-        {
-            RaycastCursor.ActionEditItem += item => EnableCanvasGroup(!item);
-        }
-
-        private void OnDisable()
-        {
-            RaycastCursor.ActionEditItem -= item => EnableCanvasGroup(!item);
-        }
+            if (GameSystem.CurrentPlatform == Platform.Android)
+            {
+                SetActive(true);
+            }
+            else
+            {
+                SetActive(false);
+            }
+        } 
 
     }
 }

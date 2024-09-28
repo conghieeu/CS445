@@ -5,22 +5,22 @@ using System.Collections.Generic;
 
 namespace CuaHang.UI
 {
-    public class UIRaycastChecker : MonoBehaviour
+    public class UIRaycastChecker : GameBehavior
     {
-        [SerializeField] GraphicRaycaster _uiRaycaster;
+        GraphicRaycaster _graphicRaycaster;
 
-        private void Start()
+        private void OnValidate()
         {
-            _uiRaycaster = GetComponentInChildren<GraphicRaycaster>();
+            _graphicRaycaster = GetComponent<GraphicRaycaster>();
         }
 
         /// <summary> Kiểm tra xem người dùng có chạm vào UI hay không </summary>
         public bool IsPointerOverUI()
         { 
-            if (_uiRaycaster == null) return false;
+            if (_graphicRaycaster == null) return false;
 
             PointerEventData eventData = new PointerEventData(EventSystem.current);
-
+            
             if (Input.touchCount > 0)
             {
                 eventData.position = Input.GetTouch(0).position;
@@ -35,7 +35,7 @@ namespace CuaHang.UI
             }
 
             List<RaycastResult> results = new List<RaycastResult>();
-            _uiRaycaster.Raycast(eventData, results);
+            _graphicRaycaster.Raycast(eventData, results);
 
             return results.Count > 0;
         }

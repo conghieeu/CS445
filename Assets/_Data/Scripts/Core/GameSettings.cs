@@ -2,9 +2,9 @@ using System;
 using CuaHang;
 using UnityEngine;
 
-public class GameSettings : Singleton<GameSettings>, ISaveData
+public class GameSettings : GameBehavior, ISaveData
 {
-    [Header("GameSettings")]
+    [Header("GAME SETTINGS")]
     [SerializeField] bool _isFullScreen;
     [SerializeField] int _qualityIndex;
     [SerializeField] float _masterVolume;
@@ -12,7 +12,7 @@ public class GameSettings : Singleton<GameSettings>, ISaveData
     [SerializeField] Quaternion _camRotation;
 
     GameSettingsData _gameSettingsData;
-    CameraControl _cameraControl => CameraControl.Instance;
+    CameraControl _cameraControl;
 
     public bool IsFullScreen { get => _isFullScreen; set => _isFullScreen = value; }
     public int QualityIndex { get => _qualityIndex; set => _qualityIndex = value; }
@@ -21,9 +21,10 @@ public class GameSettings : Singleton<GameSettings>, ISaveData
     public Quaternion CamRotation { get => _camRotation; set => _camRotation = value; }
 
     public static event Action<GameSettings> ActionDataChange;
-
+ 
     private void Start()
     {
+        _cameraControl = ObjectsManager.Instance.CameraControl;
         ActionDataChange?.Invoke(this);
     }
 
@@ -56,10 +57,10 @@ public class GameSettings : Singleton<GameSettings>, ISaveData
     public T GetData<T, D>()
     {
         GameSettingsData data = new GameSettingsData(
-            IsFullScreen, 
-            QualityIndex, 
-            MasterVolume, 
-            CurrentResolutionIndex, 
+            IsFullScreen,
+            QualityIndex,
+            MasterVolume,
+            CurrentResolutionIndex,
             _cameraControl ? _cameraControl.CamshaftRotation : _gameSettingsData.CamRotation);
         return (T)(object)(data);
     }

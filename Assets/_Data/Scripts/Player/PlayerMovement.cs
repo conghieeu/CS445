@@ -1,21 +1,21 @@
-
 using CuaHang.AI;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace CuaHang.Player
 {
     public class PlayerMovement : GameBehavior
     {
         [SerializeField] float _moveSpeed;
-        [SerializeField] Transform _cam;
+        [SerializeField] Camera mainCamera;
         [SerializeField] STATE_ANIM _stageAnim;
         [SerializeField] bool _triggerDragging; // trigger player đang drag item
         [SerializeField] Vector3 _moveDir;
+        [SerializeField] InputActionReference inputPlayerMove;
 
         Rigidbody _rb;
         Animator _animator;
-        InputImprove _input;
-        ModuleDragItem _itemDrag;
+        ModuleDragItem moduleDragItem;
 
         private void Awake()
         {
@@ -26,9 +26,8 @@ namespace CuaHang.Player
 
         private void Start()
         {
-            _input = InputImprove.Instance;
-            _cam = Camera.main.transform;
-            _itemDrag = RaycastCursor.Instance.ItemDrag;
+            moduleDragItem = ObjectsManager.Instance.ModuleDragItem;
+            mainCamera = Camera.main;
         }
 
         private void FixedUpdate()
@@ -40,19 +39,18 @@ namespace CuaHang.Player
         private void Movement()
         {
             // Input
-            float horInput = _input.MovementInput().x;
-            float verInput = _input.MovementInput().y;
+            Vector2 moveD = inputPlayerMove.action.ReadValue<Vector2>();;
 
             // camera dir
-            Vector3 camForward = _cam.forward;
-            Vector3 camRight = _cam.right;
+            Vector3 camForward = mainCamera.transform.forward;
+            Vector3 camRight = mainCamera.transform.right;
 
             camForward.y = 0;
             camRight.y = 0;
 
             // creating relate cam direction
-            Vector3 forwardRelative = verInput * camForward;
-            Vector3 rightRelative = horInput * camRight;
+            Vector3 forwardRelative = moveD.y * camForward;
+            Vector3 rightRelative = moveD.x * camRight;
 
             _moveDir = (forwardRelative + rightRelative).normalized;
 
@@ -62,7 +60,7 @@ namespace CuaHang.Player
             _rb.linearVelocity = velocity;
 
             // Trường hợp đang kéo thả Item nào đó
-            if (_rb.linearVelocity.magnitude > 0 && !_itemDrag.IsDragging)
+            if (_rb.linearVelocity.magnitude > 0 && !moduleDragItem.IsDragging)
             {
                 velocity.y = 0;
                 transform.forward = velocity;
@@ -71,7 +69,7 @@ namespace CuaHang.Player
 
         private void SetAnimator()
         {
-            bool _isDragItem = _itemDrag.gameObject.activeInHierarchy;
+            bool _isDragItem = moduleDragItem.gameObject.activeInHierarchy;
 
             // Idle
             if (_moveDir == Vector3.zero && (_stageAnim != STATE_ANIM.Idle || _triggerDragging != _isDragItem))

@@ -699,7 +699,7 @@ GameObject:
   - component: {fileID: 3930517041657255570}
   - component: {fileID: 3657404508154367664}
   m_Layer: 0
-  m_Name: KhachHang_02
+  m_Name: CustomerB
   m_TagString: Untagged
   m_Icon: {fileID: 5721338939258241955, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0

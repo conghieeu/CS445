@@ -10,13 +10,11 @@ using UnityEngine.SceneManagement;
 /// <summary> Là GAMEDATA, chuỗi hoá và mã hoá lưu được nhiều loại dữ liệu của đối tượng </summary>
 public class DataManager : Singleton<DataManager>
 {
-    [Header("Serialization And Encryption")]
+    [Header("DATA MANAGER")]
     [SerializeField] GameData _gameData = new();
     [SerializeField] bool _isSaveFileExists;
     [SerializeField] string _saveName = "/gameData.save";
-    [SerializeField] string _filePath;
-
-    [Header("SerializationAndEncryption")]
+    [SerializeField] string _filePath; 
     [SerializeField] bool _serialize;
     [SerializeField] bool _usingXML;
     [SerializeField] bool _encrypt;
@@ -63,6 +61,13 @@ public class DataManager : Singleton<DataManager>
         {
             InitializeData();
         };
+    }
+
+    /// <summary> Kiểm tra xem trò chơi có phải là trò chơi mới hay không </summary>
+    public bool IsNewGame()
+    {
+        if (GameData._gamePlayData != null && GameData._gamePlayData.IsInitialized) return false;
+        return true;
     }
 
     private void OnApplicationQuit()
@@ -149,6 +154,8 @@ public class DataManager : Singleton<DataManager>
         }
         return gameData;
     }
+
+
 }
 
 public static class Utils

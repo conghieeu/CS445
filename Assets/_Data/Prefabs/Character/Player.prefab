@@ -149,10 +149,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enableDebugLog: 0
   _moveSpeed: 2
-  _cam: {fileID: 0}
+  mainCamera: {fileID: 0}
   _stageAnim: 0
   _triggerDragging: 0
   _moveDir: {x: 0, y: 0, z: 0}
+  inputPlayerMove: {fileID: -1384990163658863094, guid: a7f0447c51be8e4499f7754249b609f5, type: 3}
 --- !u!114 &6333664411833429482
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,6 +167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableDebugLog: 0
+  inputActionSendItem: {fileID: -2688481953129509308, guid: a7f0447c51be8e4499f7754249b609f5, type: 3}
 --- !u!114 &6324557873869518008
 MonoBehaviour:
   m_ObjectHideFlags: 0

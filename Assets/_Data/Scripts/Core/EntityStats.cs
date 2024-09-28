@@ -1,10 +1,9 @@
-using CuaHang;
-using CuaHang.Pooler;
 using UnityEngine;
 
 public class EntityStats : GameBehavior
 {
     DataManager _dataManager => DataManager.Instance;
+
     protected virtual void OnEnable()
     {
         if (this == null) return;
@@ -37,7 +36,8 @@ public class EntityStats : GameBehavior
                 GetComponent<ISaveData>().SetVariables<PlayerProfileData, object>(gameData._playerProfileData);
                 GetComponent<ISaveData>().SetVariables<GameSettingsData, object>(gameData._gameSettingsData);
             }
-            if (_dataManager.GameData._gamePlayData.IsInitialized)
+
+            if (_dataManager.IsNewGame() == false)
             { 
                 GetComponent<ISaveData>().SetVariables<GamePlayData, object>(gameData._gamePlayData);
             }

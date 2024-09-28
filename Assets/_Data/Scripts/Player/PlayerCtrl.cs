@@ -12,8 +12,6 @@ namespace CuaHang
         public Animator _anim;
 
         [SerializeField] Transform _posHoldParcel;
-
-        [Header("Variablies")]
         [SerializeField] float _money;
         [SerializeField] int _currentReputation; // danh tieng
         [SerializeField] int maxReputation = 100;

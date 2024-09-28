@@ -7,8 +7,8 @@ using TMPro;
 
 namespace CuaHang.UI
 {
-    public class UIComputerScreen : MonoBehaviour
-    {
+    public class UIComputerScreen : GameBehavior
+    { 
         [Serializable]
         public class SlotBar
         {

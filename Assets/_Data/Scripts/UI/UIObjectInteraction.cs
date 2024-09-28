@@ -1,55 +1,62 @@
+using System;
+using QFSW.QC.Actions;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI; 
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace CuaHang.UI
 {
-    public class UIObjectInteraction : MonoBehaviour
+    public class UIObjectInteraction : GameBehavior
     {
+        [Header("UI OBJECT INTERACTION")]
         [Header("Item Selection")]
-        [SerializeField] Item _itemSelect;
-        [SerializeField] PointDragItem _btnOnDrag;
-        [SerializeField] UIPanel _panelMenuContext;
+        [SerializeField] Item _itemSelect; 
         [SerializeField] Button _btnCancelEdit;
-        [SerializeField] Button _btnSetDrag;
-        [SerializeField] Button _btnShowInfo;
-        [SerializeField] Button _btnDropItem;
-        [SerializeField] Button _btnEdit;
 
-        [Header("Object Info Panel")]
-        [SerializeField] bool _isShowInfo;
-        [SerializeField] string _defaultTmp;
+        [Header("On Select Item")]
+        [SerializeField] RectTransform pointDrag;
+        [SerializeField] Button _btnDropItem;
+        [SerializeField] Button btnRotationLeft;
+        [SerializeField] Button btnRotationRight;
+        [SerializeField] UIPanel _panelMenuContext;
+        [SerializeField] PointDragItem pointDragItem;
+
+        [Header("On Drag Item")]
         [SerializeField] UIPanel _infoPanel;
         [SerializeField] TextMeshProUGUI _txtContentItem; // hiện nội dung item
         [SerializeField] BtnPressHandler _btnIncreasePrice;
         [SerializeField] BtnPressHandler _btnDiscountPrice;
+        [SerializeField] Button _btnSetDrag;
+        [SerializeField] Button _btnShowInfo;
+        [SerializeField] Button _btnEdit;
 
-        InputImprove _inputImprove => InputImprove.Instance;
-        ModuleDragItem _itemDrag => RaycastCursor.Instance.ItemDrag;
+        ModuleDragItem _moduleDragItem; 
+        
 
         private void Start()
         {
-            _defaultTmp = _txtContentItem.text;
-            _btnOnDrag.EnableCanvasGroup(false);
-
+            _moduleDragItem = ObjectsManager.Instance.ModuleDragItem;
+            pointDragItem.EnableCanvasGroup(false);
             OnActionEditItem(null);
             OnActionSelectItem(null);
+
+            _btnDropItem.onClick.AddListener(OnBtnDropItem);
+            _btnShowInfo.onClick.AddListener(OnBtnShowInfo);
+            btnRotationLeft.onClick.AddListener(OnRollLeft);
+            btnRotationRight.onClick.AddListener(OnRollRight);
         }
 
         private void OnEnable()
         {
-            _btnDropItem.onClick.AddListener(OnBtnDropItem);
-            _btnShowInfo.onClick.AddListener(OnBtnShowInfo);
-
             RaycastCursor.ActionSelectItem += OnActionSelectItem;
             RaycastCursor.ActionEditItem += OnActionEditItem;
             RaycastCursor.ActionDragItem += OnActionBtnDragItem;
+
             PlayerPlanting.ActionSenderItem += OnActionPlayerSenderItem;
 
-            _btnIncreasePrice.OnButtonDown += IncreasePrice;
-            _btnDiscountPrice.OnButtonDown += DiscountPrice;
-            _btnIncreasePrice.OnButtonHolding += IncreasePrice;
-            _btnDiscountPrice.OnButtonHolding += DiscountPrice;
+            _btnIncreasePrice.ActionButtonDown += IncreasePrice;
+            _btnDiscountPrice.ActionButtonDown += DiscountPrice;
         }
 
         private void OnDisable()
@@ -57,11 +64,6 @@ namespace CuaHang.UI
             RaycastCursor.ActionSelectItem -= OnActionSelectItem;
             RaycastCursor.ActionEditItem -= OnActionEditItem;
             RaycastCursor.ActionDragItem -= OnActionBtnDragItem;
-
-            _btnIncreasePrice.OnButtonDown -= IncreasePrice;
-            _btnDiscountPrice.OnButtonDown -= DiscountPrice;
-            _btnIncreasePrice.OnButtonHolding -= IncreasePrice;
-            _btnDiscountPrice.OnButtonHolding -= DiscountPrice;
         }
 
         private void FixedUpdate()
@@ -75,33 +77,56 @@ namespace CuaHang.UI
             }
         }
 
+        
+
+        public void IncreasePrice()
+        {
+            if (_itemSelect) _itemSelect.SetPrice(0.1f);
+            SetTxtContentItem();
+        }
+
+        public void DiscountPrice()
+        {
+            if (_itemSelect) _itemSelect.SetPrice(-0.1f);
+            SetTxtContentItem();
+        }
+
+        private void OnRollLeft()
+        {
+            _moduleDragItem.OnClickRotation(-15);
+        }
+
+        private void OnRollRight()
+        {
+            _moduleDragItem.OnClickRotation(15);
+        }
+
         private void OnActionPlayerSenderItem()
         {
-            _btnOnDrag.EnableCanvasGroup(false);
+            pointDragItem.EnableCanvasGroup(false);
             OnActionSelectItem(_itemSelect);
         }
 
         private void OnBtnDropItem()
-        { 
-            if (_itemDrag.TryDropItem())
+        {
+            if (_moduleDragItem.TryDropItem())
             {
-                _btnOnDrag.EnableCanvasGroup(false);
+                pointDragItem.EnableCanvasGroup(false);
                 OnActionSelectItem(_itemSelect);
             }
             else
             {
-                _btnOnDrag.EnableCanvasGroup(true);
+                pointDragItem.EnableCanvasGroup(true);
             }
         }
 
         private void OnActionBtnDragItem(Item item)
         {
             if (GameSystem.CurrentPlatform == Platform.Android && item)
-            { 
+            {
                 _panelMenuContext.EnableCanvasGroup(false);
-                _btnOnDrag.EnableCanvasGroup(true);
-                _btnOnDrag.transform.position = _inputImprove.MousePosition();
-                _btnOnDrag.transform.position = _btnSetDrag.transform.position;
+                pointDragItem.EnableCanvasGroup(true);
+                pointDragItem.transform.position = _btnSetDrag.transform.position;
             }
         }
 
@@ -152,31 +177,20 @@ namespace CuaHang.UI
 
         private void SetTxtContentItem()
         {
+            string tmp = "";
+
             // hiện thị stats
             if (_itemSelect && _itemSelect.SO)
             {
-                string x = $"Name: {_itemSelect.Name} \nPrice: {_itemSelect.Price.ToString("F1")} \n";
-                _txtContentItem.text = _itemSelect.SO._isCanSell ? x + "Item có thể bán" : x + "Item không thể bán";
+                tmp = $"Name: {_itemSelect.Name} \nPrice: {_itemSelect.Price.ToString("F1")} \n";
+                _txtContentItem.text = _itemSelect.SO._isCanSell ? tmp + "Item có thể bán" : tmp + "Item không thể bán";
             }
             else
             {
-                _txtContentItem.text = _defaultTmp;
+                _txtContentItem.text = tmp;
             }
         }
 
-        // --------------BUTTON--------------
-
-        public void IncreasePrice()
-        {
-            if (_itemSelect) _itemSelect.SetPrice(0.1f);
-            SetTxtContentItem();
-        }
-
-        public void DiscountPrice()
-        {
-            if (_itemSelect) _itemSelect.SetPrice(-0.1f);
-            SetTxtContentItem();
-        }
 
     }
 }

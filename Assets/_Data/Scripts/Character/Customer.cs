@@ -1,6 +1,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using CuaHang.Core;
 using CuaHang.Pooler;
 using UnityEngine;
 
@@ -16,20 +17,15 @@ namespace CuaHang.AI
         [SerializeField] bool _isPickingItem; // để set animation
         [SerializeField] List<TypeID> _listItemBuy; // Cac item can lay, giới hạn là 15 item
 
-        Transform _goOutShopPoint;
+        CustomerSpawner _spawner => ObjectsManager.Instance.CustomerSpawner;
+        Transform _goOutShopPoint =>  _spawner.GetRandomOutPoint();
         PlayerCtrl _playerCtrl => PlayerCtrl.Instance;
 
         public float TotalPay { get => _totalPay; set => _totalPay = value; }
         public Transform SlotWaiting { get => _slotWaiting; set => _slotWaiting = value; }
         public bool IsPlayerConfirmPay { get => _isPlayerConfirmPay; set => _isPlayerConfirmPay = value; }
-        public List<TypeID> ListItemBuy { get => _listItemBuy; set => _listItemBuy = value; }
-
-        protected override void Start()
-        {
-            base.Start();
-            _goOutShopPoint = CustomerPooler.Instance.GoOutShopPoint.transform;
-        }
-
+        public List<TypeID> ListItemBuy { get => _listItemBuy; set => _listItemBuy = value; } 
+        
         private void OnEnable()
         {
             _totalPay = 0;

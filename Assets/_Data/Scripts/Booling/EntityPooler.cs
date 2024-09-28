@@ -11,10 +11,14 @@ namespace CuaHang.Pooler
 
         public List<Entity> ListEntity { get => _objectPools; private set => _objectPools = value; }
 
-        protected override void Awake()
+        private void OnValidate()
         {
-            base.Awake();
-            // Save child
+            Init();
+        }
+
+        private void Init()
+        {
+            _objectPools.Clear();
             foreach (Transform child in transform)
             {
                 _objectPools.Add(child.GetComponent<Entity>());

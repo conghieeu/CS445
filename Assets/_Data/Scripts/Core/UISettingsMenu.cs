@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using CuaHang;
 using CuaHang.UI;
 using TMPro;
 using UnityEngine;
@@ -9,8 +10,10 @@ using UnityEngine.UI;
 
 namespace Core
 {
-    public class UISettingsMenu : UIPanel
+    public class UISettingsMenu : GameBehavior
     {
+        [Header("UI SETTING MENU")]
+        [SerializeField] RectTransform _panelContents;
         [SerializeField] AudioMixer _audioMixer;
         [SerializeField] bool _enableMenuSettings;
         [SerializeField] TMP_Dropdown _resolutionDropdown;
@@ -19,19 +22,22 @@ namespace Core
         [SerializeField] Slider _sliderVolume;
         [SerializeField] Resolution[] _resolutions; // Array to store available screen resolutions
 
-        bool _isFullScreen;
-        GameSettings _gameSettings => GameSettings.Instance;
+        bool isFullScreen;
+        GameSettings gameSettings => ObjectsManager.Instance.GameSettings;
 
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
+            _enableMenuSettings = false;  
             SetDropDownResolution();
-            _enableMenuSettings = false;
-            _panelContent.gameObject.SetActive(_enableMenuSettings);
+        }
+
+        private void Start()
+        { 
+            _panelContents.gameObject.SetActive(false);
         }
 
         private void OnEnable()
-        {
+        { 
             GameSettings.ActionDataChange += OnGameSettingChange;
         }
 
@@ -40,26 +46,26 @@ namespace Core
             GameSettings.ActionDataChange -= OnGameSettingChange;
         }
 
-        private void OnGameSettingChange(GameSettings data)
+        private void OnGameSettingChange(GameSettings gameSettings)
         {
-            _isFullScreen = data.IsFullScreen;
+            isFullScreen = gameSettings.IsFullScreen;
 
-            // Load UI
-            _toggleFullScreen.isOn = data.IsFullScreen;
-            _sliderVolume.value = data.MasterVolume;
-            _dropDownGraphics.value = data.QualityIndex;
-            _resolutionDropdown.value = data.CurrentResolutionIndex;
+            // Load UI 
+            _toggleFullScreen.isOn = gameSettings.IsFullScreen;
+            _sliderVolume.value = gameSettings.MasterVolume;
+            _dropDownGraphics.value = gameSettings.QualityIndex;
+            _resolutionDropdown.value = gameSettings.CurrentResolutionIndex;
 
-            SetVolume(data.MasterVolume);
-            SetQuality(data.QualityIndex);
-            SetFullscreen(data.IsFullScreen);
-            SetResolutionCurrent(data.CurrentResolutionIndex);
+            SetVolume(gameSettings.MasterVolume);
+            SetQuality(gameSettings.QualityIndex);
+            SetFullscreen(gameSettings.IsFullScreen);
+            SetResolutionCurrent(gameSettings.CurrentResolutionIndex);
         }
 
         private void SetDropDownResolution()
         {
             _resolutions = Screen.resolutions;
-            _resolutionDropdown.ClearOptions(); 
+            _resolutionDropdown.ClearOptions();
             List<string> options = new List<string>(); // Create a list to store resolution strings
             for (int i = 0; i < _resolutions.Length; i++)
             {
@@ -74,31 +80,31 @@ namespace Core
         public void SetActiveMenuSettings(InputAction.CallbackContext context)
         {
             _enableMenuSettings = !_enableMenuSettings;
-            _panelContent.gameObject.SetActive(_enableMenuSettings);
+            _panelContents.gameObject.SetActive(_enableMenuSettings);
         }
 
         public void SetResolutionCurrent(int current)
         {
             // Screen.SetResolution(_resolutions[current].width, _resolutions[current].height, _isFullScreen);
-            _gameSettings.CurrentResolutionIndex = current;
+            gameSettings.CurrentResolutionIndex = current;
         }
 
         public void SetVolume(float volume)
         {
             _audioMixer.SetFloat("volume", volume);
-            _gameSettings.MasterVolume = volume;
+            gameSettings.MasterVolume = volume;
         }
 
         public void SetQuality(int qualityIndex)
         {
             QualitySettings.SetQualityLevel(qualityIndex);
-            _gameSettings.QualityIndex = qualityIndex;
+            gameSettings.QualityIndex = qualityIndex;
         }
 
         public void SetFullscreen(bool isFullscreen)
         {
             Screen.fullScreen = isFullscreen;
-            _gameSettings.IsFullScreen = isFullscreen;
+            gameSettings.IsFullScreen = isFullscreen;
         }
 
 

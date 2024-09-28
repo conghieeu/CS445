@@ -23,70 +23,72 @@ namespace CuaHang
         [SerializeField] SensorCast _sensorAround;
         [SerializeField] SensorCast _sensorGround;
 
-        InputImprove _inputImprove;
         RaycastCursor _raycastCursor;
         NavMeshManager _navMeshManager;
+
+        [Header("Input Action")]
+        [SerializeField] InputActionReference inputMousePosition;
+        [SerializeField] InputActionReference inputLeftClick;
+        [SerializeField] InputActionReference inputSnap;
+        [SerializeField] InputActionReference inputMouseScrollX;
 
         public bool IsDragging { get => _isDragging; set => _isDragging = value; }
         public Item ItemDragging { get => itemDragging; set => itemDragging = value; }
         public Transform ModelsHolding { get => modelsHolding; set => modelsHolding = value; }
 
-        public static event Action ActionDropItem;
-
-        private void OnValidate()
-        {
-            _inputImprove = InputImprove.Instance;
-            _raycastCursor = RaycastCursor.Instance;
-            _navMeshManager = NavMeshManager.Instance;
-        }
+        public event Action ActionDropItem; 
 
         private void Start()
-        {
-            gameObject.SetActive(false);
+        { 
+            _navMeshManager = ObjectsManager.Instance.NavMeshManager;
+            _raycastCursor = ObjectsManager.Instance.RaycastCursor;
         }
 
         private void OnEnable()
         {
-            _inputImprove.Click += InputActionClick;
-            _inputImprove.SnapPerformed += InputActionSnap;
+            inputLeftClick.action.performed += InputLeftClick;
+            inputSnap.action.performed += InputActiveSnap;
         }
 
         private void OnDisable()
         {
-            _inputImprove.Click -= InputActionClick;
-            _inputImprove.SnapPerformed -= InputActionSnap;
-        }
-
-        private void FixedUpdate()
-        {
-            SetMaterial();
-            Dragging();
+            inputLeftClick.action.performed -= InputLeftClick;
+            inputSnap.action.performed -= InputActiveSnap;
         }
 
         private void Update()
         {
-            RotationItemDrag();
+            SetMaterial();
+
+            if (GameSystem.CurrentPlatform == Platform.Standalone)
+            {
+                Vector3 mousePos = inputMousePosition.action.ReadValue<Vector2>();
+                RaycastHit raycastHit = _raycastCursor.GetMouseRaycastHit(mousePos);
+                Vector3 hitPoint = raycastHit.transform.position;
+
+                // di chuyển item trên nền tảng pc , di chuyển theo chuột
+                DragItem(hitPoint);
+
+                // xoay item
+                RotationItemDrag(raycastHit);
+            }
         }
 
         /// <summary> để model temp đang dragging nó hiện giống model đang di chuyển ở thằng Player </summary>
         public void PickUpItem(Item item)
-        {
-            // Bật object drag
-            gameObject.SetActive(true);
-
+        { 
+            SetActive(true);
             // Tạo model giống otherModel ở vị trí 
             ModelsHolding = Instantiate(item.Models, _modelsHolder);
             _modelsHolder.localRotation = item.transform.rotation;
-
             // Cho item này lênh tay player
             item.SetParent(PlayerCtrl.Instance.PosHoldParcel, null, false);
-
             IsDragging = true;
             ItemDragging = item;
         }
 
         /// <summary> Button quay item drag sẽ gọi </summary>
-        public void _ClickRotation(float angle)
+        public void OnClickRotation(float angle)
         {
             float currentAngle = _modelsHolder.localEulerAngles.y;
             float roundedAngle = Mathf.Round(currentAngle / 10.0f) * 10.0f;
@@ -95,21 +97,69 @@ namespace CuaHang
             _modelsHolder.localRotation = Quaternion.Euler(0, newAngle, 0);
         }
 
-        public void InputActionSnap(InputAction.CallbackContext ctx)
+        public void InputActiveSnap(InputAction.CallbackContext ctx)
         {
             _enableSnapping = !_enableSnapping;
         }
 
+        /// <summary> Action Event </summary>
+        public void InputLeftClick(InputAction.CallbackContext context)
+        {
+            if (GameSystem.Instance._Platform == Platform.Standalone)
+            {
+                TryDropItem();
+            }
+        }
+
+        public bool TryDropItem()
+        {
+            if (IsCanPlant())
+            { 
+                OnDropItem();
+                return true;
+            }
+            return false;
+        }
+
         /// <summary> set up lại value khi đặt item </summary>
-        public void DropItem()
+        public void OnDropItem()
         {
             Destroy(ModelsHolding.gameObject); // Delete model item
+            gameObject.SetActive(false);
             ItemDragging.DropItem(ModelsHolding);
             ItemDragging = null;
             IsDragging = false;
-            gameObject.SetActive(false);
             _navMeshManager.RebuildNavMeshes();
             ActionDropItem?.Invoke();
+        }
+
+        public void DragItem(Vector3 hitPos)
+        {
+            //  Làm tròn vị trí temp để nó giống snap
+            if (_enableSnapping)
+            {
+                float sX = Mathf.Round(hitPos.x / _tileSize) * _tileSize + _tileOffset.x;
+                float sZ = Mathf.Round(hitPos.z / _tileSize) * _tileSize + _tileOffset.z;
+                float sY = Mathf.Round(hitPos.y / _tileSize) * _tileSize + _tileOffset.y;
+                hitPos = new Vector3(sX, sY, sZ);
+            }
+
+            transform.position = hitPos;
+        }
+
+        /// <summary> Xoay item </summary>
+        private void RotationItemDrag(RaycastHit hit)
+        {
+            // Transform: lấy vuông góc với bề mặt va chạm
+            transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+
+            // Model holder: lấy góc xoay mới
+            float currentAngle = _modelsHolder.localEulerAngles.y;
+            float roundedAngle = Mathf.Round(currentAngle / 10.0f) * 10.0f; // Làm tròn góc xoay hiện tại về hàng chục gần nhất
+            float rotationAngle = Mathf.Round(inputMouseScrollX.action.ReadValue<float>() * _rotationSpeed / 10.0f) * 10.0f;  // Tính toán góc xoay mới dựa trên giá trị cuộn chuột
+            float newAngle = roundedAngle + rotationAngle; // Cộng góc xoay mới vào góc xoay đã làm tròn
+
+            _modelsHolder.localRotation = Quaternion.Euler(0, newAngle, 0);
         }
 
         private void SetMaterial()
@@ -139,84 +189,14 @@ namespace CuaHang
 
         private bool IsTouchGround()
         {
-            foreach (var obj in _sensorGround._hits)
+            foreach (var hit in _sensorGround._hits)
             {
-                if (obj.CompareTag(_groundTag))
+                if (hit.CompareTag(_groundTag))
                 {
                     return true;
                 }
             }
             return false;
         }
-
-        /// <summary> Action Event </summary>
-        public void InputActionClick(InputAction.CallbackContext context)
-        {
-            TryDropItem();
-        }
-
-        public bool TryDropItem()
-        {
-            if (IsCanPlant())
-            {
-                DropItem();
-                return true;
-            }
-            return false;
-        }
-
-        private void Dragging()
-        {
-            Vector3 hitPos = new();
-            if (GameSystem.Instance._Platform == Platform.Standalone)
-            {
-                hitPos = GetRayHit().point;
-                hitPos = RoundPos(hitPos, _enableSnapping);
-            }
-            else if (GameSystem.Instance._Platform == Platform.Android)
-            {
-                hitPos = GetDragPointHit().point;
-                hitPos = RoundPos(hitPos, _enableSnapping);
-            }
-
-            transform.position = hitPos;
-        }
-
-        private Vector3 RoundPos(Vector3 pos, bool isOn)
-        {
-            //  Làm tròn vị trí temp để nó giống snap
-            if (isOn)
-            {
-                float sX = Mathf.Round(pos.x / _tileSize) * _tileSize + _tileOffset.x;
-                float sZ = Mathf.Round(pos.z / _tileSize) * _tileSize + _tileOffset.z;
-                float sY = Mathf.Round(pos.y / _tileSize) * _tileSize + _tileOffset.y;
-                pos = new Vector3(sX, sY, sZ);
-            }
-
-            return pos;
-        }
-
-        /// <summary> Xoay item </summary>
-        private void RotationItemDrag()
-        {
-            RaycastHit hit = new RaycastHit();
-
-            // Transform: lấy vuông góc với bề mặt va chạm
-            if (GameSystem.CurrentPlatform == Platform.Android) hit = GetDragPointHit();
-            else hit = GetRayHit();
-            transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-
-            // Model holder: lấy góc xoay mới
-            float currentAngle = _modelsHolder.localEulerAngles.y;
-            float roundedAngle = Mathf.Round(currentAngle / 10.0f) * 10.0f; // Làm tròn góc xoay hiện tại về hàng chục gần nhất
-            float rotationAngle = Mathf.Round(_inputImprove.MouseScroll() * _rotationSpeed / 10.0f) * 10.0f;  // Tính toán góc xoay mới dựa trên giá trị cuộn chuột
-            float newAngle = roundedAngle + rotationAngle; // Cộng góc xoay mới vào góc xoay đã làm tròn
-
-            _modelsHolder.localRotation = Quaternion.Euler(0, newAngle, 0);
-        }
-
-        private RaycastHit GetRayHit() => _raycastCursor.GetRayMouseHit();
-        private RaycastHit GetDragPointHit() => _raycastCursor.GetRayDragPointHit();
-
     }
 }

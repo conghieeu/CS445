@@ -5,6 +5,7 @@ public class GameBehavior : MonoBehaviour
 {
     [Header("GAME BEHAVIOR")]
     [SerializeField] private bool enableDebugLog;
+    
 
     protected void In(object value)
     {
@@ -41,6 +42,11 @@ public class GameBehavior : MonoBehaviour
             }
         }
         return default;
+    }
+
+    public void SetActive(bool active)
+    {
+        this.gameObject.SetActive(active);
     }
 
     /// <summary> Xáo trộn các phần tử trong danh sách. </summary>

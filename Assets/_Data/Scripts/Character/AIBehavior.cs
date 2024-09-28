@@ -41,7 +41,10 @@ namespace CuaHang.AI
             _computer = FindFirstObjectByType<MayTinh>();
         }
 
-        protected virtual void SetAnim() => _anim.SetInteger("State", (int)_stageAnim);
+        protected virtual void SetAnim()
+        {
+            _anim.SetInteger("State", (int)_stageAnim);
+        }
 
         /// <summary> Di chuyển đến target và trả đúng nếu đến được đích </summary>
         protected virtual bool MoveToTarget(Transform target)

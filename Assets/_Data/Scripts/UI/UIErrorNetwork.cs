@@ -3,25 +3,21 @@ using UnityEngine;
 
 namespace CuaHang.UI
 {
-    public class UIErrorNetwork : UIPanel
+    public class UIErrorNetwork : GameBehavior
     {
-        private void Start()
+        private void OnEnable()
         {
-            GameSystem._OnCheckConnect += CheckInternet;
+            GameSystem.ActionInternetConnect += CheckInternet;
+        }
+
+        private void OnDisable()
+        {
+            GameSystem.ActionInternetConnect -= CheckInternet;
         }
 
         private void CheckInternet(bool value)
         {
-            if (!value)
-            {
-                SetActiveContents(true);
-                Time.timeScale = 0;
-            }
-            else
-            {
-                SetActiveContents(false);
-                Time.timeScale = 1;
-            }
+            //SetActive(value);
         }
     }
 }

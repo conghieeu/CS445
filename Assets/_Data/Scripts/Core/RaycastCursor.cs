@@ -6,29 +6,27 @@ using UnityEngine.InputSystem;
 namespace CuaHang
 {
     /// <summary> Dùng raycast và drag các item </summary>
-    public class RaycastCursor : Singleton<RaycastCursor>
+    public class RaycastCursor : GameBehavior
     {
-        [Header("RaycastCursor")]
-        [SerializeField] bool _enableRaycast = true;
+        [Header("RAYCAST CURSOR")]
         [SerializeField] LayerMask _layerMask;
         [SerializeField] UIRaycastChecker _uIRaycastChecker;
-        [SerializeField] Transform _dragPoint; // là tâm của đối tượng giao diện
-        [SerializeField] Item _itemEdit; // item dang editing
-        [SerializeField] Item _itemFollow; // item dang follow
-        [SerializeField] Item _itemSelect; // item dang target
-        [SerializeField] ModuleDragItem _itemDrag;
+        [SerializeField] bool _enableRaycast = true;
 
-        InputImprove _input => InputImprove.Instance;
-        Camera _cam => Camera.main;
+        [Header("Input Action")]
+        [SerializeField] InputActionReference _inputEditItem;
+        [SerializeField] InputActionReference _inputDragItem;
+        [SerializeField] InputActionReference _inputClick;
+        [SerializeField] InputActionReference _inputFollowItem;
+        [SerializeField] InputActionReference _inputCancel;
+        [SerializeField] InputActionReference _inputMousePos;
 
-        public ModuleDragItem ItemDrag
-        {
-            get => _itemDrag;
-            private set
-            {
-                _itemDrag = value;
-            }
-        }
+        Item _itemEdit;
+        Item _itemFollow;
+        Item _itemSelect;
+
+        ModuleDragItem _moduleDragItem;
+        Camera _cam;
 
         public Item ItemSelect
         {
@@ -82,43 +80,41 @@ namespace CuaHang
         public static event Action<Item> ActionEditItem;
         public static event Action<Item> ActionFollowItem;
 
+        private void Start()
+        {
+            _moduleDragItem = ObjectsManager.Instance.ModuleDragItem;
+            _cam = Camera.main;
+            _moduleDragItem.gameObject.SetActive(true);
+        }
+
         private void OnEnable()
         {
-            _input.EditItem += SetItemEdit;
-            _input.DragItem += SetItemDrag;
-            _input.Click += SetItemSelect;
-            _input.FollowItem += SetFollowItem;
-            _input.Cancel += ExitFollowItem;
+            _inputEditItem.action.performed += SetItemEdit;
+            _inputDragItem.action.performed += SetItemDrag;
+            _inputClick.action.performed += SetItemSelect;
+            _inputFollowItem.action.performed += SetFollowItem;
+            _inputCancel.action.performed += ExitFollowItem;
         }
 
         private void OnDisable()
         {
-            _input.EditItem -= SetItemEdit;
-            _input.DragItem -= SetItemDrag;
-            _input.Click -= SetItemSelect;
-            _input.FollowItem -= SetFollowItem;
-            _input.Cancel -= ExitFollowItem;
+            _inputEditItem.action.performed -= SetItemEdit;
+            _inputDragItem.action.performed -= SetItemDrag;
+            _inputClick.action.performed -= SetItemSelect;
+            _inputFollowItem.action.performed -= SetFollowItem;
+            _inputCancel.action.performed -= ExitFollowItem;
         }
 
-        /// <summary> Chiếu tia raycast lấy dữ liệu cho _Hit </summary>
-        public RaycastHit GetRayMouseHit()
+        /// <summary> Lấy thông tin va chạm của tia ray từ vị trí chuột trên màn hình </summary>
+        public RaycastHit GetMouseRaycastHit(Vector2 screenPoint)
         {
-            RaycastHit _hit = new();
-            if (_enableRaycast == false) return _hit;
-
-            Ray ray = _cam.ScreenPointToRay(_input.MousePosition());
-            Physics.Raycast(ray, out _hit, 100, _layerMask);
-            return _hit;
-        }
-
-        public RaycastHit GetRayDragPointHit()
-        {
-            RaycastHit _hit = new();
-            if (_enableRaycast == false) return _hit;
-
-            Ray ray = _cam.ScreenPointToRay(_dragPoint.position);
-            Physics.Raycast(ray, out _hit, 100, _layerMask);
-            return _hit;
+            RaycastHit hit = new();
+            if (_enableRaycast)
+            {
+                Ray ray = _cam.ScreenPointToRay(screenPoint);
+                Physics.Raycast(ray, out hit, 100, _layerMask);
+            }
+            return hit;
         }
 
         /// <summary> Thoát không muốn cam tập trung nhìn tối tượng item này nữa </summary>
@@ -148,13 +144,11 @@ namespace CuaHang
         /// <summary> Bật item drag với item được _Hit chiếu</summary>
         private void SetItemDrag(InputAction.CallbackContext ctx)
         {
-            if (!ItemDrag || ItemDrag.IsDragging || !ItemSelect) return;
-
-            if (ItemSelect && ItemSelect.IsCanDrag)
+            if (ItemSelect && ItemSelect.IsCanDrag && _moduleDragItem && !_moduleDragItem.IsDragging)
             {
                 ItemEdit = null;
                 ItemSelect.SetDragState(true);
-                ItemDrag.PickUpItem(ItemSelect);
+                _moduleDragItem.PickUpItem(ItemSelect);
                 ActionDragItem?.Invoke(ItemSelect);
             }
         }
@@ -162,9 +156,9 @@ namespace CuaHang
         /// <summary> Tạo viền khi click vào item de select </summary>
         private void SetItemSelect(InputAction.CallbackContext ctx)
         {
-            if (!_uIRaycastChecker.IsPointerOverUI() && !ItemDrag.ItemDragging)
+            if (!_uIRaycastChecker.IsPointerOverUI() && !_moduleDragItem.ItemDragging)
             {
-                Transform hit = GetRayMouseHit().transform;
+                Transform hit = GetMouseRaycastHit(_inputMousePos.action.ReadValue<Vector2>()).transform;
                 if (hit)
                 {
                     ItemSelect = hit.GetComponent<Item>();

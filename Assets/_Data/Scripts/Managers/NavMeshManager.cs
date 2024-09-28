@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
 
-public class NavMeshManager : Singleton<NavMeshManager>
+public class NavMeshManager : GameBehavior
 {
     [Header("NAV MESH MANAGER")]
     [SerializeField] List<NavMeshSurface> _navMeshSurfaces = new List<NavMeshSurface>();

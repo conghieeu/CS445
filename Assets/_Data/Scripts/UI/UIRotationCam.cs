@@ -3,15 +3,22 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class UIRotationCam : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
-{ 
+{
+    [SerializeField] CameraControl cameraControl;
+
+    private void Start()
+    {
+        cameraControl = ObjectsManager.Instance.CameraControl;
+    }
+
     public void OnPointerDown(PointerEventData eventData)
     {
-        CameraControl.Instance.IsTouchRotationArea = true;
-    } 
+        cameraControl.IsTouchRotationArea = true;
+    }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        CameraControl.Instance.IsTouchRotationArea = false;
+        cameraControl.IsTouchRotationArea = false;
     }
 }
 

@@ -10,16 +10,16 @@ namespace CuaHang.Core
     {
         [Header("CUSTOMER SPAWNER")]
         [SerializeField] List<Customer> _customerPrefabs;
+        [SerializeField] List<Transform> _spawnPoint;
+        [SerializeField] List<Transform> _dispawnPoints;
 
         [Header("Customer Spawner")]
-        [SerializeField] List<Transform> _spawnPoint;
         [SerializeField] float _baseSpawnInterval = 30.0f;    // Khoảng thời gian spawn cơ bản
         [SerializeField] float _randomRange = 10f;          // Khoảng thời gian ngẫu nhiên thêm vào
         [SerializeField] float _currentSpawnInterval = 10f;       // Thời gian spawn hiện tại
         [SerializeField] float _spawnTimer = 10f;                 // Bộ đếm thời gian cho spawn khách hàng
 
         [Header("Lounger Spawner")]
-        [SerializeField] List<Transform> _dispawnPoints;
         [SerializeField] float _timeSpawnLounger = 5.0f;
         [SerializeField] float _randomRangeTimeSpawnLounger = 3f;
         [SerializeField] float _spawnTimerLounger;
@@ -62,6 +62,15 @@ namespace CuaHang.Core
                     cus.ListItemBuy.Clear();
                 }
             }
+        }
+
+        /// <summary> Lấy một điểm ngẫu nhiên từ danh sách điểm thoát </summary>
+        public Transform GetRandomOutPoint()
+        { 
+            if (_dispawnPoints.Count == 0) return null;
+
+            int randomIndex = Random.Range(0, _dispawnPoints.Count);
+            return _dispawnPoints[randomIndex];
         }
 
         /// <summary> Spawn khách hàng muốn mua item </summary>
