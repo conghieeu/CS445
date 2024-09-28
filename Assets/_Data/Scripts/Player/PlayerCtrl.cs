@@ -1,9 +1,7 @@
 using System;
 using CuaHang.AI;
-using CuaHang.Pooler;
 using QFSW.QC;
 using UnityEngine;
-using UnityEngine.Pool;
 
 namespace CuaHang
 {

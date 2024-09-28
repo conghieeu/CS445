@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using CuaHang;
+
 using CuaHang.AI;
 using UnityEngine;
 
@@ -65,7 +62,7 @@ namespace CuaHang.Player
             _rb.linearVelocity = velocity;
 
             // Trường hợp đang kéo thả Item nào đó
-            if (_rb.linearVelocity.magnitude > 0 && !_itemDrag._isDragging)
+            if (_rb.linearVelocity.magnitude > 0 && !_itemDrag.IsDragging)
             {
                 velocity.y = 0;
                 transform.forward = velocity;

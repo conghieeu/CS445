@@ -323,7 +323,7 @@ public partial class @GameActionInput: IInputActionCollection2, IDisposable
                     ""name"": ""Click"",
                     ""type"": ""Button"",
                     ""id"": ""489b5c19-f1e7-4686-a2e4-f370f4f46c4f"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false

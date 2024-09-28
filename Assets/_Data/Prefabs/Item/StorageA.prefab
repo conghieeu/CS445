@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 215998698452736238}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_8
   m_TagString: Untagged
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5756595365848342641}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_14
   m_TagString: Untagged
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
@@ -71,7 +71,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1729913900359781210}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_11
   m_TagString: Untagged
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
@@ -102,7 +102,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5016966524519276740}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_6
   m_TagString: Untagged
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
@@ -133,7 +133,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6949374837658668992}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_4
   m_TagString: Untagged
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
@@ -164,7 +164,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7211003145910957117}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_1
   m_TagString: Untagged
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
@@ -195,7 +195,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3511460084222157473}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_2
   m_TagString: Untagged
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
@@ -226,7 +226,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2996985030921159098}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_16
   m_TagString: Untagged
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
@@ -257,7 +257,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6847716926692463778}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_12
   m_TagString: Untagged
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
@@ -288,7 +288,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5712428874788987865}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Models
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -320,7 +320,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4825032290166043164}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_5
   m_TagString: Untagged
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
@@ -351,7 +351,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1532663097333793017}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_13
   m_TagString: Untagged
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
@@ -382,7 +382,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9082239696565305064}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_3
   m_TagString: Untagged
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
@@ -415,10 +415,10 @@ GameObject:
   - component: {fileID: 5572441068755651140}
   - component: {fileID: 933309098756632251}
   - component: {fileID: 6230793247342866771}
-  m_Layer: 9
+  m_Layer: 6
   m_Name: StorageA
   m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -430,8 +430,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6850584882821865850}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.072, y: 0, z: 2.006}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -500,7 +500,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4261703741698789879}
   - component: {fileID: 4505730513155627666}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -561,7 +561,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4699173951134934200}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_10
   m_TagString: Untagged
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
@@ -592,7 +592,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1289703723184965899}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_7
   m_TagString: Untagged
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
@@ -623,7 +623,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3688264324390726048}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_15
   m_TagString: Untagged
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
@@ -654,7 +654,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3947473524650442718}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_9
   m_TagString: Untagged
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
@@ -727,6 +727,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: f9404b0c63371dc43a9ee05d59194af5, type: 3}
       propertyPath: m_Name
       value: Ke De Hop
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f9404b0c63371dc43a9ee05d59194af5, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

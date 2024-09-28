@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class ScenesManager : Singleton<ScenesManager>
 {
+    [Header("SCENES MANAGER")]
     [SerializeField] float _transitionTime = 1f;
 
     public static event Action _OnLoadNextScene;

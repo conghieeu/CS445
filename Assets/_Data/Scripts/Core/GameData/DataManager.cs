@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.IO;
 using System;
@@ -28,6 +27,7 @@ public class DataManager : Singleton<DataManager>
     public static event Action ActionSaveData;
     public static event Action<GameData> ActionSetData;
     public static event Action ActionDataLoad;
+    public static event Action ActionInitalizedData;
 
     protected override void Awake()
     {
@@ -53,7 +53,7 @@ public class DataManager : Singleton<DataManager>
     {
         SceneManager.sceneLoaded += (scene, mode) =>
         {
-            LoadData();
+            InitializeData();
         };
     }
 
@@ -61,7 +61,7 @@ public class DataManager : Singleton<DataManager>
     {
         SceneManager.sceneLoaded -= (scene, mode) =>
         {
-            LoadData();
+            InitializeData();
         };
     }
 
@@ -84,10 +84,11 @@ public class DataManager : Singleton<DataManager>
         _gameData._gamePlayData.IsInitialized = true;
     }
 
-    public void LoadData()
+    public void InitializeData()
     {
         ActionSetData?.Invoke(GameData);
         ActionDataLoad?.Invoke();
+        ActionInitalizedData?.Invoke();
     }
 
     public void LoadFileData()
@@ -97,7 +98,7 @@ public class DataManager : Singleton<DataManager>
             string stringData = File.ReadAllText(_filePath);
 
             GameData = Deserialized(stringData);
-            LoadData();
+            InitializeData();
             Debug.Log("Game data loaded from: " + _filePath);
         }
         else

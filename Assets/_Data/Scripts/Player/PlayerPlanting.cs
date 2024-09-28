@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 namespace CuaHang
 {
@@ -32,7 +29,7 @@ namespace CuaHang
 
         private void FixedUpdate()
         {
-            if (_itemDrag._isDragging) TempAiming();
+            if (_itemDrag.IsDragging) TempAiming();
         }
 
         /// <summary> chạm vào kệ, người chơi có thể truyền item từ parcel sang table đó </summary>
@@ -42,7 +39,7 @@ namespace CuaHang
             Item shelf = _playerCtrl._sensorForward.GetItemTypeHit(Type.Shelf);
             Item trash = _playerCtrl._sensorForward.GetItemTypeHit(Type.Trash);
             Item storage = _playerCtrl._sensorForward.GetItemTypeHit(Type.Storage);
-            Item itemHold = _itemDrag._itemDragging;
+            Item itemHold = _itemDrag.ItemDragging;
 
             if (!itemHold) return; 
 
@@ -52,19 +49,19 @@ namespace CuaHang
             }
             else if (shelf && itemHold.IsCanSell && shelf.ItemSlot.IsHasSlotEmpty()) // để item lênh kệ
             {
-                _itemDrag.OnDropItem();
+                _itemDrag.DropItem();
                 shelf.ItemSlot.TryAddItemToItemSlot(itemHold, true);
                 ActionSenderItem?.Invoke();
             }
             else if (trash && itemHold.Type == Type.Parcel && trash.ItemSlot.IsHasSlotEmpty()) // de parcel vao thung rac
             {
-                _itemDrag.OnDropItem();
+                _itemDrag.DropItem();
                 trash.ItemSlot.TryAddItemToItemSlot(itemHold, true);
                 ActionSenderItem?.Invoke();
             }
             else if (storage && itemHold.Type == Type.Parcel && storage.ItemSlot.IsHasSlotEmpty()) // de parcel vao kho
             {
-                _itemDrag.OnDropItem();
+                _itemDrag.DropItem();
                 storage.ItemSlot.TryAddItemToItemSlot(itemHold, true);
                 ActionSenderItem?.Invoke();
             }

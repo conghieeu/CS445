@@ -1,9 +1,9 @@
 using System;
-using Firebase.Auth;
 using UnityEngine;
 
 public class User : Singleton<User>, ISaveData
 {
+    [Header("USER")]
     [SerializeField] string _name;
     [SerializeField] float _highestMoney;
     [SerializeField] float _playTime; // Tổng thời gian chơi tính bằng phút  

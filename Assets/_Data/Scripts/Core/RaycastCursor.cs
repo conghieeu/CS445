@@ -88,7 +88,7 @@ namespace CuaHang
             _input.DragItem += SetItemDrag;
             _input.Click += SetItemSelect;
             _input.FollowItem += SetFollowItem;
-            _input.Cancel += ItemCancel;
+            _input.Cancel += ExitFollowItem;
         }
 
         private void OnDisable()
@@ -97,7 +97,7 @@ namespace CuaHang
             _input.DragItem -= SetItemDrag;
             _input.Click -= SetItemSelect;
             _input.FollowItem -= SetFollowItem;
-            _input.Cancel -= ItemCancel;
+            _input.Cancel -= ExitFollowItem;
         }
 
         /// <summary> Chiếu tia raycast lấy dữ liệu cho _Hit </summary>
@@ -122,7 +122,7 @@ namespace CuaHang
         }
 
         /// <summary> Thoát không muốn cam tập trung nhìn tối tượng item này nữa </summary>
-        private void ItemCancel(InputAction.CallbackContext ctx)
+        private void ExitFollowItem(InputAction.CallbackContext ctx)
         {
             if (ItemEdit)  // thoát item dang edit
             {
@@ -148,7 +148,7 @@ namespace CuaHang
         /// <summary> Bật item drag với item được _Hit chiếu</summary>
         private void SetItemDrag(InputAction.CallbackContext ctx)
         {
-            if (!ItemDrag || ItemDrag._isDragging || !ItemSelect) return;
+            if (!ItemDrag || ItemDrag.IsDragging || !ItemSelect) return;
 
             if (ItemSelect && ItemSelect.IsCanDrag)
             {
@@ -162,7 +162,7 @@ namespace CuaHang
         /// <summary> Tạo viền khi click vào item de select </summary>
         private void SetItemSelect(InputAction.CallbackContext ctx)
         {
-            if (!_uIRaycastChecker.IsPointerOverUI() && !ItemDrag._itemDragging)
+            if (!_uIRaycastChecker.IsPointerOverUI() && !ItemDrag.ItemDragging)
             {
                 Transform hit = GetRayMouseHit().transform;
                 if (hit)

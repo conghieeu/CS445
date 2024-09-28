@@ -1,7 +1,5 @@
 using UnityEngine;
-using Firebase.Database;
-using Firebase.Extensions;
-using Firebase.Storage;
+using Firebase.Database; 
 
 public class FirebaseData : MonoBehaviour
 {

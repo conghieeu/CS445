@@ -1,61 +1,66 @@
-using CuaHang.UI;
 using System;
-using System.Collections;
-using System.Collections.Generic; 
-using Unity.AI.Navigation;
+using CuaHang.UI;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 namespace CuaHang
 {
     /// <summary> ObjectTemp là đối tượng đại diện cho object Plant khi di dời đối tượng </summary>
-    public class ModuleDragItem : MonoBehaviour
+    public class ModuleDragItem : GameBehavior
     {
-        [Header("Drag")]
-        public bool _isDragging;
+        [Header("MODULE DRAG ITEM")]
+        [SerializeField] Item itemDragging;
+        [SerializeField] Transform modelsHolding; // là model object temp có màu xanh đang kéo thả
+        [SerializeField] bool _isDragging;
         [SerializeField] bool _enableSnapping; // bật chế độ snapping
         [SerializeField] float _rotationSpeed = 0.1f;// Tốc độ xoay
         [SerializeField] float _tileSize = 1; // ô snap tỷ lệ snap
         [SerializeField] Vector3 _tileOffset = Vector3.zero; // tỷ lệ snap + sai số này
-
-        [Space]
-        public Item _itemDragging;
-        public Transform _modelsHolding; // là model object temp có màu xanh đang kéo thả
         [SerializeField] string _groundTag = "Ground";
         [SerializeField] Material _green, _red;
         [SerializeField] Transform _modelsHolder;
-        [SerializeField] NavMeshSurface _navMeshSurface;
         [SerializeField] UIRaycastChecker _uIRaycastChecker;
         [SerializeField] SensorCast _sensorAround;
         [SerializeField] SensorCast _sensorGround;
 
-        InputImprove _input;
-        RaycastCursor raycastCursor;
+        InputImprove _inputImprove;
+        RaycastCursor _raycastCursor;
+        NavMeshManager _navMeshManager;
 
-        private void Awake()
+        public bool IsDragging { get => _isDragging; set => _isDragging = value; }
+        public Item ItemDragging { get => itemDragging; set => itemDragging = value; }
+        public Transform ModelsHolding { get => modelsHolding; set => modelsHolding = value; }
+
+        public static event Action ActionDropItem;
+
+        private void OnValidate()
         {
-            _input = InputImprove.Instance;
-            raycastCursor = RaycastCursor.Instance;
+            _inputImprove = InputImprove.Instance;
+            _raycastCursor = RaycastCursor.Instance;
+            _navMeshManager = NavMeshManager.Instance;
+        }
+
+        private void Start()
+        {
+            gameObject.SetActive(false);
         }
 
         private void OnEnable()
         {
-            _input.Click += DropItem;
-            _input.SnapPerformed += SetSnap;
+            _inputImprove.Click += InputActionClick;
+            _inputImprove.SnapPerformed += InputActionSnap;
         }
 
         private void OnDisable()
         {
-            _input.Click -= DropItem;
-            _input.SnapPerformed -= SetSnap;
+            _inputImprove.Click -= InputActionClick;
+            _inputImprove.SnapPerformed -= InputActionSnap;
         }
 
         private void FixedUpdate()
         {
             SetMaterial();
-            MoveItemDrag();
+            Dragging();
         }
 
         private void Update()
@@ -70,14 +75,14 @@ namespace CuaHang
             gameObject.SetActive(true);
 
             // Tạo model giống otherModel ở vị trí 
-            _modelsHolding = Instantiate(item.Models, _modelsHolder);
+            ModelsHolding = Instantiate(item.Models, _modelsHolder);
             _modelsHolder.localRotation = item.transform.rotation;
 
             // Cho item này lênh tay player
             item.SetParent(PlayerCtrl.Instance.PosHoldParcel, null, false);
 
-            _isDragging = true;
-            _itemDragging = item;
+            IsDragging = true;
+            ItemDragging = item;
         }
 
         /// <summary> Button quay item drag sẽ gọi </summary>
@@ -87,35 +92,24 @@ namespace CuaHang
             float roundedAngle = Mathf.Round(currentAngle / 10.0f) * 10.0f;
             float rotationAngle = Mathf.Round(angle * _rotationSpeed / 10.0f) * 10.0f;
             float newAngle = roundedAngle + rotationAngle;
-
             _modelsHolder.localRotation = Quaternion.Euler(0, newAngle, 0);
         }
 
-        public void SetSnap(InputAction.CallbackContext ctx)
+        public void InputActionSnap(InputAction.CallbackContext ctx)
         {
             _enableSnapping = !_enableSnapping;
         }
 
         /// <summary> set up lại value khi đặt item </summary>
-        public void OnDropItem()
+        public void DropItem()
         {
-            Destroy(_modelsHolding.gameObject); // Delete model item
-            _itemDragging.DropItem(_modelsHolding);
-            _itemDragging = null;
-            _isDragging = false;
+            Destroy(ModelsHolding.gameObject); // Delete model item
+            ItemDragging.DropItem(ModelsHolding);
+            ItemDragging = null;
+            IsDragging = false;
             gameObject.SetActive(false);
-        }
-
-        /// <summary> Dành cho nút nhấn drop item </summary>
-        public bool OnBtnDropItem()
-        {
-            if (IsCanPlant() && GameSystem.CurrentPlatform == Platform.Android)
-            {
-                OnDropItem();
-                _navMeshSurface.BuildNavMesh();
-                return true;
-            }
-            return false;
+            _navMeshManager.RebuildNavMeshes();
+            ActionDropItem?.Invoke();
         }
 
         private void SetMaterial()
@@ -140,11 +134,11 @@ namespace CuaHang
 
         private bool IsCanPlant()
         {
-            return _sensorAround._hits.Count == 0 && IsTouchGround() && _itemDragging;
+            return _sensorAround._hits.Count == 0 && IsTouchGround() && ItemDragging;
         }
-        
+
         private bool IsTouchGround()
-        { 
+        {
             foreach (var obj in _sensorGround._hits)
             {
                 if (obj.CompareTag(_groundTag))
@@ -155,17 +149,23 @@ namespace CuaHang
             return false;
         }
 
-        private void DropItem(InputAction.CallbackContext context)
+        /// <summary> Action Event </summary>
+        public void InputActionClick(InputAction.CallbackContext context)
         {
-            if (IsCanPlant() && GameSystem.CurrentPlatform == Platform.Standalone)
-            {
-                OnDropItem();
-                _navMeshSurface.BuildNavMesh();
-            }
+            TryDropItem();
         }
 
-        /// <summary> Di chuyen item danh cho pc </summary>
-        private void MoveItemDrag()
+        public bool TryDropItem()
+        {
+            if (IsCanPlant())
+            {
+                DropItem();
+                return true;
+            }
+            return false;
+        }
+
+        private void Dragging()
         {
             Vector3 hitPos = new();
             if (GameSystem.Instance._Platform == Platform.Standalone)
@@ -209,14 +209,14 @@ namespace CuaHang
             // Model holder: lấy góc xoay mới
             float currentAngle = _modelsHolder.localEulerAngles.y;
             float roundedAngle = Mathf.Round(currentAngle / 10.0f) * 10.0f; // Làm tròn góc xoay hiện tại về hàng chục gần nhất
-            float rotationAngle = Mathf.Round(_input.MouseScroll() * _rotationSpeed / 10.0f) * 10.0f;  // Tính toán góc xoay mới dựa trên giá trị cuộn chuột
+            float rotationAngle = Mathf.Round(_inputImprove.MouseScroll() * _rotationSpeed / 10.0f) * 10.0f;  // Tính toán góc xoay mới dựa trên giá trị cuộn chuột
             float newAngle = roundedAngle + rotationAngle; // Cộng góc xoay mới vào góc xoay đã làm tròn
 
             _modelsHolder.localRotation = Quaternion.Euler(0, newAngle, 0);
         }
 
-        RaycastHit GetRayHit() => raycastCursor.GetRayMouseHit();
-        RaycastHit GetDragPointHit() => raycastCursor.GetRayDragPointHit();
+        private RaycastHit GetRayHit() => _raycastCursor.GetRayMouseHit();
+        private RaycastHit GetDragPointHit() => _raycastCursor.GetRayDragPointHit();
 
     }
 }

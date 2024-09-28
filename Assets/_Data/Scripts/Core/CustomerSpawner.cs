@@ -8,40 +8,27 @@ namespace CuaHang.Core
 {
     public class CustomerSpawner : GameBehavior
     {
+        [Header("CUSTOMER SPAWNER")]
         [SerializeField] List<Customer> _customerPrefabs;
-        [SerializeField] List<Transform> _spawnPoint;
 
         [Header("Customer Spawner")]
+        [SerializeField] List<Transform> _spawnPoint;
         [SerializeField] float _baseSpawnInterval = 30.0f;    // Khoảng thời gian spawn cơ bản
         [SerializeField] float _randomRange = 10f;          // Khoảng thời gian ngẫu nhiên thêm vào
         [SerializeField] float _currentSpawnInterval = 10f;       // Thời gian spawn hiện tại
         [SerializeField] float _spawnTimer = 10f;                 // Bộ đếm thời gian cho spawn khách hàng
 
         [Header("Lounger Spawner")]
+        [SerializeField] List<Transform> _dispawnPoints;
         [SerializeField] float _timeSpawnLounger = 5.0f;
         [SerializeField] float _randomRangeTimeSpawnLounger = 3f;
         [SerializeField] float _spawnTimerLounger;
-
-        private void Start()
-        {
-            GetSpawnPointsFromChildren();
-        }
 
         private void FixedUpdate()
         {
             SpawnCustomerOverTime();
             AdjustSpawnRate(PlayerCtrl.Instance.Reputation);
             SpawnLounger();
-        }
-
-        /// <summary> Lấy tất cả các spawn point từ các child của đối tượng này </summary>
-        private void GetSpawnPointsFromChildren()
-        {
-            _spawnPoint.Clear();
-            foreach (Transform child in transform)
-            {
-                _spawnPoint.Add(child);
-            }
         }
 
         [Command]
@@ -71,7 +58,7 @@ namespace CuaHang.Core
                     Customer cus = CustomerPooler.Instance.GetOrCreateObjectPool(_customerPrefabs[rCustomer].TypeID).GetComponent<Customer>();
                     cus.gameObject.SetActive(false);
                     cus.transform.position = _spawnPoint[rPoint].position;
-                    cus.gameObject.SetActive(true); 
+                    cus.gameObject.SetActive(true);
                     cus.ListItemBuy.Clear();
                 }
             }

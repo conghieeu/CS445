@@ -1,10 +1,8 @@
-using CuaHang;
 using UnityEngine;
-using UnityEngine.InputSystem.EnhancedTouch;
 
-public abstract class Singleton<T> : GameBehavior where T : GameBehavior
+public abstract class Singleton<T> : GameBehavior where T : class
 {
-    [Header("Singleton")]
+    [Header("SINGLETON")]
     [SerializeField] private bool _dontDestroyOnLoad;
 
     private static T instance;

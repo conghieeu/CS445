@@ -1,6 +1,5 @@
 using UnityEngine;
 using CuaHang.Pooler;
-using System;
 
 namespace CuaHang.AI
 {

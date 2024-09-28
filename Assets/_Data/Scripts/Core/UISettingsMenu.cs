@@ -79,7 +79,7 @@ namespace Core
 
         public void SetResolutionCurrent(int current)
         {
-            Screen.SetResolution(_resolutions[current].width, _resolutions[current].height, _isFullScreen);
+            // Screen.SetResolution(_resolutions[current].width, _resolutions[current].height, _isFullScreen);
             _gameSettings.CurrentResolutionIndex = current;
         }
 

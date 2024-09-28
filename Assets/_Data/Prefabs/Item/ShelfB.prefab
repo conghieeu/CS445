@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2782818523862717149}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_10
   m_TagString: Untagged
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9064233518952212230}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_6
   m_TagString: Untagged
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
@@ -71,7 +71,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4491548969456881415}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_7
   m_TagString: Untagged
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
@@ -102,7 +102,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 817234604966773342}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: waitingPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134,7 +134,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6813977255839437723}
   - component: {fileID: 1915397655588370150}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: ItemSlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -192,7 +192,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3115195861870653546}
   - component: {fileID: 8556208209588126550}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Cam Here
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -239,10 +239,10 @@ GameObject:
   - component: {fileID: 6691572556331172977}
   - component: {fileID: 2280043213732661084}
   - component: {fileID: 3897022712904366077}
-  m_Layer: 9
+  m_Layer: 6
   m_Name: ShelfB
   m_TagString: Untagged
-  m_Icon: {fileID: -1412012063857583412, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -254,8 +254,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2259431489184653497}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 2.35, y: 0, z: -4.35}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -265,7 +265,7 @@ Transform:
   - {fileID: 817234604966773342}
   - {fileID: 3115195861870653546}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &2280043213732661084
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -326,7 +326,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4831337551979334684}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_5
   m_TagString: Untagged
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
@@ -357,7 +357,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9160768365476876560}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_2
   m_TagString: Untagged
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
@@ -388,7 +388,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6873202050872341534}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_3
   m_TagString: Untagged
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
@@ -419,7 +419,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3376629401321282677}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Models
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -451,7 +451,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1736241362257214882}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_9
   m_TagString: Untagged
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
@@ -482,7 +482,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1490181544716646474}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_12
   m_TagString: Untagged
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
@@ -513,7 +513,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 508228222465344033}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_1
   m_TagString: Untagged
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
@@ -544,7 +544,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1282142199404968319}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_11
   m_TagString: Untagged
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
@@ -575,7 +575,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6201018441975271595}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_4
   m_TagString: Untagged
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
@@ -606,7 +606,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5653329209251339241}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Slot_8
   m_TagString: Untagged
   m_Icon: {fileID: 8418204508859773708, guid: 0000000000000000d000000000000000, type: 0}
@@ -640,7 +640,7 @@ GameObject:
   - component: {fileID: 5632952745595589114}
   - component: {fileID: 9019703333074856540}
   - component: {fileID: 3994794812943469858}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: txtPrice
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -855,6 +855,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 24041ae73d1658e40b692e4306ae1a4f, type: 3}
       propertyPath: m_Name
       value: CaiKe_3
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 24041ae73d1658e40b692e4306ae1a4f, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

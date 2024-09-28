@@ -1,9 +1,6 @@
-
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.InputSystem;
-using System;
+using UnityEngine.UI; 
 
 namespace CuaHang.UI
 {
@@ -21,9 +18,9 @@ namespace CuaHang.UI
 
         [Header("Object Info Panel")]
         [SerializeField] bool _isShowInfo;
+        [SerializeField] string _defaultTmp;
         [SerializeField] UIPanel _infoPanel;
         [SerializeField] TextMeshProUGUI _txtContentItem; // hiện nội dung item
-        [SerializeField] string _defaultTmp;
         [SerializeField] BtnPressHandler _btnIncreasePrice;
         [SerializeField] BtnPressHandler _btnDiscountPrice;
 
@@ -35,8 +32,8 @@ namespace CuaHang.UI
             _defaultTmp = _txtContentItem.text;
             _btnOnDrag.EnableCanvasGroup(false);
 
-            OnEditItem(null);
-            OnItemSelect(null);
+            OnActionEditItem(null);
+            OnActionSelectItem(null);
         }
 
         private void OnEnable()
@@ -44,11 +41,10 @@ namespace CuaHang.UI
             _btnDropItem.onClick.AddListener(OnBtnDropItem);
             _btnShowInfo.onClick.AddListener(OnBtnShowInfo);
 
-            RaycastCursor.ActionSelectItem += OnItemSelect;
-            RaycastCursor.ActionEditItem += OnEditItem;
-            RaycastCursor.ActionDragItem += OnBtnDragItem;
-            PlayerPlanting.ActionSenderItem += OnPlayerSenderItem;
-
+            RaycastCursor.ActionSelectItem += OnActionSelectItem;
+            RaycastCursor.ActionEditItem += OnActionEditItem;
+            RaycastCursor.ActionDragItem += OnActionBtnDragItem;
+            PlayerPlanting.ActionSenderItem += OnActionPlayerSenderItem;
 
             _btnIncreasePrice.OnButtonDown += IncreasePrice;
             _btnDiscountPrice.OnButtonDown += DiscountPrice;
@@ -58,9 +54,9 @@ namespace CuaHang.UI
 
         private void OnDisable()
         {
-            RaycastCursor.ActionSelectItem -= OnItemSelect;
-            RaycastCursor.ActionEditItem -= OnEditItem;
-            RaycastCursor.ActionDragItem -= OnBtnDragItem;
+            RaycastCursor.ActionSelectItem -= OnActionSelectItem;
+            RaycastCursor.ActionEditItem -= OnActionEditItem;
+            RaycastCursor.ActionDragItem -= OnActionBtnDragItem;
 
             _btnIncreasePrice.OnButtonDown -= IncreasePrice;
             _btnDiscountPrice.OnButtonDown -= DiscountPrice;
@@ -79,18 +75,18 @@ namespace CuaHang.UI
             }
         }
 
-        private void OnPlayerSenderItem()
+        private void OnActionPlayerSenderItem()
         {
             _btnOnDrag.EnableCanvasGroup(false);
-            OnItemSelect(_itemSelect);
+            OnActionSelectItem(_itemSelect);
         }
 
         private void OnBtnDropItem()
-        {
-            if (_itemDrag.OnBtnDropItem())
+        { 
+            if (_itemDrag.TryDropItem())
             {
                 _btnOnDrag.EnableCanvasGroup(false);
-                OnItemSelect(_itemSelect);
+                OnActionSelectItem(_itemSelect);
             }
             else
             {
@@ -98,7 +94,7 @@ namespace CuaHang.UI
             }
         }
 
-        private void OnBtnDragItem(Item item)
+        private void OnActionBtnDragItem(Item item)
         {
             if (GameSystem.CurrentPlatform == Platform.Android && item)
             { 
@@ -116,7 +112,7 @@ namespace CuaHang.UI
         }
 
         /// <summary> bật button cancel edit </summary>
-        private void OnEditItem(Item item)
+        private void OnActionEditItem(Item item)
         {
             if (item)
             {
@@ -129,7 +125,7 @@ namespace CuaHang.UI
         }
 
         /// <summary> Hiện option có thể chọn khi click đối tượng item </summary>
-        private void OnItemSelect(Item item)
+        private void OnActionSelectItem(Item item)
         {
             if (item)
             {

@@ -43,10 +43,10 @@ GameObject:
   - component: {fileID: 4505634567665766613}
   - component: {fileID: 8086745285092168519}
   - component: {fileID: 5597272600279291486}
-  m_Layer: 9
+  m_Layer: 6
   m_Name: PottedPantA
   m_TagString: Ground
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -58,14 +58,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4541679528007671547}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -4.06, y: 0, z: -3.374}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3477384367125452952}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &8086745285092168519
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -165,9 +165,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7029948723529949830, guid: 131043e84f3f64941a633870cc1b267f, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 131043e84f3f64941a633870cc1b267f, type: 3}
       propertyPath: m_Name
       value: ChauHoa_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 131043e84f3f64941a633870cc1b267f, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7715626668051313982, guid: 131043e84f3f64941a633870cc1b267f, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8416272007918961125, guid: 131043e84f3f64941a633870cc1b267f, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
