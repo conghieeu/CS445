@@ -7061,6 +7061,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6820749801263448724, guid: 336549f71b80156439dc4e9ca5c8f0f7, type: 3}
+      propertyPath: _rotationSpeed
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6820749801263448724, guid: 336549f71b80156439dc4e9ca5c8f0f7, type: 3}
+      propertyPath: _uIRaycastChecker
+      value: 
+      objectReference: {fileID: 1589320177}
     - target: {fileID: 8340167758711371242, guid: 336549f71b80156439dc4e9ca5c8f0f7, type: 3}
       propertyPath: m_Name
       value: ModuleDragItem
@@ -10585,6 +10593,11 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!224 &1765787909 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2325359271596433581, guid: 4368d1390191c0e4d831973eb4c22a4e, type: 3}
+  m_PrefabInstance: {fileID: 4261755513341942871}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1789355750 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0ae06fe7b387db94995017a65ad2b344, type: 3}
@@ -12837,6 +12850,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1181231732}
     m_Modifications:
+    - target: {fileID: 2260017117070374520, guid: 92527ad1677735543963c07052fc96bc, type: 3}
+      propertyPath: _rotationSpeed
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6121097738944739228, guid: 92527ad1677735543963c07052fc96bc, type: 3}
       propertyPath: m_Name
       value: CameraController
@@ -12959,6 +12976,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: RaycastCursor
       objectReference: {fileID: 0}
+    - target: {fileID: 7385873386793888808, guid: f047adda94a9c3c48954334f776458e2, type: 3}
+      propertyPath: PointDrag
+      value: 
+      objectReference: {fileID: 1765787909}
+    - target: {fileID: 7385873386793888808, guid: f047adda94a9c3c48954334f776458e2, type: 3}
+      propertyPath: _uIRaycastChecker
+      value: 
+      objectReference: {fileID: 1589320177}
     - target: {fileID: 8454286069410054170, guid: f047adda94a9c3c48954334f776458e2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

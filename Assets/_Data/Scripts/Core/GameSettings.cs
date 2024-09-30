@@ -61,7 +61,7 @@ public class GameSettings : GameBehavior, ISaveData
             QualityIndex,
             MasterVolume,
             CurrentResolutionIndex,
-            _cameraControl ? _cameraControl.CamshaftRotation : _gameSettingsData.CamRotation);
+            _cameraControl ? _cameraControl.transform.rotation : _gameSettingsData.CamRotation);
         return (T)(object)(data);
     }
     #endregion

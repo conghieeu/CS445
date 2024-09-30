@@ -11,7 +11,7 @@ namespace CuaHang.UI
     {
         [Header("UI OBJECT INTERACTION")]
         [Header("Item Selection")]
-        [SerializeField] Item _itemSelect; 
+        [SerializeField] Item _itemSelect;
         [SerializeField] Button _btnCancelEdit;
 
         [Header("On Select Item")]
@@ -31,8 +31,8 @@ namespace CuaHang.UI
         [SerializeField] Button _btnShowInfo;
         [SerializeField] Button _btnEdit;
 
-        ModuleDragItem _moduleDragItem; 
-        
+        ModuleDragItem _moduleDragItem;
+
 
         private void Start()
         {
@@ -45,10 +45,7 @@ namespace CuaHang.UI
             _btnShowInfo.onClick.AddListener(OnBtnShowInfo);
             btnRotationLeft.onClick.AddListener(OnRollLeft);
             btnRotationRight.onClick.AddListener(OnRollRight);
-        }
 
-        private void OnEnable()
-        {
             RaycastCursor.ActionSelectItem += OnActionSelectItem;
             RaycastCursor.ActionEditItem += OnActionEditItem;
             RaycastCursor.ActionDragItem += OnActionBtnDragItem;
@@ -57,13 +54,6 @@ namespace CuaHang.UI
 
             _btnIncreasePrice.ActionButtonDown += IncreasePrice;
             _btnDiscountPrice.ActionButtonDown += DiscountPrice;
-        }
-
-        private void OnDisable()
-        {
-            RaycastCursor.ActionSelectItem -= OnActionSelectItem;
-            RaycastCursor.ActionEditItem -= OnActionEditItem;
-            RaycastCursor.ActionDragItem -= OnActionBtnDragItem;
         }
 
         private void FixedUpdate()
@@ -76,8 +66,6 @@ namespace CuaHang.UI
                 _panelMenuContext.transform.position = screenPosition;
             }
         }
-
-        
 
         public void IncreasePrice()
         {

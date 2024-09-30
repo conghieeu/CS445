@@ -11,11 +11,10 @@ namespace CuaHang
         [SerializeField] bool _isTouchRotationArea;
         [SerializeField] bool _isMoveStick;
         [SerializeField] float _camSizeDefault = 5;
-        [SerializeField] float _moveSpeed;
-        [SerializeField] Transform _objectFollow; // là đối tượng cam theo dỏi
-        [SerializeField] Transform _camshaft; // trục xoay cam
+        [SerializeField] float _moveSpeed = 1;
+        [SerializeField] Transform _objectFollow; // là đối tượng cam theo dỏi 
         [SerializeField] Transform _cameraHolder; // vị trí cam
-        [SerializeField] float _rotationSpeed;
+        [SerializeField] float _rotationSpeed = 1;
         [SerializeField] float _zoomCamSpeed = 0.2f;
         [Header("Input Action")]
         [SerializeField] InputActionReference mouseAxisX;
@@ -29,7 +28,7 @@ namespace CuaHang
         Item _itemSelect;
         Item _itemFollow;
         Coroutine _zoomCoroutine;
-        
+
         ObjectsManager objectsManager => ObjectsManager.Instance;
         ModuleDragItem moduleDragItem => objectsManager.ModuleDragItem;
         GameSettings gameSettings => objectsManager.GameSettings;
@@ -39,41 +38,25 @@ namespace CuaHang
 
         public bool IsMoveStick { get => _isMoveStick; set => _isMoveStick = value; }
         public bool IsTouchRotationArea { get => _isTouchRotationArea; set => _isTouchRotationArea = value; }
-        public Quaternion CamshaftRotation { get => _camshaft.rotation; set => _camshaft.rotation = value; }
 
         private void Start()
-        {  
-            SetFollowPlayer();
-        }
-
-        private void OnEnable()
         {
             GameSettings.ActionDataChange += OnGameSettingChange;
 
-            RaycastCursor.ActionEditItem += SetItemEdit;
-            RaycastCursor.ActionFollowItem += SetFollowItem;
+            RaycastCursor.ActionEditItem += OnEditItem;
+            RaycastCursor.ActionFollowItem += OnFollowItem;
             RaycastCursor.ActionSelectItem += OnItemSelected;
 
-            secondTouchContact.action.started += PinchStart;
-            secondTouchContact.action.started += PinchEnd;
-        }
+            secondTouchContact.action.started += ctx => PinchStart();
+            secondTouchContact.action.started += ctx => PinchEnd();
 
-        private void OnDisable()
-        {
-            GameSettings.ActionDataChange -= OnGameSettingChange;
-
-            RaycastCursor.ActionEditItem -= SetItemEdit;
-            RaycastCursor.ActionFollowItem -= SetFollowItem;
-            RaycastCursor.ActionSelectItem += OnItemSelected;
-
-            secondTouchContact.action.started -= PinchStart;
-            secondTouchContact.action.started -= PinchEnd;
+            SetFollowPlayer();
         }
 
         private void FixedUpdate()
         {
             // save cam rotation
-            gameSettings.CamRotation = _camshaft.rotation;
+            gameSettings.CamRotation = transform.rotation;
         }
 
         private void Update()
@@ -84,10 +67,12 @@ namespace CuaHang
         /// <summary> Điều khiển cam </summary>
         void CamController()
         {
-            if (_objectFollow && _itemEdit == null)
+            if (_itemEdit) return;
+
+            if (_objectFollow)
             {
                 // cam follow Object
-                _camshaft.position = Vector3.MoveTowards(_camshaft.position, _objectFollow.position, _moveSpeed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, _objectFollow.position, _moveSpeed * Time.deltaTime);
                 _cam.transform.position = _cameraHolder.position;
                 _cam.transform.rotation = _cameraHolder.rotation;
 
@@ -98,22 +83,22 @@ namespace CuaHang
                 // Xoay cam  
                 if (GameSystem.CurrentPlatform == Platform.Standalone && rightClick)
                 {
-                    _camshaft.Rotate(Vector3.up, mouseAxisX * _rotationSpeed, Space.Self);
+                    transform.Rotate(Vector3.up, mouseAxisX * _rotationSpeed, Space.Self);
                 }
                 else if (GameSystem.CurrentPlatform == Platform.Android && _isTouchRotationArea && leftClick)
                 {
-                    _camshaft.Rotate(Vector3.up, mouseAxisX * _rotationSpeed, Space.Self);
+                    transform.Rotate(Vector3.up, mouseAxisX * _rotationSpeed, Space.Self);
                 }
             }
         }
 
         #region Zoom Detection
-        void PinchStart(InputAction.CallbackContext ctx)
+        void PinchStart()
         {
             _zoomCoroutine = StartCoroutine(ZoomDetection());
         }
 
-        void PinchEnd(InputAction.CallbackContext ctx)
+        void PinchEnd()
         {
             if (_zoomCoroutine != null) StopCoroutine(_zoomCoroutine);
         }
@@ -166,10 +151,7 @@ namespace CuaHang
 
         void OnGameSettingChange(GameSettings data)
         {
-            if (_camshaft)
-            {
-                _camshaft.rotation = data.CamRotation;
-            }
+            transform.rotation = data.CamRotation;
         }
 
         /// <summary> Nhìn vào player </summary>
@@ -182,7 +164,7 @@ namespace CuaHang
         }
 
         /// <summary> Người chơi nhần F Để cam nhìn vào character follow </summary>
-        void SetFollowItem(Item item)
+        void OnFollowItem(Item item)
         {
             _itemFollow = item;
             SetObjectFollow(item.transform);
@@ -198,7 +180,7 @@ namespace CuaHang
             }
         }
 
-        void SetItemEdit(Item item)
+        void OnEditItem(Item item)
         {
             if (item) // zoom in
             {

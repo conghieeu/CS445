@@ -46,9 +46,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _layer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   _hits: []
-  _size: {x: 0, y: 0, z: 0}
+  _size: {x: 1, y: 0.9, z: 1}
 --- !u!1 &4883058627081731019
 GameObject:
   m_ObjectHideFlags: 0
@@ -128,9 +128,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _layer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 192
   _hits: []
-  _size: {x: 0, y: 0, z: 0}
+  _size: {x: 0.5, y: 0.5, z: 0.5}
 --- !u!1 &8340167758711371242
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,7 +189,7 @@ MonoBehaviour:
   _red: {fileID: 2100000, guid: e73aac614011c224cad13fcc81b550bc, type: 2}
   _modelsHolder: {fileID: 4284421663819185237}
   _uIRaycastChecker: {fileID: 0}
-  _sensorAround: {fileID: 4418874581549150036}
+  _sensorAround: {fileID: 919767373789260028}
   _sensorGround: {fileID: 4418874581549150036}
   inputMousePosition: {fileID: 1437703668932777159, guid: a7f0447c51be8e4499f7754249b609f5, type: 3}
   inputLeftClick: {fileID: 537494220931349604, guid: a7f0447c51be8e4499f7754249b609f5, type: 3}

@@ -12,6 +12,7 @@ namespace CuaHang
         [SerializeField] LayerMask _layerMask;
         [SerializeField] UIRaycastChecker _uIRaycastChecker;
         [SerializeField] bool _enableRaycast = true;
+        public Transform PointDrag;
 
         [Header("Input Action")]
         [SerializeField] InputActionReference _inputEditItem;
@@ -85,30 +86,27 @@ namespace CuaHang
             _moduleDragItem = ObjectsManager.Instance.ModuleDragItem;
             _cam = Camera.main;
             _moduleDragItem.gameObject.SetActive(true);
-        }
 
-        private void OnEnable()
-        {
-            _inputEditItem.action.performed += SetItemEdit;
-            _inputDragItem.action.performed += SetItemDrag;
-            _inputClick.action.performed += SetItemSelect;
-            _inputFollowItem.action.performed += SetFollowItem;
-            _inputCancel.action.performed += ExitFollowItem;
-        }
-
-        private void OnDisable()
-        {
-            _inputEditItem.action.performed -= SetItemEdit;
-            _inputDragItem.action.performed -= SetItemDrag;
-            _inputClick.action.performed -= SetItemSelect;
-            _inputFollowItem.action.performed -= SetFollowItem;
-            _inputCancel.action.performed -= ExitFollowItem;
+            _inputEditItem.action.performed += ctx => SetItemEdit();
+            _inputDragItem.action.performed += ctx => SetItemDrag();
+            _inputClick.action.performed += ctx => SetItemSelect();
+            _inputFollowItem.action.performed += ctx => SetFollowItem();
+            _inputCancel.action.performed += ctx => ExitFollowItem();
         }
 
         /// <summary> Lấy thông tin va chạm của tia ray từ vị trí chuột trên màn hình </summary>
-        public RaycastHit GetMouseRaycastHit(Vector2 screenPoint)
+        public RaycastHit GetRaycastHit()
         {
             RaycastHit hit = new();
+            if(_enableRaycast == false) return hit;
+
+            Vector2 screenPoint = _inputMousePos.action.ReadValue<Vector2>();
+
+            if(GameSystem.CurrentPlatform == Platform.Android)
+            {
+                screenPoint = PointDrag.position;
+            }
+
             if (_enableRaycast)
             {
                 Ray ray = _cam.ScreenPointToRay(screenPoint);
@@ -118,7 +116,7 @@ namespace CuaHang
         }
 
         /// <summary> Thoát không muốn cam tập trung nhìn tối tượng item này nữa </summary>
-        private void ExitFollowItem(InputAction.CallbackContext ctx)
+        private void ExitFollowItem()
         {
             if (ItemEdit)  // thoát item dang edit
             {
@@ -142,7 +140,7 @@ namespace CuaHang
         }
 
         /// <summary> Bật item drag với item được _Hit chiếu</summary>
-        private void SetItemDrag(InputAction.CallbackContext ctx)
+        private void SetItemDrag()
         {
             if (ItemSelect && ItemSelect.IsCanDrag && _moduleDragItem && !_moduleDragItem.IsDragging)
             {
@@ -154,11 +152,11 @@ namespace CuaHang
         }
 
         /// <summary> Tạo viền khi click vào item de select </summary>
-        private void SetItemSelect(InputAction.CallbackContext ctx)
+        private void SetItemSelect()
         {
             if (!_uIRaycastChecker.IsPointerOverUI() && !_moduleDragItem.ItemDragging)
             {
-                Transform hit = GetMouseRaycastHit(_inputMousePos.action.ReadValue<Vector2>()).transform;
+                Transform hit = GetRaycastHit().transform;
                 if (hit)
                 {
                     ItemSelect = hit.GetComponent<Item>();
@@ -166,7 +164,7 @@ namespace CuaHang
             }
         }
 
-        private void SetFollowItem(InputAction.CallbackContext ctx)
+        private void SetFollowItem()
         {
             if (ItemSelect != null)
             {
@@ -174,7 +172,7 @@ namespace CuaHang
             }
         }
 
-        private void SetItemEdit(InputAction.CallbackContext ctx)
+        private void SetItemEdit()
         {
             if (ItemSelect && ItemSelect.CamHere)
             {
@@ -186,8 +184,6 @@ namespace CuaHang
                 ItemEdit = null;
             }
         }
-
-
 
     }
 }

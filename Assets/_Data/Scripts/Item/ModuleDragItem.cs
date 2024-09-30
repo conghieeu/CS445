@@ -13,7 +13,7 @@ namespace CuaHang
         [SerializeField] Transform modelsHolding; // là model object temp có màu xanh đang kéo thả
         [SerializeField] bool _isDragging;
         [SerializeField] bool _enableSnapping; // bật chế độ snapping
-        [SerializeField] float _rotationSpeed = 0.1f;// Tốc độ xoay
+        [SerializeField] float _rotationSpeed = 15f;// Tốc độ xoay
         [SerializeField] float _tileSize = 1; // ô snap tỷ lệ snap
         [SerializeField] Vector3 _tileOffset = Vector3.zero; // tỷ lệ snap + sai số này
         [SerializeField] string _groundTag = "Ground";
@@ -36,10 +36,10 @@ namespace CuaHang
         public Item ItemDragging { get => itemDragging; set => itemDragging = value; }
         public Transform ModelsHolding { get => modelsHolding; set => modelsHolding = value; }
 
-        public event Action ActionDropItem; 
+        public event Action ActionDropItem;
 
         private void Start()
-        { 
+        {
             _navMeshManager = ObjectsManager.Instance.NavMeshManager;
             _raycastCursor = ObjectsManager.Instance.RaycastCursor;
         }
@@ -60,23 +60,14 @@ namespace CuaHang
         {
             SetMaterial();
 
-            if (GameSystem.CurrentPlatform == Platform.Standalone)
-            {
-                Vector3 mousePos = inputMousePosition.action.ReadValue<Vector2>();
-                RaycastHit raycastHit = _raycastCursor.GetMouseRaycastHit(mousePos);
-                Vector3 hitPoint = raycastHit.transform.position;
-
-                // di chuyển item trên nền tảng pc , di chuyển theo chuột
-                DragItem(hitPoint);
-
-                // xoay item
-                RotationItemDrag(raycastHit);
-            }
+            RaycastHit hit = _raycastCursor.GetRaycastHit();
+            DragItem(hit.point);
+            RotationItemDrag(hit);
         }
 
         /// <summary> để model temp đang dragging nó hiện giống model đang di chuyển ở thằng Player </summary>
         public void PickUpItem(Item item)
-        { 
+        {
             SetActive(true);
             // Tạo model giống otherModel ở vị trí 
             ModelsHolding = Instantiate(item.Models, _modelsHolder);
@@ -114,7 +105,7 @@ namespace CuaHang
         public bool TryDropItem()
         {
             if (IsCanPlant())
-            { 
+            {
                 OnDropItem();
                 return true;
             }
@@ -154,10 +145,8 @@ namespace CuaHang
             transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
             // Model holder: lấy góc xoay mới
-            float currentAngle = _modelsHolder.localEulerAngles.y;
-            float roundedAngle = Mathf.Round(currentAngle / 10.0f) * 10.0f; // Làm tròn góc xoay hiện tại về hàng chục gần nhất
-            float rotationAngle = Mathf.Round(inputMouseScrollX.action.ReadValue<float>() * _rotationSpeed / 10.0f) * 10.0f;  // Tính toán góc xoay mới dựa trên giá trị cuộn chuột
-            float newAngle = roundedAngle + rotationAngle; // Cộng góc xoay mới vào góc xoay đã làm tròn
+            float currentAngle = Mathf.Round(_modelsHolder.localEulerAngles.y); 
+            float newAngle = currentAngle + (inputMouseScrollX.action.ReadValue<float>() * _rotationSpeed);
 
             _modelsHolder.localRotation = Quaternion.Euler(0, newAngle, 0);
         }
