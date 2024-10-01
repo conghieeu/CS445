@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class BtnPointer : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class BtnPointer : GameBehavior, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] float _pointerScale = 1.5f;
     [SerializeField] AudioSource _mousePointer;

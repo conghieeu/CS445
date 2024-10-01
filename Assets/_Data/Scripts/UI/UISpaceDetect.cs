@@ -1,9 +1,8 @@
-
 using UnityEngine;
 
 namespace CuaHang.UI
 {
-    public class UISpaceDetect : MonoBehaviour
+    public class UISpaceDetect : GameBehavior
     {
         public Camera _cam;
         public Transform _target;

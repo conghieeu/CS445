@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Core
 {
     /// <summary> Hiện ứng chuyển cảnh </summary>
-    public class LevelLoader : MonoBehaviour
+    public class LevelLoader : GameBehavior
     {
         [SerializeField] Animator _animator;
 

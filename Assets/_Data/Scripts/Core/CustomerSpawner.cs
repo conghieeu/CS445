@@ -24,6 +24,13 @@ namespace CuaHang.Core
         [SerializeField] float _randomRangeTimeSpawnLounger = 3f;
         [SerializeField] float _spawnTimerLounger;
 
+        CustomerPooler m_customerPooler;
+
+        private void Awake()
+        {
+            m_customerPooler = FindFirstObjectByType<CustomerPooler>();
+        }
+
         private void FixedUpdate()
         {
             SpawnCustomerOverTime();
@@ -55,7 +62,7 @@ namespace CuaHang.Core
                     int rPoint = Random.Range(0, _spawnPoint.Count);
 
                     // spawn customer
-                    Customer cus = CustomerPooler.Instance.GetOrCreateObjectPool(_customerPrefabs[rCustomer].TypeID).GetComponent<Customer>();
+                    Customer cus = m_customerPooler.GetOrCreateObjectPool(_customerPrefabs[rCustomer].TypeID).GetComponent<Customer>();
                     cus.gameObject.SetActive(false);
                     cus.transform.position = _spawnPoint[rPoint].position;
                     cus.gameObject.SetActive(true);
@@ -66,7 +73,7 @@ namespace CuaHang.Core
 
         /// <summary> Lấy một điểm ngẫu nhiên từ danh sách điểm thoát </summary>
         public Transform GetRandomOutPoint()
-        { 
+        {
             if (_dispawnPoints.Count == 0) return null;
 
             int randomIndex = Random.Range(0, _dispawnPoints.Count);
@@ -89,7 +96,7 @@ namespace CuaHang.Core
                     int rPoint = Random.Range(0, _spawnPoint.Count);
 
                     // spawn customer
-                    Customer cus = CustomerPooler.Instance.GetOrCreateObjectPool(_customerPrefabs[rCustomer].TypeID).GetComponent<Customer>();
+                    Customer cus = m_customerPooler.GetOrCreateObjectPool(_customerPrefabs[rCustomer].TypeID).GetComponent<Customer>();
                     cus.transform.position = _spawnPoint[rPoint].position;
                 }
             }

@@ -554,8 +554,9 @@ MonoBehaviour:
   _panelOpen: {fileID: 0}
   _panelClose: {fileID: 0}
   _objectCloseHolder: {fileID: 0}
-  _objectOpen: {fileID: 0}
-  _listObjectClose: []
+  _objectOpen: {fileID: 7713290769251816783}
+  _listObjectClose:
+  - {fileID: 8035066445979324651}
 --- !u!1 &1427892742022388013
 GameObject:
   m_ObjectHideFlags: 0
@@ -2476,6 +2477,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d72a169e99e79de4eb5794a16a068f12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableDebugLog: 0
   _mayTinh: {fileID: 0}
   _panelBuyItem: {fileID: 1894265395191089139}
   _isCanPay: 0
@@ -3261,8 +3263,9 @@ MonoBehaviour:
   _panelOpen: {fileID: 0}
   _panelClose: {fileID: 0}
   _objectCloseHolder: {fileID: 0}
-  _objectOpen: {fileID: 0}
-  _listObjectClose: []
+  _objectOpen: {fileID: 8035066445979324651}
+  _listObjectClose:
+  - {fileID: 7713290769251816783}
 --- !u!1 &8396660146771929263
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 namespace Core
 {
     /// <summary> Loading khi mới khởi động game </summary>
-    public class LoadingScene : MonoBehaviour
+    public class LoadingScene : GameBehavior
     {
         private AsyncOperation m_async; // Bien luu doi tuong AsyncOperation
         public static Action<float> OnLoading; // Su kien hook

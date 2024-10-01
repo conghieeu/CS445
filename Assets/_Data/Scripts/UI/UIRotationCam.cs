@@ -2,13 +2,13 @@ using CuaHang;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UIRotationCam : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class UIRotationCam : GameBehavior, IPointerDownHandler, IPointerUpHandler
 {
     [SerializeField] CameraControl cameraControl;
 
     private void Start()
     {
-        cameraControl = ObjectsManager.Instance.CameraControl;
+        cameraControl = FindFirstObjectByType<CameraControl>();
     }
 
     public void OnPointerDown(PointerEventData eventData)

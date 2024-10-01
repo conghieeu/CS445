@@ -14,6 +14,7 @@ namespace CuaHang.UI
         [SerializeField] Item _itemSelect;
         [SerializeField] Button _btnCancelEdit;
 
+
         [Header("On Select Item")]
         [SerializeField] RectTransform pointDrag;
         [SerializeField] Button _btnDropItem;
@@ -31,12 +32,12 @@ namespace CuaHang.UI
         [SerializeField] Button _btnShowInfo;
         [SerializeField] Button _btnEdit;
 
-        ModuleDragItem _moduleDragItem;
+        ModuleDragItem m_ModuleDragItem;
 
 
         private void Start()
         {
-            _moduleDragItem = ObjectsManager.Instance.ModuleDragItem;
+            m_ModuleDragItem = FindFirstObjectByType<ModuleDragItem>();
             pointDragItem.EnableCanvasGroup(false);
             OnActionEditItem(null);
             OnActionSelectItem(null);
@@ -81,12 +82,12 @@ namespace CuaHang.UI
 
         private void OnRollLeft()
         {
-            _moduleDragItem.OnClickRotation(-15);
+            m_ModuleDragItem.OnClickRotation(-15);
         }
 
         private void OnRollRight()
         {
-            _moduleDragItem.OnClickRotation(15);
+            m_ModuleDragItem.OnClickRotation(15);
         }
 
         private void OnActionPlayerSenderItem()
@@ -97,7 +98,7 @@ namespace CuaHang.UI
 
         private void OnBtnDropItem()
         {
-            if (_moduleDragItem.TryDropItem())
+            if (m_ModuleDragItem.TryDropItem())
             {
                 pointDragItem.EnableCanvasGroup(false);
                 OnActionSelectItem(_itemSelect);

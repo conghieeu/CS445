@@ -1,7 +1,7 @@
 using Core; 
 using UnityEngine;
 
-public class BtnSave : MonoBehaviour
+public class BtnSave : GameBehavior
 {
 	public void SaveGame()
     {

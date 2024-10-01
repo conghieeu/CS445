@@ -5,15 +5,20 @@ using UnityEngine.EventSystems;
 
 public class BtnMovementStick : GameBehavior, IPointerDownHandler, IPointerUpHandler
 {
-    [SerializeField] CameraControl cameraControl => ObjectsManager.Instance.CameraControl; 
+    CameraControl m_CameraControl;
+
+    private void Start()
+    {
+        m_CameraControl = FindFirstObjectByType<CameraControl>();
+    }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        cameraControl.IsMoveStick = true;
+        m_CameraControl.IsMoveStick = true;
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        cameraControl.IsMoveStick = false;
+        m_CameraControl.IsMoveStick = false;
     }
 }

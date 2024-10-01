@@ -1,9 +1,9 @@
 using UnityEngine;
 
-public abstract class Singleton<T> : GameBehavior where T : class
+public class Singleton<T> : GameBehavior where T : GameBehavior
 {
     [Header("SINGLETON")]
-    [SerializeField] private bool _dontDestroyOnLoad;
+    public bool _dontDestroyOnLoad;
 
     private static T instance;
 
@@ -36,7 +36,10 @@ public abstract class Singleton<T> : GameBehavior where T : class
         }
         else
         {
-            Destroy(gameObject);
+            if(instance && instance.GetComponent<Singleton<T>>()._dontDestroyOnLoad)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 

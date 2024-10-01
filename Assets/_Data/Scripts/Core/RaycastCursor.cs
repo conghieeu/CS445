@@ -26,7 +26,7 @@ namespace CuaHang
         Item _itemFollow;
         Item _itemSelect;
 
-        ModuleDragItem _moduleDragItem;
+        ModuleDragItem m_ModuleDragItem;
         Camera _cam;
 
         public Item ItemSelect
@@ -79,13 +79,13 @@ namespace CuaHang
         public static event Action<Item> ActionDragItem;
         public static event Action<Item> ActionSelectItem;
         public static event Action<Item> ActionEditItem;
-        public static event Action<Item> ActionFollowItem;
+        public static event Action<Item> ActionFollowItem; 
 
         private void Start()
         {
-            _moduleDragItem = ObjectsManager.Instance.ModuleDragItem;
+            m_ModuleDragItem = FindFirstObjectByType<ModuleDragItem>();
+            
             _cam = Camera.main;
-            _moduleDragItem.gameObject.SetActive(true);
 
             _inputEditItem.action.performed += ctx => SetItemEdit();
             _inputDragItem.action.performed += ctx => SetItemDrag();
@@ -98,11 +98,11 @@ namespace CuaHang
         public RaycastHit GetRaycastHit()
         {
             RaycastHit hit = new();
-            if(_enableRaycast == false) return hit;
+            if (_enableRaycast == false) return hit;
 
             Vector2 screenPoint = _inputMousePos.action.ReadValue<Vector2>();
 
-            if(GameSystem.CurrentPlatform == Platform.Android)
+            if (GameSystem.CurrentPlatform == Platform.Android)
             {
                 screenPoint = PointDrag.position;
             }
@@ -118,15 +118,8 @@ namespace CuaHang
         /// <summary> Thoát không muốn cam tập trung nhìn tối tượng item này nữa </summary>
         private void ExitFollowItem()
         {
-            if (ItemEdit)  // thoát item dang edit
-            {
-                ItemSelect = ItemEdit;
-                ItemEdit = null;
-            }
-            else  // thoát item follow
-            {
-                ItemSelect = null;
-            }
+            ItemEdit = null;
+            ItemSelect = null;
         }
 
         /// <summary> Tìm outline trong đối tượng và bật tắt viền của nó </summary>
@@ -142,11 +135,11 @@ namespace CuaHang
         /// <summary> Bật item drag với item được _Hit chiếu</summary>
         private void SetItemDrag()
         {
-            if (ItemSelect && ItemSelect.IsCanDrag && _moduleDragItem && !_moduleDragItem.IsDragging)
+            if (ItemSelect && ItemSelect.IsCanDrag && m_ModuleDragItem && !m_ModuleDragItem.IsDragging)
             {
                 ItemEdit = null;
                 ItemSelect.SetDragState(true);
-                _moduleDragItem.PickUpItem(ItemSelect);
+                m_ModuleDragItem.PickUpItem(ItemSelect);
                 ActionDragItem?.Invoke(ItemSelect);
             }
         }
@@ -154,7 +147,7 @@ namespace CuaHang
         /// <summary> Tạo viền khi click vào item de select </summary>
         private void SetItemSelect()
         {
-            if (!_uIRaycastChecker.IsPointerOverUI() && !_moduleDragItem.ItemDragging)
+            if (!_uIRaycastChecker.IsPointerOverUI() && !m_ModuleDragItem.ItemDragging)
             {
                 Transform hit = GetRaycastHit().transform;
                 if (hit)
