@@ -27,7 +27,7 @@ namespace CuaHang
 
         CamHere m_CamHere;
         BoxCollider m_BoxCollider;
-        ItemPooler m_ItemPooler; 
+        ItemPooler m_ItemPooler;
         StaffPooler m_StaffPooler;
 
         public BoxCollider Coll { get => m_BoxCollider; }
@@ -45,6 +45,11 @@ namespace CuaHang
         public string IdParent { get => _idParent; set => _idParent = value; }
 
         protected virtual void Awake()
+        {
+            Init();
+        }
+
+        private void Init()
         {
             m_StaffPooler = FindFirstObjectByType<StaffPooler>();
             m_ItemPooler = FindFirstObjectByType<ItemPooler>();
@@ -155,7 +160,9 @@ namespace CuaHang
         }
 
         public override void LoadVariables()
-        { 
+        {
+            Init();
+            
             // tìm item cha và tự chui vào đó
             if (m_ItemPooler.GetObjectByID(IdParent))
             {

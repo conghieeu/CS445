@@ -35,7 +35,7 @@ namespace CuaHang.Core
         {
             SpawnCustomerOverTime();
             AdjustSpawnRate(PlayerCtrl.Instance.Reputation);
-            SpawnLounger();
+            // SpawnLounger();
         }
 
         [Command]
@@ -74,10 +74,13 @@ namespace CuaHang.Core
         /// <summary> Lấy một điểm ngẫu nhiên từ danh sách điểm thoát </summary>
         public Transform GetRandomOutPoint()
         {
-            if (_dispawnPoints.Count == 0) return null;
+            if (_dispawnPoints.Count > 0)
+            {
+                int randomIndex = Random.Range(0, _dispawnPoints.Count);
+                return _dispawnPoints[randomIndex];
+            }
 
-            int randomIndex = Random.Range(0, _dispawnPoints.Count);
-            return _dispawnPoints[randomIndex];
+            return null;
         }
 
         /// <summary> Spawn khách hàng muốn mua item </summary>

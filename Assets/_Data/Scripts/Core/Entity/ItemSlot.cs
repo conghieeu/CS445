@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using CuaHang.Pooler;
 using System;
+using UnityEngine.Events;
 
 namespace CuaHang
 {
@@ -31,22 +32,16 @@ namespace CuaHang
 
         ItemPooler m_ItemPooler;
 
-        public event Action<Item> ActionAddItem;
+        public UnityAction<Item> ActionAddItem;
 
         void Awake()
         {
+            m_ItemPooler = FindFirstObjectByType<ItemPooler>();
             _item = GetComponentInParent<Item>();
             LoadSlots();
         }
 
-        private void LoadSlots()
-        {
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                ItemsSlot newSlot = new ItemsSlot(null, transform.GetChild(i));
-                if (_itemsSlot.Count < transform.childCount) _itemsSlot.Add(newSlot);
-            }
-        }
+
 
         /// <summary> Trong List item slot thì chỉnh tất cả các bool drag item </summary>
         public void SetDragItems(bool active)
@@ -139,6 +134,18 @@ namespace CuaHang
                 {
                     TryAddItemToItemSlot(sender._itemsSlot[i]._item, isCanDrag);
                     sender.RemoveItemInList(sender._itemsSlot[i]._item);
+                }
+            }
+        }
+
+        private void LoadSlots()
+        {
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                ItemsSlot newSlot = new ItemsSlot(null, transform.GetChild(i));
+                if (_itemsSlot.Count < transform.childCount)
+                {
+                    _itemsSlot.Add(newSlot);
                 }
             }
         }

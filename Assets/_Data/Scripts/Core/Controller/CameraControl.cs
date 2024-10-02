@@ -34,13 +34,9 @@ namespace CuaHang
         public bool IsMoveStick { get => _isMoveStick; set => _isMoveStick = value; }
         public bool IsTouchRotationArea { get => _isTouchRotationArea; set => _isTouchRotationArea = value; }
 
-        private void Awake()
-        {
-            gameSettings = FindFirstObjectByType<GameSettings>();
-        }
-
         private void Start()
         {
+            gameSettings = FindFirstObjectByType<GameSettings>();
             GameSettings.ActionDataChange += OnGameSettingChange;
 
             RaycastCursor.ActionEditItem += OnEditItem;
@@ -48,9 +44,10 @@ namespace CuaHang
 
             secondTouchContact.action.started += ctx => PinchStart();
             secondTouchContact.action.canceled += ctx => PinchEnd();
+
+            // chỉnh lại góc xoay theo setting
+            transform.rotation = gameSettings.CamRotation;
         }
-
-
 
         private void FixedUpdate()
         {
@@ -149,9 +146,10 @@ namespace CuaHang
 
         private void OnGameSettingChange(GameSettings data)
         {
-            if (this == null) return;
-
-            transform.rotation = data.CamRotation;
+            if (this)
+            {
+                transform.rotation = data.CamRotation;
+            }
         }
 
         /// <summary> cam sẽ nhìn vào cái gì </summary>

@@ -14,6 +14,8 @@ public class GameSettings : GameBehavior, ISaveData
 
     GameSettingsData _gameSettingsData;
     CameraControl _cameraControl;
+    
+    public static UnityAction<GameSettings> ActionDataChange;
 
     public bool IsFullScreen { get => _isFullScreen; set => _isFullScreen = value; }
     public int QualityIndex { get => _qualityIndex; set => _qualityIndex = value; }
@@ -21,7 +23,6 @@ public class GameSettings : GameBehavior, ISaveData
     public int CurrentResolutionIndex { get => _currentResolutionIndex; set => _currentResolutionIndex = value; }
     public Quaternion CamRotation { get => _camRotation; set => _camRotation = value; }
 
-    public static UnityAction<GameSettings> ActionDataChange;
 
     private void Awake()
     {

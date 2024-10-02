@@ -206,7 +206,6 @@ namespace CuaHang.AI
             _isPickingItem = true;
             yield return new WaitForSeconds(3f);
             _isPickingItem = false;
-
         }
 
         private Transform GetPointOutShop()
