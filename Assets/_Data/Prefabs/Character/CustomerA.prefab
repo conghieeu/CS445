@@ -74,7 +74,7 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4143428642251297083}
   m_Enabled: 1
-  m_AgentTypeID: 0
+  m_AgentTypeID: -1372625422
   m_Radius: 0.1
   m_Speed: 1
   m_Acceleration: 8
@@ -106,14 +106,8 @@ MonoBehaviour:
   _type: 9
   _name: KhachHang_01
   _isRecyclable: 0
-  _stageAnim: 0
-  _stopDistance: 0.8
-  _computer: {fileID: 0}
-  _itemPooler: {fileID: 0}
   _boxSensor: {fileID: 0}
-  _navMeshAgent: {fileID: 0}
-  _gameManager: {fileID: 0}
-  _anim: {fileID: 0}
+  m_StopDistance: 0.5
   _totalPay: 0
   _itemFinding: {fileID: 0}
   _slotWaiting: {fileID: 0}

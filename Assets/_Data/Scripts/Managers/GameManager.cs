@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace CuaHang
 {
-    public class GameManager : Singleton<GameManager>
+    public class GameManager : GameBehavior
     {
         User _playerManager;
         PlayerCtrl _playerCtrl; 

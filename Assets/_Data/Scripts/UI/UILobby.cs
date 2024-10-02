@@ -1,21 +1,26 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UILobby : MonoBehaviour
+public class UILobby : GameBehavior
 {
     [SerializeField] Button _btnNewGame;
-    [SerializeField] Button _btnTiepTuc; 
+    [SerializeField] Button _btnTiepTuc;
     [SerializeField] Button _btnThoatGame; // Thêm biến _btnThoatGame
 
     DataManager dataManager => DataManager.Instance;
     ScenesManager scenesManager;
 
+    private void Awake()
+    {
+        scenesManager = FindFirstObjectByType<ScenesManager>();
+    }
+
     private void Start()
-    {  
+    {
         _btnTiepTuc.gameObject.SetActive(dataManager.IsNewGame() == false);
         _btnNewGame.onClick.AddListener(OnClickNewGame);
         _btnThoatGame.onClick.AddListener(OnClickThoatGame); // Thêm AddListener cho _btnThoatGame
-        scenesManager = ScenesManager.Instance;
+
     }
 
     public void OnClickNewGame()

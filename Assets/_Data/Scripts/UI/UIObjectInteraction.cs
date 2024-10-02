@@ -11,8 +11,9 @@ namespace CuaHang.UI
     {
         [Header("UI OBJECT INTERACTION")]
         [Header("Item Selection")]
-        [SerializeField] Item _itemSelect; 
+        [SerializeField] Item _itemSelect;
         [SerializeField] Button _btnCancelEdit;
+
 
         [Header("On Select Item")]
         [SerializeField] RectTransform pointDrag;
@@ -31,12 +32,12 @@ namespace CuaHang.UI
         [SerializeField] Button _btnShowInfo;
         [SerializeField] Button _btnEdit;
 
-        ModuleDragItem _moduleDragItem; 
-        
+        ModuleDragItem m_ModuleDragItem;
+
 
         private void Start()
         {
-            _moduleDragItem = ObjectsManager.Instance.ModuleDragItem;
+            m_ModuleDragItem = FindFirstObjectByType<ModuleDragItem>();
             pointDragItem.EnableCanvasGroup(false);
             OnActionEditItem(null);
             OnActionSelectItem(null);
@@ -45,10 +46,7 @@ namespace CuaHang.UI
             _btnShowInfo.onClick.AddListener(OnBtnShowInfo);
             btnRotationLeft.onClick.AddListener(OnRollLeft);
             btnRotationRight.onClick.AddListener(OnRollRight);
-        }
 
-        private void OnEnable()
-        {
             RaycastCursor.ActionSelectItem += OnActionSelectItem;
             RaycastCursor.ActionEditItem += OnActionEditItem;
             RaycastCursor.ActionDragItem += OnActionBtnDragItem;
@@ -57,13 +55,6 @@ namespace CuaHang.UI
 
             _btnIncreasePrice.ActionButtonDown += IncreasePrice;
             _btnDiscountPrice.ActionButtonDown += DiscountPrice;
-        }
-
-        private void OnDisable()
-        {
-            RaycastCursor.ActionSelectItem -= OnActionSelectItem;
-            RaycastCursor.ActionEditItem -= OnActionEditItem;
-            RaycastCursor.ActionDragItem -= OnActionBtnDragItem;
         }
 
         private void FixedUpdate()
@@ -76,8 +67,6 @@ namespace CuaHang.UI
                 _panelMenuContext.transform.position = screenPosition;
             }
         }
-
-        
 
         public void IncreasePrice()
         {
@@ -93,12 +82,12 @@ namespace CuaHang.UI
 
         private void OnRollLeft()
         {
-            _moduleDragItem.OnClickRotation(-15);
+            m_ModuleDragItem.OnClickRotation(-15);
         }
 
         private void OnRollRight()
         {
-            _moduleDragItem.OnClickRotation(15);
+            m_ModuleDragItem.OnClickRotation(15);
         }
 
         private void OnActionPlayerSenderItem()
@@ -109,7 +98,7 @@ namespace CuaHang.UI
 
         private void OnBtnDropItem()
         {
-            if (_moduleDragItem.TryDropItem())
+            if (m_ModuleDragItem.TryDropItem())
             {
                 pointDragItem.EnableCanvasGroup(false);
                 OnActionSelectItem(_itemSelect);

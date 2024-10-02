@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 namespace CuaHang
 {
-    public class MainMenuManager : MonoBehaviour
+    public class MainMenuManager : GameBehavior
     {
         private AsyncOperation m_async;
         public static Action<float> Onloading;

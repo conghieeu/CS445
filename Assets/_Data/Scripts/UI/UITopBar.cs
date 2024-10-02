@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace CuaHang.UI
 {
-    public class UITopBar : MonoBehaviour
+    public class UITopBar : GameBehavior
     {
         [SerializeField] TextMeshProUGUI _txtMoney;
         [SerializeField] TextMeshProUGUI _txtReputation;

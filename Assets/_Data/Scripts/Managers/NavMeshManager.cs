@@ -7,20 +7,9 @@ public class NavMeshManager : GameBehavior
     [Header("NAV MESH MANAGER")]
     [SerializeField] List<NavMeshSurface> _navMeshSurfaces = new List<NavMeshSurface>();
 
-    private void OnEnable()
+    private void Start()
     {
-        DataManager.ActionInitalizedData += OnInitalizedData;
-    }
-
-    private void OnDisable()
-    {
-        DataManager.ActionInitalizedData -= OnInitalizedData;
-    }
-
-    /// <summary> Bắt sự kiện sau khi các Load Value rồi </summary>
-    public void OnInitalizedData()
-    {
-        RebuildNavMeshes();
+        DataManager.ActionDataLoaded += RebuildNavMeshes;
     }
 
     public void RebuildNavMeshes()

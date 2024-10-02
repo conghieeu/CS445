@@ -1,6 +1,7 @@
 using System;
 using CuaHang;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GameSettings : GameBehavior, ISaveData
 {
@@ -13,6 +14,8 @@ public class GameSettings : GameBehavior, ISaveData
 
     GameSettingsData _gameSettingsData;
     CameraControl _cameraControl;
+    
+    public static UnityAction<GameSettings> ActionDataChange;
 
     public bool IsFullScreen { get => _isFullScreen; set => _isFullScreen = value; }
     public int QualityIndex { get => _qualityIndex; set => _qualityIndex = value; }
@@ -20,12 +23,10 @@ public class GameSettings : GameBehavior, ISaveData
     public int CurrentResolutionIndex { get => _currentResolutionIndex; set => _currentResolutionIndex = value; }
     public Quaternion CamRotation { get => _camRotation; set => _camRotation = value; }
 
-    public static event Action<GameSettings> ActionDataChange;
- 
-    private void Start()
+
+    private void Awake()
     {
-        _cameraControl = ObjectsManager.Instance.CameraControl;
-        ActionDataChange?.Invoke(this);
+        _cameraControl = FindAnyObjectByType<CameraControl>();
     }
 
     #region SaveData
@@ -39,14 +40,12 @@ public class GameSettings : GameBehavior, ISaveData
             CurrentResolutionIndex = gsData.CurrentResolutionIndex;
             CamRotation = gsData.CamRotation;
             _gameSettingsData = gsData;
-
-            ActionDataChange?.Invoke(this);
         }
     }
 
     public void LoadVariables()
     {
-        // throw new NotImplementedException();
+        ActionDataChange?.Invoke(this);
     }
 
     public void SaveData()
@@ -61,7 +60,7 @@ public class GameSettings : GameBehavior, ISaveData
             QualityIndex,
             MasterVolume,
             CurrentResolutionIndex,
-            _cameraControl ? _cameraControl.CamshaftRotation : _gameSettingsData.CamRotation);
+            _cameraControl ? _cameraControl.transform.rotation : _gameSettingsData.CamRotation);
         return (T)(object)(data);
     }
     #endregion

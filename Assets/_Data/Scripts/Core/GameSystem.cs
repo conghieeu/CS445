@@ -9,7 +9,7 @@ public enum Platform
     iOS
 }
 
-public class GameSystem : Singleton<GameSystem>
+public class GameSystem : GameBehavior
 {
     [Header("GAME SYSTEM")]
     [SerializeField] Platform _platform; // nền tảng game này là gì ?
@@ -20,10 +20,8 @@ public class GameSystem : Singleton<GameSystem>
 
     public static event Action<bool> ActionInternetConnect;
 
-    protected override void Awake()
+    private void Awake()
     {
-        base.Awake();
-        
         StartCoroutine(CheckInternetConnection());
         CurrentPlatform = _platform;
     } 

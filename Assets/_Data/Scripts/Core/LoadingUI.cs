@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace Core
 {
     /// <summary> Hiển thị thanh bar loading khi mới khởi động game được loading scene gọi </summary>
-    public class LoadingUI : MonoBehaviour
+    public class LoadingUI : GameBehavior
     {
         [SerializeField] private TextMeshProUGUI m_loadingCountingTxt;
         [SerializeField] private Slider m_loadingFilled;

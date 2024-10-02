@@ -17,6 +17,14 @@ namespace CuaHang.UI
         [SerializeField] ItemSO _parcel; // nếu khi tạo cần parcel thì bỏ parcel vào đây
 
         Button _btnBuy;
+        ItemPooler m_itemPooler;
+        StaffPooler m_staffPooler;
+
+        private void Awake()
+        {
+            m_itemPooler = FindFirstObjectByType<ItemPooler>();
+            m_staffPooler = FindFirstObjectByType<StaffPooler>();
+        }
 
         private void Start()
         {
@@ -54,20 +62,20 @@ namespace CuaHang.UI
 
             if (_items[0]._typeID == TypeID.StaffA)
             {
-                Transform entity = StaffPooler.Instance.GetOrCreateObjectPool(_items[0]._typeID).transform;
+                Transform entity = m_staffPooler.GetOrCreateObjectPool(_items[0]._typeID).transform;
                 SetRandomPos(entity);
                 return;
             }
 
             if (_parcel)
             {
-                Item parcel = ItemPooler.Instance.GetOrCreateObjectPool(_parcel._typeID).GetComponent<Item>();
+                Item parcel = m_itemPooler.GetOrCreateObjectPool(_parcel._typeID).GetComponent<Item>();
                 parcel.CreateItemInSlot(_items);
                 SetRandomPos(parcel.transform);
             }
             else
             {
-                Item item = ItemPooler.Instance.GetOrCreateObjectPool(_items[0]._typeID).GetComponent<Item>();
+                Item item = m_itemPooler.GetOrCreateObjectPool(_items[0]._typeID).GetComponent<Item>();
                 SetRandomPos(item.transform);
             }
 
@@ -80,7 +88,7 @@ namespace CuaHang.UI
             float rx = UnityEngine.Random.Range(-size, size);
             float rz = UnityEngine.Random.Range(-size, size);
 
-            Vector3 p = ItemPooler.Instance.ItemSpawnerPoint.position;
+            Vector3 p = m_itemPooler.ItemSpawnerPoint.position;
 
             entity.transform.position = new Vector3(p.x + rx, p.y, p.z + rz);
         }

@@ -4,7 +4,7 @@ using Core;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ScenesManager : Singleton<ScenesManager>
+public class ScenesManager : GameBehavior
 {
     [Header("SCENES MANAGER")]
     [SerializeField] float _transitionTime = 1f;
