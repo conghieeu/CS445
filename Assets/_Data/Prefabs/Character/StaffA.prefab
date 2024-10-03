@@ -713,18 +713,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enableDebugLog: 0
   _id: 
-  _typeID: 0
-  _type: 0
+  _typeID: 18
+  _type: 7
   _name: 
   _isRecyclable: 0
-  _stageAnim: 0
-  _stopDistance: 0.5
-  _computer: {fileID: 0}
-  _itemPooler: {fileID: 0}
   _boxSensor: {fileID: 0}
-  _navMeshAgent: {fileID: 0}
-  _gameManager: {fileID: 0}
-  _anim: {fileID: 0}
+  m_StopDistance: 0.5
   _heldItem: {fileID: 0}
   _itemHoldPos: {fileID: 0}
 --- !u!1 &3543584086781949744

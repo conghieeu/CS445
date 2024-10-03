@@ -12,18 +12,18 @@ using UnityEngine.Events;
 public class DataManager : Singleton<DataManager>
 {
     [Header("DATA MANAGER")]
-    [SerializeField] GameData _gameData = new();
-    [SerializeField] bool _isSaveFileExists;
+    public GameData GameData; 
+
     [SerializeField] string _saveName = "/gameData.save";
     [SerializeField] string _filePath; 
     [SerializeField] bool _serialize;
     [SerializeField] bool _usingXML;
     [SerializeField] bool _encrypt;
 
-    public bool IsSaveFileExists { get => _isSaveFileExists; private set => _isSaveFileExists = value; }
-    public GameData GameData { get => _gameData; set => _gameData = value; }
+    public bool IsSaveFileExists {get; private set; } 
 
     public static UnityAction ActionSaveData;
+    public static UnityAction ActionGameSaved;
     public static UnityAction<GameData> ActionSetData;
     public static UnityAction ActionDataLoad;
     public static UnityAction ActionDataLoaded;
@@ -84,10 +84,11 @@ public class DataManager : Singleton<DataManager>
 
     public void SaveData()
     {
-        ActionSaveData?.Invoke(); // thong bao cac doi tuong day du lieu vao _gameData
+        ActionSaveData?.Invoke();
         File.WriteAllText(_filePath, SerializeAndEncrypt(GameData)); // luu _gameData
         Debug.Log("Game data saved to: " + _filePath);
-        _gameData._gamePlayData.IsInitialized = true;
+        GameData._gamePlayData.IsInitialized = true;
+        ActionGameSaved?.Invoke();
     }
 
     public void InitializeData()

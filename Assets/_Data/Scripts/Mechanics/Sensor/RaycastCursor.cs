@@ -79,14 +79,16 @@ namespace CuaHang
         public static event Action<Item> ActionDragItem;
         public static event Action<Item> ActionSelectItem;
         public static event Action<Item> ActionEditItem;
-        public static event Action<Item> ActionFollowItem; 
+        public static event Action<Item> ActionFollowItem;
+
+        private void Awake()
+        {
+            m_ModuleDragItem = FindFirstObjectByType<ModuleDragItem>();
+            _cam = Camera.main;
+        }
 
         private void Start()
         {
-            m_ModuleDragItem = FindFirstObjectByType<ModuleDragItem>();
-            
-            _cam = Camera.main;
-
             _inputEditItem.action.performed += ctx => SetItemEdit();
             _inputDragItem.action.performed += ctx => SetItemDrag();
             _inputClick.action.performed += ctx => SetItemSelect();
@@ -96,7 +98,7 @@ namespace CuaHang
 
         /// <summary> Lấy thông tin va chạm của tia ray từ vị trí chuột trên màn hình </summary>
         public RaycastHit GetRaycastHit()
-        {
+        { 
             RaycastHit hit = new();
             if (_enableRaycast == false) return hit;
 

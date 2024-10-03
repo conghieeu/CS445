@@ -40,6 +40,8 @@ namespace CuaHang.AI
         /// <summary> Di chuyển đến target và trả đúng nếu đến được đích </summary>
         protected virtual bool MoveToTarget(Transform target)
         {
+            if(target == null) return false;
+
             m_NavMeshAgent.SetDestination(target.transform.position);
 
             // Kiểm tra tới được điểm target

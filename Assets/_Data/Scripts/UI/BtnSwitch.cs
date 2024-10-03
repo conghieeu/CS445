@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 namespace CuaHang.UI
 {
+    [RequireComponent(typeof(Button))]
     public class BtnSwitch : GameBehavior
     {
         [Header("UI Panel")]

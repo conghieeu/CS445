@@ -4,13 +4,10 @@ using UnityEngine;
 public class User : GameBehavior, ISaveData
 {
     [Header("USER")]
-    [SerializeField] string _name;
-    [SerializeField] float _highestMoney;
-    [SerializeField] float _playTime; // Tổng thời gian chơi tính bằng phút  
-
-    public string UserName { get => _name; set => _name = value; }
-    public float HighestMoney { get => _highestMoney; set => _highestMoney = value; }
-    public float PlayTime { get => _playTime; set => _playTime = value; }
+    public string UserID;
+    public string UserName;
+    public float HighestMoney;
+    public float PlayTime; // Tổng thời gian chơi tính bằng phút
 
     public static event Action OnDataChange;
 
@@ -25,7 +22,7 @@ public class User : GameBehavior, ISaveData
 
     public PlayerProfileData GetData()
     {
-        return new PlayerProfileData(UserName, HighestMoney, PlayTime);
+        return new PlayerProfileData(UserID, UserName, HighestMoney, PlayTime);
     }
 
     #region Save Game
@@ -51,7 +48,7 @@ public class User : GameBehavior, ISaveData
 
     public T GetData<T, V>()
     {
-        PlayerProfileData playerProfileData = new PlayerProfileData(UserName, HighestMoney, PlayTime);
+        PlayerProfileData playerProfileData = new PlayerProfileData(UserID, UserName, HighestMoney, PlayTime);
         return (T)(object)(playerProfileData);
     }
 
