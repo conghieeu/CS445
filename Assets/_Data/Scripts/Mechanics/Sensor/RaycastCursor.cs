@@ -85,10 +85,7 @@ namespace CuaHang
         {
             m_ModuleDragItem = FindFirstObjectByType<ModuleDragItem>();
             _cam = Camera.main;
-        }
 
-        private void Start()
-        {
             _inputEditItem.action.performed += ctx => SetItemEdit();
             _inputDragItem.action.performed += ctx => SetItemDrag();
             _inputClick.action.performed += ctx => SetItemSelect();
@@ -98,7 +95,7 @@ namespace CuaHang
 
         /// <summary> Lấy thông tin va chạm của tia ray từ vị trí chuột trên màn hình </summary>
         public RaycastHit GetRaycastHit()
-        { 
+        {
             RaycastHit hit = new();
             if (_enableRaycast == false) return hit;
 
@@ -120,6 +117,7 @@ namespace CuaHang
         /// <summary> Thoát không muốn cam tập trung nhìn tối tượng item này nữa </summary>
         private void ExitFollowItem()
         {
+            if (!this) return;
             ItemEdit = null;
             ItemSelect = null;
         }
@@ -137,6 +135,7 @@ namespace CuaHang
         /// <summary> Bật item drag với item được _Hit chiếu</summary>
         private void SetItemDrag()
         {
+            if (!this) return;
             if (ItemSelect && ItemSelect.IsCanDrag && m_ModuleDragItem && !m_ModuleDragItem.IsDragging)
             {
                 ItemEdit = null;
@@ -149,6 +148,7 @@ namespace CuaHang
         /// <summary> Tạo viền khi click vào item de select </summary>
         private void SetItemSelect()
         {
+            if (!this) return;
             if (!_uIRaycastChecker.IsPointerOverUI() && !m_ModuleDragItem.ItemDragging)
             {
                 Transform hit = GetRaycastHit().transform;
@@ -161,6 +161,7 @@ namespace CuaHang
 
         private void SetFollowItem()
         {
+            if (!this) return;
             if (ItemSelect != null)
             {
                 ItemFollow = ItemSelect;
@@ -169,6 +170,7 @@ namespace CuaHang
 
         private void SetItemEdit()
         {
+            if (!this) return;
             if (ItemSelect && ItemSelect.CamHere)
             {
                 ItemEdit = ItemSelect;

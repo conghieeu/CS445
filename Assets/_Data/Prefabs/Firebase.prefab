@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 9004096123515218176}
   - component: {fileID: 1118036548010333284}
   - component: {fileID: 4750505769274527303}
-  - component: {fileID: 6783774192944287099}
   m_Layer: 0
   m_Name: Firebase
   m_TagString: Untagged
@@ -47,7 +46,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableDebugLog: 0
-  IsConnectedToFirebase: 0
 --- !u!114 &4750505769274527303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,25 +58,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60a63779921fd964fa6869b27a6e44d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &6783774192944287099
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2318044990443760414}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b7a481b2d899d7499f5096cc5e65605, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enableDebugLog: 0
-  LoginEmail: {fileID: 0}
-  loginPassword: {fileID: 0}
-  BtnLogin: {fileID: 0}
-  SignUpEmail: {fileID: 0}
-  SignUpPassword: {fileID: 0}
-  SignUpPasswordConfirm: {fileID: 0}
-  BtnSignUp: {fileID: 0}
-  PanelFirebaseConnectionFail: {fileID: 0}
-  PanelLoading: {fileID: 0}

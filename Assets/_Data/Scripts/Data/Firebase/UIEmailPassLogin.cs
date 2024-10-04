@@ -5,6 +5,8 @@ using Firebase.Extensions;
 using Firebase.Auth;
 using Firebase;
 using UnityEngine.UI;
+using System;
+using System.Threading.Tasks;
 
 public class UIEmailPassLogin : GameBehavior
 {
@@ -22,7 +24,10 @@ public class UIEmailPassLogin : GameBehavior
     [Header("Extra")]
     public GameObject PanelFirebaseConnectionFail;
     public GameObject PanelLoading;
-    public GameObject LoginSuccess;
+    public GameObject PanelLoginSuccess;
+    public GameObject PanelSignUpSuccess;
+    public GameObject PanelNotifyAccountExist;
+    public GameObject PanelNotifyLogOutSuccess;
 
     EmailPassLogin m_EmailPassLogin;
 
@@ -35,12 +40,27 @@ public class UIEmailPassLogin : GameBehavior
         BtnSignUp.onClick.AddListener(OnSignUp);
 
         // băt sự kiện lấy kết quả của firebase
-        m_EmailPassLogin.OnAuthResult += OnConnectionLoading;
+        m_EmailPassLogin.OnAuthResult += OnAuthResult;
+        m_EmailPassLogin.OnAccountExists += OnAccountExist;
+    }
+
+    public void LogOutAccount()
+    {
+        m_EmailPassLogin.LogOutAccount();
+        PanelNotifyLogOutSuccess.SetActive(true);
+    }
+
+    private void OnAccountExist(bool arg0)
+    {
+        if (arg0)
+        {
+            PanelNotifyAccountExist.SetActive(true);
+        }
     }
 
     private void OnLogin()
     {
-        if (IsFirebaseConnection())
+        if (TryFirebaseConnection())
         {
             m_EmailPassLogin.Login(LoginEmail.text, loginPassword.text);
         }
@@ -48,13 +68,13 @@ public class UIEmailPassLogin : GameBehavior
 
     private void OnSignUp()
     {
-        if (IsFirebaseConnection())
+        if (TryFirebaseConnection())
         {
             m_EmailPassLogin.SignUp(SignUpEmail.text, SignUpPassword.text);
         }
     }
 
-    private bool IsFirebaseConnection()
+    private bool TryFirebaseConnection()
     {
         if (m_EmailPassLogin.IsFirebaseConnection)
         {
@@ -67,14 +87,23 @@ public class UIEmailPassLogin : GameBehavior
         }
     }
 
-    private void OnConnectionLoading(System.Threading.Tasks.Task<AuthResult> task)
+    private void OnAuthResult(Task<AuthResult> task)
     {
         PanelLoading.SetActive(true);
 
         if (task.IsCanceled || task.IsFaulted) return;
 
+        if (task.Result.User.IsEmailVerified)
+        {
+            PanelLoading.SetActive(false);
+            PanelSignUpSuccess.SetActive(true);
+            return;
+        }
+
+        // login success
         PanelLoading.SetActive(false);
-        LoginSuccess.SetActive(true);
+        PanelLoginSuccess.SetActive(true);
+
     }
 
 }

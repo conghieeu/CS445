@@ -1,7 +1,7 @@
-
+using System;
 using System.Collections.Generic;
-using CuaHang;
-using CuaHang.UI;
+using System.Threading.Tasks;
+using Firebase.Auth;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -13,6 +13,9 @@ namespace Core
     public class UISettingsMenu : GameBehavior
     {
         [Header("UI SETTING MENU")]
+        public Button ButtonLogin;
+        public Button ButtonLogOut;
+
         [SerializeField] RectTransform _panelContents;
         [SerializeField] AudioMixer _audioMixer;
         [SerializeField] bool _enableMenuSettings;
@@ -20,33 +23,60 @@ namespace Core
         [SerializeField] TMP_Dropdown _dropDownGraphics;
         [SerializeField] Toggle _toggleFullScreen;
         [SerializeField] Slider _sliderVolume;
+
         [SerializeField] Resolution[] _resolutions; // Array to store available screen resolutions
 
         bool isFullScreen;
-        GameSettings m_gameSettings;
-
-        private void Awake()
-        {
-            m_gameSettings = FindFirstObjectByType<GameSettings>();
-
-            _enableMenuSettings = false;  
-            
-            SetDropDownResolution();
-        }
+        GameSettings m_GameSettings;
+        EmailPassLogin m_EmailPassLogin;
+        User m_User;
+        UIEmailPassLogin m_UIEmailPassLogin;
 
         private void Start()
-        { 
-            _panelContents.gameObject.SetActive(false);
-        }
-
-        private void OnEnable()
-        { 
-            GameSettings.ActionDataChange += OnGameSettingChange;
-        }
-
-        private void OnDisable()
         {
-            GameSettings.ActionDataChange -= OnGameSettingChange;
+            m_GameSettings = FindFirstObjectByType<GameSettings>();
+            m_EmailPassLogin = FindFirstObjectByType<EmailPassLogin>();
+            m_User = FindFirstObjectByType<User>();
+            m_UIEmailPassLogin = FindFirstObjectByType<UIEmailPassLogin>();
+
+            _enableMenuSettings = false;
+            SetDropDownResolution();
+
+            _panelContents.gameObject.SetActive(false);
+
+            GameSettings.ActionDataChange += OnGameSettingChange;
+            m_User.OnDataChange += OnUserDataChange;
+
+            // Set value 
+            OnUserDataChange(m_User);
+            OnGameSettingChange(m_GameSettings);
+
+            // listen button
+            if (ButtonLogOut)
+            {
+                ButtonLogOut.onClick.AddListener(OnLogOut);
+            }
+        }
+
+        private void OnLogOut()
+        {
+            m_UIEmailPassLogin.LogOutAccount();
+        }
+
+        private void OnUserDataChange(User user)
+        {
+            if (this == null || ButtonLogin == null || ButtonLogOut == null) return;
+
+            if (user.UserID == "")
+            {
+                ButtonLogin.gameObject.SetActive(true);
+                ButtonLogOut.gameObject.SetActive(false);
+            }
+            else
+            {
+                ButtonLogin.gameObject.SetActive(false);
+                ButtonLogOut.gameObject.SetActive(true);
+            }
         }
 
         private void OnGameSettingChange(GameSettings gameSettings)
@@ -89,25 +119,25 @@ namespace Core
         public void SetResolutionCurrent(int current)
         {
             // Screen.SetResolution(_resolutions[current].width, _resolutions[current].height, _isFullScreen);
-            m_gameSettings.CurrentResolutionIndex = current;
+            m_GameSettings.CurrentResolutionIndex = current;
         }
 
         public void SetVolume(float volume)
         {
             _audioMixer.SetFloat("volume", volume);
-            m_gameSettings.MasterVolume = volume;
+            m_GameSettings.MasterVolume = volume;
         }
 
         public void SetQuality(int qualityIndex)
         {
             QualitySettings.SetQualityLevel(qualityIndex);
-            m_gameSettings.QualityIndex = qualityIndex;
+            m_GameSettings.QualityIndex = qualityIndex;
         }
 
         public void SetFullscreen(bool isFullscreen)
         {
             Screen.fullScreen = isFullscreen;
-            m_gameSettings.IsFullScreen = isFullscreen;
+            m_GameSettings.IsFullScreen = isFullscreen;
         }
 
 

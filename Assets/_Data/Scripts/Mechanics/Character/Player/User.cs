@@ -1,23 +1,51 @@
 using System;
+using CuaHang;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class User : GameBehavior, ISaveData
 {
     [Header("USER")]
-    public string UserID;
+    [SerializeField] string userID;
     public string UserName;
     public float HighestMoney;
     public float PlayTime; // Tổng thời gian chơi tính bằng phút
 
-    public static event Action OnDataChange;
+    PlayerCtrl m_PlayerCtrl;
 
-    public void SetProperties(PlayerProfileData data)
+    public UnityAction<User> OnDataChange;
+
+    public string UserID
     {
-        UserName = data.UserName;
-        HighestMoney = data.HighestMoney;
-        PlayTime = data.PlayTime;
+        get => userID; set
+        {
+            userID = value;
+            OnDataChange?.Invoke(this);
+        }
+    }
 
-        OnDataChange?.Invoke();
+    private void Start()
+    {
+        m_PlayerCtrl = FindFirstObjectByType<PlayerCtrl>();
+    }
+
+    private void FixedUpdate()
+    {
+        PlayTime += Time.fixedDeltaTime;
+
+        if (m_PlayerCtrl)
+        {
+            SetHighestMoney(m_PlayerCtrl.Money);
+        }
+    }
+
+    public void SetHighestMoney(float money)
+    {
+        if (money > HighestMoney)
+        {
+            HighestMoney = money;
+            OnDataChange?.Invoke(this);
+        }
     }
 
     public PlayerProfileData GetData()
@@ -30,9 +58,12 @@ public class User : GameBehavior, ISaveData
     {
         if (data is PlayerProfileData playerProfileData)
         {
+            UserID = playerProfileData.UserID;
             UserName = playerProfileData.UserName;
             HighestMoney = playerProfileData.HighestMoney;
             PlayTime = playerProfileData.PlayTime;
+
+            OnDataChange?.Invoke(this);
         }
     }
 
