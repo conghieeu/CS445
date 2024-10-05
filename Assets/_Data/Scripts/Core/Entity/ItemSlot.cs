@@ -25,7 +25,6 @@ namespace CuaHang
             }
         }
 
-
         [Header("Item Slots")]
         public Item _item;
         public List<ItemsSlot> _itemsSlot;

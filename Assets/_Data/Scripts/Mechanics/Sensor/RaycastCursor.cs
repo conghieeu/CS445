@@ -79,12 +79,11 @@ namespace CuaHang
         public static event Action<Item> ActionDragItem;
         public static event Action<Item> ActionSelectItem;
         public static event Action<Item> ActionEditItem;
-        public static event Action<Item> ActionFollowItem; 
+        public static event Action<Item> ActionFollowItem;
 
-        private void Start()
+        private void Awake()
         {
             m_ModuleDragItem = FindFirstObjectByType<ModuleDragItem>();
-            
             _cam = Camera.main;
 
             _inputEditItem.action.performed += ctx => SetItemEdit();
@@ -118,6 +117,7 @@ namespace CuaHang
         /// <summary> Thoát không muốn cam tập trung nhìn tối tượng item này nữa </summary>
         private void ExitFollowItem()
         {
+            if (!this) return;
             ItemEdit = null;
             ItemSelect = null;
         }
@@ -135,6 +135,7 @@ namespace CuaHang
         /// <summary> Bật item drag với item được _Hit chiếu</summary>
         private void SetItemDrag()
         {
+            if (!this) return;
             if (ItemSelect && ItemSelect.IsCanDrag && m_ModuleDragItem && !m_ModuleDragItem.IsDragging)
             {
                 ItemEdit = null;
@@ -147,6 +148,7 @@ namespace CuaHang
         /// <summary> Tạo viền khi click vào item de select </summary>
         private void SetItemSelect()
         {
+            if (!this) return;
             if (!_uIRaycastChecker.IsPointerOverUI() && !m_ModuleDragItem.ItemDragging)
             {
                 Transform hit = GetRaycastHit().transform;
@@ -159,6 +161,7 @@ namespace CuaHang
 
         private void SetFollowItem()
         {
+            if (!this) return;
             if (ItemSelect != null)
             {
                 ItemFollow = ItemSelect;
@@ -167,6 +170,7 @@ namespace CuaHang
 
         private void SetItemEdit()
         {
+            if (!this) return;
             if (ItemSelect && ItemSelect.CamHere)
             {
                 ItemEdit = ItemSelect;

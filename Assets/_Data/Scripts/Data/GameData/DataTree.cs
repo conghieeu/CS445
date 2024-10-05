@@ -154,20 +154,18 @@ public class GamePlayData
 [Serializable]
 public class PlayerProfileData
 {
-    [SerializeField] string _userName;
-    [SerializeField] float _highestMoney;
-    [SerializeField] float _playTime; // Tổng thời gian chơi tính bằng phút 
+    public string UserID;
+    public string UserName;
+    public float HighestMoney;
+    public float PlayTime;
 
-    public PlayerProfileData(string userName, float highestMoney, float playTime)
+    public PlayerProfileData(string userId, string userName, float highestMoney, float playTime)
     {
-        UserName = userName;
+        UserID = userId;
+        UserName = userName;    
         HighestMoney = highestMoney;
         PlayTime = playTime;
-    }
-
-    public string UserName { get => _userName; set => _userName = value; }
-    public float HighestMoney { get => _highestMoney; set => _highestMoney = value; }
-    public float PlayTime { get => _playTime; set => _playTime = value; }
+    } 
 }
 
 [Serializable]

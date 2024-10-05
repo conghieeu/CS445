@@ -10,12 +10,14 @@ namespace CuaHang.AI
     public class Customer : AIBehavior
     {
         [Header("Customer")]
+
         [SerializeField] float _totalPay;
         [SerializeField] Item _itemFinding; // item mà khách hàng đang tìm
         [SerializeField] Transform _slotWaiting; // Hàng chờ (WaitingLine) modun của máy tính sẽ SET thứ này
         [SerializeField] bool _isPlayerConfirmPay;
         [SerializeField] bool _isPickingItem; // để set animation
         [SerializeField] List<TypeID> _listItemBuy; // Cac item can lay, giới hạn là 15 item
+        [SerializeField] Transform m_DispawnPoint;
 
         CustomerPooler m_CustomerPooler;
         CustomerSpawner m_CustomerSpawner;
@@ -27,8 +29,9 @@ namespace CuaHang.AI
         public bool IsPlayerConfirmPay { get => _isPlayerConfirmPay; set => _isPlayerConfirmPay = value; }
         public List<TypeID> ListItemBuy { get => _listItemBuy; set => _listItemBuy = value; }
 
-        private void Start()
+        protected override void Awake()
         {
+            base.Awake();
             m_CustomerPooler = FindFirstObjectByType<CustomerPooler>();
             m_CustomerSpawner = FindFirstObjectByType<CustomerSpawner>();
 
@@ -37,6 +40,7 @@ namespace CuaHang.AI
 
         private void OnEnable()
         {
+            m_DispawnPoint = m_CustomerSpawner.GetRandomOutPoint();
             SetItemsBuy();
         }
 
@@ -188,7 +192,7 @@ namespace CuaHang.AI
         /// <summary> Ra về khách tìm điểm đến là ngoài ở shop </summary>
         private void GoOutShop()
         {
-            if (MoveToTarget(GetPointOutShop()))
+            if (MoveToTarget(m_DispawnPoint))
             {
                 m_CustomerPooler.RemoveEntityFromPool(this);
             }
@@ -206,11 +210,6 @@ namespace CuaHang.AI
             _isPickingItem = true;
             yield return new WaitForSeconds(3f);
             _isPickingItem = false;
-        }
-
-        private Transform GetPointOutShop()
-        {
-            return m_CustomerSpawner.GetRandomOutPoint();
         }
 
         #region SaveData

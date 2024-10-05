@@ -20,7 +20,9 @@ namespace CuaHang
                 _slot = slot;
             }
         }
+ 
 
+ 
         public List<WaitingSlot> _waitingSlots;
 
         private void Awake()

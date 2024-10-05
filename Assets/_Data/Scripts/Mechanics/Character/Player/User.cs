@@ -1,31 +1,56 @@
 using System;
+using CuaHang;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class User : GameBehavior, ISaveData
 {
     [Header("USER")]
-    [SerializeField] string _name;
-    [SerializeField] float _highestMoney;
-    [SerializeField] float _playTime; // Tổng thời gian chơi tính bằng phút  
+    [SerializeField] string userID;
+    public string UserName;
+    public float HighestMoney;
+    public float PlayTime; // Tổng thời gian chơi tính bằng phút
 
-    public string UserName { get => _name; set => _name = value; }
-    public float HighestMoney { get => _highestMoney; set => _highestMoney = value; }
-    public float PlayTime { get => _playTime; set => _playTime = value; }
+    PlayerCtrl m_PlayerCtrl;
 
-    public static event Action OnDataChange;
+    public UnityAction<User> OnDataChange;
 
-    public void SetProperties(PlayerProfileData data)
+    public string UserID
     {
-        UserName = data.UserName;
-        HighestMoney = data.HighestMoney;
-        PlayTime = data.PlayTime;
+        get => userID; set
+        {
+            userID = value;
+            OnDataChange?.Invoke(this);
+        }
+    }
 
-        OnDataChange?.Invoke();
+    private void Start()
+    {
+        m_PlayerCtrl = FindFirstObjectByType<PlayerCtrl>();
+    }
+
+    private void FixedUpdate()
+    {
+        PlayTime += Time.fixedDeltaTime;
+
+        if (m_PlayerCtrl)
+        {
+            SetHighestMoney(m_PlayerCtrl.Money);
+        }
+    }
+
+    public void SetHighestMoney(float money)
+    {
+        if (money > HighestMoney)
+        {
+            HighestMoney = money;
+            OnDataChange?.Invoke(this);
+        }
     }
 
     public PlayerProfileData GetData()
     {
-        return new PlayerProfileData(UserName, HighestMoney, PlayTime);
+        return new PlayerProfileData(UserID, UserName, HighestMoney, PlayTime);
     }
 
     #region Save Game
@@ -33,9 +58,12 @@ public class User : GameBehavior, ISaveData
     {
         if (data is PlayerProfileData playerProfileData)
         {
+            UserID = playerProfileData.UserID;
             UserName = playerProfileData.UserName;
             HighestMoney = playerProfileData.HighestMoney;
             PlayTime = playerProfileData.PlayTime;
+
+            OnDataChange?.Invoke(this);
         }
     }
 
@@ -51,7 +79,7 @@ public class User : GameBehavior, ISaveData
 
     public T GetData<T, V>()
     {
-        PlayerProfileData playerProfileData = new PlayerProfileData(UserName, HighestMoney, PlayTime);
+        PlayerProfileData playerProfileData = new PlayerProfileData(UserID, UserName, HighestMoney, PlayTime);
         return (T)(object)(playerProfileData);
     }
 
