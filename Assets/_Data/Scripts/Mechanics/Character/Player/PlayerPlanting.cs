@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 namespace CuaHang
@@ -9,19 +10,16 @@ namespace CuaHang
         [Header("PLAYER PLANTING")]
         [Header("Input Action")]
         [SerializeField] InputActionReference inputActionSendItem;
-        PlayerCtrl _playerCtrl;
+        PlayerCtrl m_PlayerCtrl;
         ModuleDragItem m_ModuleDragItem;
 
-        public static event Action ActionSenderItem;
-
-        private void Awake()
-        {
-            _playerCtrl = GetComponent<PlayerCtrl>();
-        }
+        public UnityAction ActionSenderItem;
 
         private void Start()
         {
+            m_PlayerCtrl = GetComponent<PlayerCtrl>();
             m_ModuleDragItem = FindFirstObjectByType<ModuleDragItem>();
+
             inputActionSendItem.action.performed += _ => SendItem();
         }
 
@@ -36,14 +34,12 @@ namespace CuaHang
             Debug.Log($"Try send item");
 
             // có item ở cảm biến
-            Item shelf = _playerCtrl._sensorForward.GetItemTypeHit(Type.Shelf);
-            Item trash = _playerCtrl._sensorForward.GetItemTypeHit(Type.Trash);
-            Item storage = _playerCtrl._sensorForward.GetItemTypeHit(Type.Storage);
+            Item shelf = m_PlayerCtrl._sensorForward.GetItemTypeHit(Type.Shelf);
+            Item trash = m_PlayerCtrl._sensorForward.GetItemTypeHit(Type.Trash);
+            Item storage = m_PlayerCtrl._sensorForward.GetItemTypeHit(Type.Storage);
             Item itemHold = m_ModuleDragItem.ItemDragging;
 
-            Debug.Log($"{itemHold}");
             if (!itemHold) return;
-            Debug.Log($"{shelf} {itemHold.IsCanSell} {shelf.ItemSlot.IsHasSlotEmpty()}");
 
             if (shelf && !itemHold.IsCanSell) // gửi các item trong parcel sang kệ
             {
@@ -51,14 +47,19 @@ namespace CuaHang
             }
             else if (shelf && itemHold.IsCanSell && shelf.ItemSlot.IsHasSlotEmpty()) // để item lênh kệ
             {
-                m_ModuleDragItem.OnDropItem();
-                shelf.ItemSlot.TryAddItemToItemSlot(itemHold, true);
-                ActionSenderItem?.Invoke();
+                if (shelf.ItemSlot.IsHasSlotEmpty())
+                {
+                    m_ModuleDragItem.OnDropItem();
+                    shelf.ItemSlot.TryAddItemToItemSlot(itemHold, true);
+                    ActionSenderItem?.Invoke();
+                    m_PlayerCtrl.IsDragItem = false;
+                }
             }
             else if (trash && itemHold.Type == Type.Parcel && trash.ItemSlot.IsHasSlotEmpty()) // de parcel vao thung rac
             {
                 m_ModuleDragItem.OnDropItem();
                 trash.ItemSlot.TryAddItemToItemSlot(itemHold, true);
+                m_PlayerCtrl.IsDragItem = false;
                 ActionSenderItem?.Invoke();
             }
             else if (storage && itemHold.Type == Type.Parcel && storage.ItemSlot.IsHasSlotEmpty()) // de parcel vao kho
@@ -66,6 +67,7 @@ namespace CuaHang
                 m_ModuleDragItem.OnDropItem();
                 storage.ItemSlot.TryAddItemToItemSlot(itemHold, true);
                 ActionSenderItem?.Invoke();
+                m_PlayerCtrl.IsDragItem = false;
             }
         }
 

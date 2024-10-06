@@ -134,6 +134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb2f88d50504f4041a7326028ab41e1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableDebugLog: 0
   _isHolding: 0
   _timeDelayDefault: 0.7
   _timeDelay: 0
@@ -590,7 +591,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableDebugLog: 0
-  _panelContent: {fileID: 0}
   _isPointerDown: 0
   _inputMousePos: {fileID: 0}
 --- !u!1 &1008765365156899116
@@ -1847,6 +1847,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb2f88d50504f4041a7326028ab41e1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableDebugLog: 0
   _isHolding: 0
   _timeDelayDefault: 0.7
   _timeDelay: 0
@@ -2044,6 +2045,11 @@ MonoBehaviour:
   btnRotationRight: {fileID: 625618999862835868}
   _panelMenuContext: {fileID: 1544952466376955033}
   pointDragItem: {fileID: 6460283022164424949}
+  btnRotateLeft: {fileID: 9086994181786800024}
+  btnRotateRight: {fileID: 625618999862835868}
+  btnSnap: {fileID: 4590663369671059122}
+  btnDropItem: {fileID: 8455359778452591108}
+  btnSendItem: {fileID: 4006159892969466628}
   _infoPanel: {fileID: 8196477407613246920}
   _txtContentItem: {fileID: 2433801701236199745}
   _btnIncreasePrice: {fileID: 4206093410645368054}

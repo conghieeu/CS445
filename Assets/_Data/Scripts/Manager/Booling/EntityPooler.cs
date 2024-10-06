@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace CuaHang.Pooler
 {
@@ -7,10 +8,21 @@ namespace CuaHang.Pooler
     {
         [Header("Entity Pooler")]
         [SerializeField] protected List<Transform> _prefabs;
-        [SerializeField] protected List<Entity> _objectPools;
+        [SerializeField] private List<Entity> objectPools;
+        
+        public UnityAction OnPoolChange;
 
-        public List<Entity> ListEntity { get => _objectPools; private set => _objectPools = value; }
-
+        public List<Entity> ListEntity { get => ObjectPools; private set => ObjectPools = value; }
+        protected List<Entity> ObjectPools
+        {
+            get => objectPools;
+            set
+            {
+                objectPools = value;
+                OnPoolChange?.Invoke();
+            }
+        }
+        
         private void OnValidate()
         {
             Init();
@@ -18,10 +30,10 @@ namespace CuaHang.Pooler
 
         private void Init()
         {
-            _objectPools.Clear();
+            ObjectPools.Clear();
             foreach (Transform child in transform)
             {
-                _objectPools.Add(child.GetComponent<Entity>());
+                ObjectPools.Add(child.GetComponent<Entity>());
             }
         }
 
@@ -74,7 +86,7 @@ namespace CuaHang.Pooler
                     if (entity && entity.TypeID == typeID)
                     {
                         objectPool = Instantiate(entity, spawnPosition, rotation, transform);
-                        _objectPools.Add(objectPool);
+                        ObjectPools.Add(objectPool);
                         break;
                     }
                 }
@@ -95,7 +107,7 @@ namespace CuaHang.Pooler
         /// <summary> Tìm object nhàn rỗi trong pool theo typeID  </summary>
         private Entity GetDisabledObject(TypeID typeID)
         {
-            foreach (var objectPool in _objectPools)
+            foreach (var objectPool in ObjectPools)
             {
                 if (objectPool.TypeID == typeID && objectPool.IsRecyclable)
                 {
@@ -117,14 +129,13 @@ namespace CuaHang.Pooler
                 if (iData is EntityData entityData)
                 {
                     Entity entity = GetObjectByID(entityData.Id);
-                    if (entity)
+                    if (entity) // set value thực thể đã tồn tại sẵn
                     {
                         entity.GetComponent<ISaveData>().SetVariables<V, object>(iData);
-                        
                     }
                     else
                     {
-                        if (!entityData.IsDestroyed) // không tạo những đối tuọng bị phá huỷ
+                        if (entityData.IsDestroyed == false) // không tạo những đối tuọng bị phá huỷ
                         {
                             entity = GetOrCreateObjectPool(entityData.TypeID, entityData.Position, entityData.Rotation);
                             entity.GetComponent<ISaveData>().SetVariables<V, object>(iData);
@@ -144,21 +155,21 @@ namespace CuaHang.Pooler
 
         public T GetData<T, D>()
         {
-            List<D> listStaffData = new List<D>();
+            List<D> listData = new List<D>();
 
             foreach (var entity in ListEntity)
             {
-                if (entity && entity.ID != "")
+                if (entity)
                 {
-                    listStaffData.Add(entity.GetComponent<ISaveData>().GetData<D, object>());
+                    listData.Add(entity.GetComponent<ISaveData>().GetData<D, object>());
                 }
             }
-            return (T)(object)listStaffData;
+            return (T)(object)listData;
         }
 
         public virtual void SaveData()
         {
-
+            // for override
         }
         #endregion
     }

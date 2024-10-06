@@ -8,7 +8,7 @@ using TMPro;
 namespace CuaHang.UI
 {
     public class UIComputerScreen : GameBehavior
-    { 
+    {
         [Serializable]
         public class SlotBar
         {
@@ -35,27 +35,23 @@ namespace CuaHang.UI
         [SerializeField] List<SlotBar> _barSlots;
 
         BtnBarCustomer _btnCustomerSelected;
-        PlayerCtrl _playerCtrl => PlayerCtrl.Instance;
+        PlayerCtrl m_playerCtrl;
+        RaycastCursor m_RaycastCursor;
 
         void Start()
         {
+            m_playerCtrl = FindFirstObjectByType<PlayerCtrl>();
+            m_RaycastCursor = FindFirstObjectByType<RaycastCursor>();
+
             SetActiveContent(null);
 
             _btnPay.onClick.AddListener(OnClickPay);
             _infRefund.onValueChanged.AddListener(OnInfRefund);
+            m_RaycastCursor.ActionEditItem += SetActiveContent;
 
             for (int i = 0; i < 10; i++) _barSlots.Add(new SlotBar());
         }
 
-        private void OnEnable()
-        {
-            RaycastCursor.ActionEditItem += SetActiveContent;
-        }
-
-        private void OnDisable()
-        {
-            RaycastCursor.ActionEditItem -= SetActiveContent;
-        }
 
         void FixedUpdate()
         {
@@ -112,7 +108,7 @@ namespace CuaHang.UI
                 return;
             }
 
-            if (changeAmount > _playerCtrl.Money)
+            if (changeAmount > m_playerCtrl.Money)
             {
                 _txtReport.text = "Cảnh báo: Không đủ tiền để thối";
             }
@@ -147,7 +143,10 @@ namespace CuaHang.UI
                     {
                         BtnBarCustomer btnBar = Instantiate(_prefabBtnSlot, _panelSlotHolder).GetComponentInChildren<BtnBarCustomer>();
                         _barSlots[i]._bar = btnBar;
-                        if (_comSlot[i]._customer) btnBar.SetVariables(_comSlot[i]._customer);
+                        if (_comSlot[i]._customer)
+                        {
+                            btnBar.SetVariables(_comSlot[i]._customer);
+                        }
                     }
                 }
             }
@@ -158,9 +157,9 @@ namespace CuaHang.UI
             if (_isCanPay)
             {
                 _btnCustomerSelected.CustomerSelected.IsPlayerConfirmPay = true;
-                _playerCtrl.Money += _profit;
+                m_playerCtrl.Money += _profit;
                 _btnCustomerSelected = null;
-                _playerCtrl.UpdateReputation(CustomerAction.Buy);
+                m_playerCtrl.UpdateReputation(CustomerAction.Buy);
                 ClickBarCustomer(null);
                 _infRefund.text = string.Empty;
             }

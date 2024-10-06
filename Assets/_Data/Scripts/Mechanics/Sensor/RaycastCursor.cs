@@ -1,6 +1,7 @@
 using System;
 using CuaHang.UI;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 namespace CuaHang
@@ -28,6 +29,7 @@ namespace CuaHang
 
         ModuleDragItem m_ModuleDragItem;
         Camera _cam;
+        GameSystem m_GameSystem;
 
         public Item ItemSelect
         {
@@ -76,14 +78,15 @@ namespace CuaHang
             }
         }
 
-        public static event Action<Item> ActionDragItem;
-        public static event Action<Item> ActionSelectItem;
-        public static event Action<Item> ActionEditItem;
-        public static event Action<Item> ActionFollowItem;
+        public UnityAction<Item> ActionDragItem;
+        public UnityAction<Item> ActionSelectItem;
+        public UnityAction<Item> ActionEditItem;
+        public UnityAction<Item> ActionFollowItem;
 
         private void Awake()
         {
             m_ModuleDragItem = FindFirstObjectByType<ModuleDragItem>();
+            m_GameSystem = FindFirstObjectByType<GameSystem>();
             _cam = Camera.main;
 
             _inputEditItem.action.performed += ctx => SetItemEdit();
@@ -100,17 +103,19 @@ namespace CuaHang
             if (_enableRaycast == false) return hit;
 
             Vector2 screenPoint = _inputMousePos.action.ReadValue<Vector2>();
+            Ray ray = _cam.ScreenPointToRay(screenPoint);
+            Physics.Raycast(ray, out hit, 100, _layerMask);
 
-            if (GameSystem.CurrentPlatform == Platform.Android)
-            {
-                screenPoint = PointDrag.position;
-            }
+            return hit;
+        }
 
-            if (_enableRaycast)
-            {
-                Ray ray = _cam.ScreenPointToRay(screenPoint);
-                Physics.Raycast(ray, out hit, 100, _layerMask);
-            }
+        public RaycastHit GetRaycastHitByScreenPoint()
+        {
+            RaycastHit hit = new();
+            if (m_GameSystem.CurrentPlatform != Platform.Android || _enableRaycast == false) return hit;
+            Vector2 screenPoint = PointDrag.position;
+            Ray ray = _cam.ScreenPointToRay(screenPoint);
+            Physics.Raycast(ray, out hit, 100, _layerMask);
             return hit;
         }
 
@@ -140,7 +145,7 @@ namespace CuaHang
             {
                 ItemEdit = null;
                 ItemSelect.SetDragState(true);
-                m_ModuleDragItem.PickUpItem(ItemSelect);
+                m_ModuleDragItem.PlayerPickUpItem(ItemSelect);
                 ActionDragItem?.Invoke(ItemSelect);
             }
         }
@@ -148,8 +153,8 @@ namespace CuaHang
         /// <summary> Tạo viền khi click vào item de select </summary>
         private void SetItemSelect()
         {
-            if (!this) return;
-            if (!_uIRaycastChecker.IsPointerOverUI() && !m_ModuleDragItem.ItemDragging)
+            if (!this) return; 
+            if (_uIRaycastChecker.IsPointerOverCanvas() && !m_ModuleDragItem.ItemDragging)
             {
                 Transform hit = GetRaycastHit().transform;
                 if (hit)

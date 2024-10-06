@@ -2,6 +2,7 @@ using UnityEngine;
 using CuaHang.Pooler;
 using System.Collections.Generic;
 using CuaHang.AI;
+using Mono.CSharp;
 
 namespace CuaHang
 {
@@ -19,16 +20,19 @@ namespace CuaHang
         [SerializeField] bool _isCanSell; // có thể bán được không 
         [SerializeField] bool _isBlockPrice;
         [SerializeField] bool _isSamePrice; // muốn đặt giá tiền các item trong kệ sẽ ngan item cha không
-        [SerializeField] Transform _thisParent; // là cha của item này
-        [SerializeField] ItemSlot _itemSlot; // Có cái này sẽ là item có khả năng lưu trử các item khác
+        [SerializeField] Transform _thisParent; // là cha của item này 
         [SerializeField] Entity _entityParent; // item đang giữ item này 
         [SerializeField] Transform _waitingPoint;
         [SerializeField] Transform _models;
 
+        bool m_IsDestroy;
         CamHere m_CamHere;
         BoxCollider m_BoxCollider;
         ItemPooler m_ItemPooler;
         StaffPooler m_StaffPooler;
+        PoolManager m_PoolManager;
+        PlayerCtrl m_PlayerCtrl;
+        public ItemSlot ItemSlot { get; private set; }
 
         public BoxCollider Coll { get => m_BoxCollider; }
         public CamHere CamHere { get => m_CamHere; }
@@ -38,7 +42,6 @@ namespace CuaHang
         public bool IsCanSell { get => _isCanSell; set => _isCanSell = value; }
         public bool IsSamePrice { get => _isSamePrice; set => _isSamePrice = value; }
         public Transform ThisParent { get => _thisParent; set => _thisParent = value; }
-        public ItemSlot ItemSlot { get => _itemSlot; set => _itemSlot = value; }
         public Entity EntityParent { get => _entityParent; set => _entityParent = value; }
         public Transform WaitingPoint { get => _waitingPoint; set => _waitingPoint = value; }
         public Transform Models { get => _models; set => _models = value; }
@@ -51,11 +54,13 @@ namespace CuaHang
 
         private void Init()
         {
+            m_PlayerCtrl = FindFirstObjectByType<PlayerCtrl>();
+            m_PoolManager = FindFirstObjectByType<PoolManager>();
             m_StaffPooler = FindFirstObjectByType<StaffPooler>();
             m_ItemPooler = FindFirstObjectByType<ItemPooler>();
             m_BoxCollider = GetComponent<BoxCollider>();
-            _itemSlot = GetComponentInChildren<ItemSlot>();
             m_CamHere = GetComponentInChildren<CamHere>();
+            ItemSlot = GetComponentInChildren<ItemSlot>();
 
             // Set properties
             _name = SO._name;
@@ -73,11 +78,16 @@ namespace CuaHang
             _thisParent = null;
         }
 
-        public void SetParent(Transform thisParent, Entity objectPoolParent, bool isCanDrag)
+        public override void PickUpEntity(Entity entity)
         {
-            if (thisParent)
+            ItemSlot.TryAddItemToItemSlot(entity.GetComponent<Item>());
+        }
+
+        public void SetParent(Transform setParent, Entity entityParent, bool isCanDrag)
+        {
+            if (setParent)
             {
-                transform.SetParent(thisParent);
+                transform.SetParent(setParent);
                 transform.localPosition = Vector3.zero;
                 transform.localRotation = Quaternion.identity;
             }
@@ -86,8 +96,8 @@ namespace CuaHang
                 transform.SetParent(m_ItemPooler.transform);
             }
 
-            _thisParent = thisParent;
-            _entityParent = objectPoolParent;
+            _thisParent = setParent;
+            _entityParent = entityParent;
             _isCanDrag = isCanDrag;
         }
 
@@ -156,28 +166,53 @@ namespace CuaHang
                 base.SetVariables<T, V>(data);
                 Price = itemData.Price;
                 IdParent = itemData.IdItemParent;
+                m_IsDestroy = itemData.IsDestroyed;
             }
         }
 
         public override void LoadVariables()
         {
-            Init();
-            
-            // tìm item cha và tự chui vào đó
-            if (m_ItemPooler.GetObjectByID(IdParent))
+            if(m_IsDestroy) 
             {
-                m_ItemPooler.GetObjectByID(IdParent).GetComponentInChildren<ItemSlot>().TryAddItemToItemSlot(this, true);
+                RemoveThis();
+                return;
+            }
+
+            Init();
+
+            // Entity entityParent = m_PoolManager.FindEntityById(IdParent);
+
+            // if (entityParent)
+            // {
+            //     entityParent.PickUpEntity(this);
+            // }
+
+            // tìm item cha và tự chui vào đó
+            if (m_PlayerCtrl.ID == IdParent)
+            {
+                m_PlayerCtrl.PickUpEntity(this);
+            }
+            else if (m_ItemPooler.GetObjectByID(IdParent))
+            {
+                m_ItemPooler.GetObjectByID(IdParent).PickUpEntity(this);
             }
             else if (m_StaffPooler.GetObjectByID(IdParent))// trường hợp cha là nhân viên
             {
-                m_StaffPooler.GetObjectByID(IdParent).GetComponent<Staff>().SetHeldItem(this);
+                m_StaffPooler.GetObjectByID(IdParent).PickUpEntity(this);
             }
         }
 
         public override T GetData<T, D>()
         {
-            ItemData data = new ItemData(GetEntityData(), EntityParent ? EntityParent.ID : "", Price);
-            return (T)(object)(data);
+            if (ID != "")
+            {
+                ItemData data = new ItemData(GetEntityData(), EntityParent ? EntityParent.ID : "", Price);
+                return (T)(object)data;
+            }
+            else
+            {
+                return (T)(object)null;
+            }
         }
         #endregion
     }

@@ -720,7 +720,7 @@ MonoBehaviour:
   _boxSensor: {fileID: 0}
   m_StopDistance: 0.5
   _heldItem: {fileID: 0}
-  _itemHoldPos: {fileID: 0}
+  _itemHoldPos: {fileID: 6766027760787969450}
 --- !u!1 &3543584086781949744
 GameObject:
   m_ObjectHideFlags: 0

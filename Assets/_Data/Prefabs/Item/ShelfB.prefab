@@ -118,7 +118,7 @@ Transform:
   m_GameObject: {fileID: 1063021071289487366}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.91}
+  m_LocalPosition: {x: 0.95, y: 0, z: -0.14}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -208,13 +208,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2096843907431672041}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.0038016832, y: 0.9952466, z: -0.087072834, w: -0.04345342}
-  m_LocalPosition: {x: 0.01, y: 1.52, z: 2.15}
+  m_LocalRotation: {x: 0.06162845, y: -0.70441604, z: 0.06162845, w: 0.70441604}
+  m_LocalPosition: {x: 2.726, y: 1.575, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6691572556331172977}
-  m_LocalEulerAnglesHint: {x: 10, y: 185, z: 0}
+  m_LocalEulerAnglesHint: {x: 10, y: -90, z: 0}
 --- !u!114 &8556208209588126550
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -314,7 +314,6 @@ MonoBehaviour:
   _isBlockPrice: 0
   _isSamePrice: 0
   _thisParent: {fileID: 0}
-  _itemSlot: {fileID: 0}
   _entityParent: {fileID: 0}
   _waitingPoint: {fileID: 817234604966773342}
   _models: {fileID: 3376629401321282677}

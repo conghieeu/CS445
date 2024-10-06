@@ -9,19 +9,22 @@ namespace CuaHang.UI
 {
     public class UIObjectInteraction : GameBehavior
     {
-        [Header("UI OBJECT INTERACTION")]
-        [Header("Item Selection")]
-        [SerializeField] Item _itemSelect;
-        [SerializeField] Button _btnCancelEdit;
-
+        [Header("UI OBJECT INTERACTION")] 
 
         [Header("On Select Item")]
+        [SerializeField] Item _itemSelect;
+        [SerializeField] Button _btnCancelEdit;
         [SerializeField] RectTransform pointDrag;
         [SerializeField] Button _btnDropItem;
         [SerializeField] Button btnRotationLeft;
         [SerializeField] Button btnRotationRight;
         [SerializeField] UIPanel _panelMenuContext;
         [SerializeField] PointDragItem pointDragItem;
+        [SerializeField] Button btnRotateLeft;
+        [SerializeField] Button btnRotateRight;
+        [SerializeField] Button btnSnap;
+        [SerializeField] Button btnDropItem;
+        [SerializeField] Button btnSendItem;
 
         [Header("On Drag Item")]
         [SerializeField] UIPanel _infoPanel;
@@ -33,12 +36,19 @@ namespace CuaHang.UI
         [SerializeField] Button _btnEdit;
 
         ModuleDragItem m_ModuleDragItem;
-
+        RaycastCursor m_RaycastCursor;
+        PlayerCtrl m_PlayerCtrl;
+        GameSystem m_GameSystem;
 
         private void Start()
         {
             m_ModuleDragItem = FindFirstObjectByType<ModuleDragItem>();
-            pointDragItem.EnableCanvasGroup(false);
+            m_RaycastCursor = FindFirstObjectByType<RaycastCursor>();
+            m_PlayerCtrl = FindFirstObjectByType<PlayerCtrl>();
+            m_GameSystem = FindFirstObjectByType<GameSystem>();
+            pointDragItem = GetComponentInChildren<PointDragItem>();
+
+            pointDragItem.SetActive(false);
             OnActionEditItem(null);
             OnActionSelectItem(null);
 
@@ -47,14 +57,15 @@ namespace CuaHang.UI
             btnRotationLeft.onClick.AddListener(OnRollLeft);
             btnRotationRight.onClick.AddListener(OnRollRight);
 
-            RaycastCursor.ActionSelectItem += OnActionSelectItem;
-            RaycastCursor.ActionEditItem += OnActionEditItem;
-            RaycastCursor.ActionDragItem += OnActionBtnDragItem;
+            m_RaycastCursor.ActionSelectItem += OnActionSelectItem;
+            m_RaycastCursor.ActionEditItem += OnActionEditItem;
+            m_RaycastCursor.ActionDragItem += OnActionBtnDragItem;
 
-            PlayerPlanting.ActionSenderItem += OnActionPlayerSenderItem;
+            m_PlayerCtrl.PlayerPlanting.ActionSenderItem += OnActionPlayerSenderItem;
 
             _btnIncreasePrice.ActionButtonDown += IncreasePrice;
             _btnDiscountPrice.ActionButtonDown += DiscountPrice;
+ 
         }
 
         private void FixedUpdate()
@@ -82,17 +93,17 @@ namespace CuaHang.UI
 
         private void OnRollLeft()
         {
-            m_ModuleDragItem.OnClickRotation(-15);
+            m_ModuleDragItem.OnClickRotation(-10);
         }
 
         private void OnRollRight()
         {
-            m_ModuleDragItem.OnClickRotation(15);
+            m_ModuleDragItem.OnClickRotation(10);
         }
 
         private void OnActionPlayerSenderItem()
         {
-            pointDragItem.EnableCanvasGroup(false);
+            pointDragItem.SetActive(false);
             OnActionSelectItem(_itemSelect);
         }
 
@@ -100,21 +111,21 @@ namespace CuaHang.UI
         {
             if (m_ModuleDragItem.TryDropItem())
             {
-                pointDragItem.EnableCanvasGroup(false);
+                pointDragItem.SetActive(false);
                 OnActionSelectItem(_itemSelect);
             }
             else
             {
-                pointDragItem.EnableCanvasGroup(true);
+                pointDragItem.SetActive(true);
             }
         }
 
         private void OnActionBtnDragItem(Item item)
         {
-            if (GameSystem.CurrentPlatform == Platform.Android && item)
+            if (m_GameSystem.CurrentPlatform == Platform.Android && item)
             {
                 _panelMenuContext.EnableCanvasGroup(false);
-                pointDragItem.EnableCanvasGroup(true);
+                pointDragItem.SetActive(true);
                 pointDragItem.transform.position = _btnSetDrag.transform.position;
             }
         }

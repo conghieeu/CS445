@@ -4,11 +4,17 @@ namespace CuaHang.UI
 {
     public class UIMovementController : GameBehavior
     {
+        RaycastCursor m_RaycastCursor;
+        GameSystem m_GameSystem;
+
         private void Start()
         {
-            RaycastCursor.ActionEditItem += item => SetActive(item != null);
+            m_GameSystem = FindFirstObjectByType<GameSystem>();
+            m_RaycastCursor = FindFirstObjectByType<RaycastCursor>();
 
-            if (GameSystem.CurrentPlatform == Platform.Android)
+            m_RaycastCursor.ActionEditItem += item => SetActive(item != null);
+
+            if (m_GameSystem.CurrentPlatform == Platform.Android)
             {
                 SetActive(true);
             }

@@ -6,6 +6,7 @@ namespace CuaHang.Player
 {
     public class PlayerMovement : GameBehavior
     {
+
         [SerializeField] float _moveSpeed;
         [SerializeField] Camera mainCamera;
         [SerializeField] STATE_ANIM _stageAnim;
@@ -16,17 +17,16 @@ namespace CuaHang.Player
         Rigidbody _rb;
         Animator _animator;
         ModuleDragItem m_ModuleDragItem;
+        PlayerCtrl m_PlayerCtrl;
 
         private void Awake()
         {
+            m_PlayerCtrl = FindFirstObjectByType<PlayerCtrl>();
             m_ModuleDragItem = FindFirstObjectByType<ModuleDragItem>();
+
             _animator = GetComponentInChildren<Animator>();
             _rb = GetComponent<Rigidbody>();
             _rb.angularDamping = 0.0f;
-        }
-
-        private void Start()
-        {
             mainCamera = Camera.main;
         }
 
@@ -39,7 +39,7 @@ namespace CuaHang.Player
         private void Movement()
         {
             // Input
-            Vector2 moveD = inputPlayerMove.action.ReadValue<Vector2>();;
+            Vector2 moveD = inputPlayerMove.action.ReadValue<Vector2>(); ;
 
             // camera dir
             Vector3 camForward = mainCamera.transform.forward;
@@ -69,24 +69,24 @@ namespace CuaHang.Player
 
         private void SetAnimator()
         {
-            bool _isDragItem = m_ModuleDragItem.gameObject.activeInHierarchy;
-
+            bool IsDragItem = m_PlayerCtrl.IsDragItem;
+            
             // Idle
-            if (_moveDir == Vector3.zero && (_stageAnim != STATE_ANIM.Idle || _triggerDragging != _isDragItem))
+            if (_moveDir == Vector3.zero && (_stageAnim != STATE_ANIM.Idle || _triggerDragging != IsDragItem))
             {
-                if (_isDragItem) _stageAnim = STATE_ANIM.Idle_Carrying;
+                if (IsDragItem) _stageAnim = STATE_ANIM.Idle_Carrying;
                 else _stageAnim = STATE_ANIM.Idle;
-                _triggerDragging = _isDragItem;
+                _triggerDragging = IsDragItem;
                 SetAnim();
                 return;
             }
 
             // Walk
-            if (_moveDir != Vector3.zero && _stageAnim != STATE_ANIM.Walk || _triggerDragging != _isDragItem)
+            if (_moveDir != Vector3.zero && _stageAnim != STATE_ANIM.Walk || _triggerDragging != IsDragItem)
             {
-                if (_isDragItem) _stageAnim = STATE_ANIM.Walk_Carrying;
+                if (IsDragItem) _stageAnim = STATE_ANIM.Walk_Carrying;
                 else _stageAnim = STATE_ANIM.Walk;
-                _triggerDragging = _isDragItem;
+                _triggerDragging = IsDragItem;
                 SetAnim();
                 return;
             }

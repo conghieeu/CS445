@@ -5,18 +5,18 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class PointDragItem : UIPanel
+public class PointDragItem : GameBehavior, IPointerDownHandler, IPointerUpHandler
 {
     [Header("POINT DRAG ITEM")]
     [SerializeField] bool _isPointerDown = false;
-    [SerializeField] InputActionReference _inputMousePos; 
+    // [SerializeField] InputActionReference _inputMousePos; 
     
     private void Update()
     {
-        if (_isPointerDown)
-        {
-            transform.position = _inputMousePos.action.ReadValue<Vector2>();
-        }
+        // if (_isPointerDown)
+        // {
+        //     transform.position = _inputMousePos.action.ReadValue<Vector2>();
+        // }
     }
 
     public void OnPointerDown(PointerEventData eventData)

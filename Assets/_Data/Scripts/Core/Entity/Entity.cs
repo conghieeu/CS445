@@ -1,16 +1,17 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace CuaHang
 {
-    public class Entity : GameBehavior, ISaveData
+    public class Entity : GameBehavior, ISaveData, IPointerClickHandler
     {
+        [Header("ENTITY")]
         [SerializeField] protected string _id; // định danh đốit tượng
+        [SerializeField] protected string _name;
         [SerializeField] protected TypeID _typeID; // mẫu mã của từng loại
         [SerializeField] protected Type _type; // dùng để sếp loại
-        [SerializeField] protected string _name;
         [SerializeField] protected bool _isRecyclable;
-        
 
         public TypeID TypeID { get => _typeID; set => _typeID = value; }
         public Type Type { get => _type; set => _type = value; }
@@ -45,6 +46,11 @@ namespace CuaHang
             IsRecyclable = true;
         }
 
+        public virtual void PickUpEntity(Entity entity)
+        {
+            // for override
+        }
+
         public virtual void SetVariables<T, V>(T data)
         {
             if (data is EntityData entityData)
@@ -54,23 +60,27 @@ namespace CuaHang
                 TypeID = entityData.TypeID;
                 transform.position = entityData.Position;
                 transform.rotation = entityData.Rotation;
-                if (entityData.IsDestroyed) RemoveThis();
             }
         }
 
         public virtual void LoadVariables()
         {
-            // throw new NotImplementedException();
+            // for override
         }
 
         public virtual void SaveData()
         {
-            throw new NotImplementedException();
+            // for override
         }
 
         public virtual T GetData<T, D>()
         {
             throw new NotImplementedException();
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            Debug.Log($"CLICK THIS ITEM");
         }
     }
 }

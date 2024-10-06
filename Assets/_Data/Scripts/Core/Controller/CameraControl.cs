@@ -27,32 +27,36 @@ namespace CuaHang
 
         Coroutine _zoomCoroutine;
 
-        GameSettings gameSettings;
+        GameSettings m_GameSettings;
         Camera _cam => Camera.main;
-        PlayerCtrl _playerCtrl => PlayerCtrl.Instance;
+        PlayerCtrl m_PlayerCtrl;
+        RaycastCursor m_RaycastCursor;
+        GameSystem m_GameSystem;
 
         public bool IsMoveStick { get => _isMoveStick; set => _isMoveStick = value; }
         public bool IsTouchRotationArea { get => _isTouchRotationArea; set => _isTouchRotationArea = value; }
 
         private void Start()
         {
-            gameSettings = FindFirstObjectByType<GameSettings>();
-            GameSettings.ActionDataChange += OnGameSettingChange;
+            m_RaycastCursor = FindFirstObjectByType<RaycastCursor>();
+            m_PlayerCtrl = FindFirstObjectByType<PlayerCtrl>();
+            m_GameSettings = FindFirstObjectByType<GameSettings>();
+            m_GameSystem = FindFirstObjectByType<GameSystem>();
 
-            RaycastCursor.ActionEditItem += OnEditItem;
-            RaycastCursor.ActionFollowItem += SetFollowItem;
-
+            m_GameSettings.ActionDataChange += OnGameSettingChange;
+            m_RaycastCursor.ActionEditItem += OnEditItem;
+            m_RaycastCursor.ActionFollowItem += SetFollowItem;
             secondTouchContact.action.started += ctx => PinchStart();
             secondTouchContact.action.canceled += ctx => PinchEnd();
 
             // chỉnh lại góc xoay theo setting
-            transform.rotation = gameSettings.CamRotation;
+            transform.rotation = m_GameSettings.CamRotation;
         }
 
         private void FixedUpdate()
         {
             // save cam rotation
-            gameSettings.CamRotation = transform.rotation;
+            m_GameSettings.CamRotation = transform.rotation;
         }
 
         private void Update()
@@ -77,18 +81,18 @@ namespace CuaHang
                 float mouseAxisX = this.mouseAxisX.action.ReadValue<float>();
 
                 // Xoay cam  
-                if (GameSystem.CurrentPlatform == Platform.Standalone && rightClick)
+                if (m_GameSystem.CurrentPlatform == Platform.Standalone && rightClick)
                 {
                     transform.Rotate(Vector3.up, mouseAxisX * _rotationSpeed, Space.Self);
                 }
-                else if (GameSystem.CurrentPlatform == Platform.Android && _isTouchRotationArea && leftClick)
+                else if (m_GameSystem.CurrentPlatform == Platform.Android && _isTouchRotationArea && leftClick)
                 {
                     transform.Rotate(Vector3.up, mouseAxisX * _rotationSpeed, Space.Self);
                 }
             }
             else
             {
-                _objectFollow = _playerCtrl.transform;
+                _objectFollow = m_PlayerCtrl.transform;
             }
         }
 

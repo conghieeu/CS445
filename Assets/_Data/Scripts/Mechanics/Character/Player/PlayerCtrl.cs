@@ -1,5 +1,6 @@
 using System;
 using CuaHang.AI;
+using CuaHang.Player;
 using QFSW.QC;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ namespace CuaHang
 {
     public class PlayerCtrl : Entity
     {
-        public static PlayerCtrl Instance;
+        public bool IsDragItem;
         public SensorCast _sensorForward;
         public Animator _anim;
 
@@ -16,6 +17,10 @@ namespace CuaHang
         [SerializeField] int _currentReputation; // danh tieng
         [SerializeField] int maxReputation = 100;
         [SerializeField] int minReputation = 0;
+
+        public PlayerMovement PlayerMovement { get; private set; }
+        public PlayerPlanting PlayerPlanting { get; private set; }
+        ModuleDragItem m_ModuleDragItem;
 
         [Command]
         public int Reputation
@@ -50,8 +55,15 @@ namespace CuaHang
 
         private void Awake()
         {
+            PlayerPlanting = GetComponentInChildren<PlayerPlanting>();
+            PlayerMovement = GetComponentInChildren<PlayerMovement>();
             _anim = GetComponent<Animator>();
-            if (Instance) Destroy(this); else { Instance = this; }
+        }
+
+        public override void PickUpEntity(Entity entity)
+        {
+            m_ModuleDragItem.PlayerPickUpItem(entity.GetComponent<Item>());
+            IsDragItem = true;
         }
 
         public void UpdateReputation(CustomerAction action)
@@ -78,9 +90,9 @@ namespace CuaHang
 
         #region Save Data
         public override void SetVariables<T, V>(T data)
-        { 
+        {
             if (data is GamePlayData gamePlayData)
-            { 
+            {
                 PlayerData playerData = gamePlayData.PlayerData;
                 base.SetVariables<PlayerData, object>(playerData);
                 Money = playerData.CurrentMoney;

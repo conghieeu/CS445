@@ -16,21 +16,16 @@ namespace CuaHang
         [Header("TRASH")]
         public float _timeDelete; // thời gian để xoá đi đối tượng bênh trong kho
         public List<ParcelTrash> _listTrash; // thời gian để xoá đi đối tượng bênh trong kho
-
-        private void OnEnable()
-        {
-            ItemSlot.ActionAddItem += AddItemToTrash;
-        }
-
-        protected override void OnDisable()
-        {
-            base.OnDisable();
-            ItemSlot.ActionAddItem -= AddItemToTrash;
-        }
-
+ 
         private void FixedUpdate()
         {
             CountDownRemove();
+        }
+
+        public override void PickUpEntity(Entity entity)
+        {
+            base.PickUpEntity(entity);
+            AddItemToTrash(entity.GetComponent<Item>());
         }
 
         /// <summary> Thêm item rác vào thùng rác </summary>
@@ -57,10 +52,10 @@ namespace CuaHang
 
                 // xoá item
                 if (_listTrash[i]._time <= 0f && item)
-                {
-                    item.SetParent(null, null, false);
-                    ItemSlot.RemoveItemInWorld(_listTrash[i]._item);
-                    _listTrash[i]._item = null;
+                { 
+                    item.RemoveThis();
+                    ItemSlot.RemoveItemInList(item);
+                    _listTrash.RemoveAt(i);
                 }
             }
         }

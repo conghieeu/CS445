@@ -12,8 +12,6 @@ public enum Platform
 public class GameSystem : GameBehavior
 {
     [Header("GAME SYSTEM")]
-    public static Platform CurrentPlatform { get; private set; }
-
-
+    public Platform CurrentPlatform;
 }
 
