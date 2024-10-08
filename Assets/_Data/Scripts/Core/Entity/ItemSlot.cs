@@ -35,6 +35,11 @@ namespace CuaHang
 
         void Awake()
         {
+            Init();
+        }
+
+        private void Init()
+        {
             m_ItemPooler = FindFirstObjectByType<ItemPooler>();
             _item = GetComponentInParent<Item>();
             LoadSlots();
@@ -81,8 +86,10 @@ namespace CuaHang
         }
 
         /// <summary> Thêm 1 item vào danh sách </summary>
-        public bool TryAddItemToItemSlot(Item item, bool isCanDrag)
+        public bool TryAddItemToItemSlot(Item item, bool isCanDrag = true)
         {
+            Init();
+
             foreach (var slot in _itemsSlot)
             {
                 if (!slot._item)

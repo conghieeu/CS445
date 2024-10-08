@@ -3,22 +3,31 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class UIRotationCam : GameBehavior, IPointerDownHandler, IPointerUpHandler
-{
-    [SerializeField] CameraControl cameraControl;
+{ 
+    public bool IsTouchArea; // có đang chạm vào image này không
+    CameraControl cameraControl;
 
     private void Start()
     {
         cameraControl = FindFirstObjectByType<CameraControl>();
     }
 
+    private void Update()
+    {
+        if (IsTouchArea)
+        {
+            cameraControl.CamRotation();
+        }
+    }
+
     public void OnPointerDown(PointerEventData eventData)
     {
-        cameraControl.IsTouchRotationArea = true;
+        IsTouchArea = true;
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        cameraControl.IsTouchRotationArea = false;
+        IsTouchArea = false;
     }
 }
 

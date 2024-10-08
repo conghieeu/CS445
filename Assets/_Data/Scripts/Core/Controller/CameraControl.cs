@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 namespace CuaHang
@@ -7,88 +8,86 @@ namespace CuaHang
     public class CameraControl : GameBehavior
     {
         [Header("CAMERA CONTROL")]
-        [SerializeField] bool _isTouchRotationArea;
+        public Item ItemEdit;
+
         [SerializeField] bool _isMoveStick;
         [SerializeField] float _camSizeDefault = 5;
         [SerializeField] float _moveSpeed = 10;
         [SerializeField] Transform _objectFollow; // là đối tượng cam theo dỏi 
-        [SerializeField] Item _itemEdit;
         [SerializeField] Transform _cameraHolder; // vị trí cam
         [SerializeField] float _rotationSpeed = 1;
         [SerializeField] float _zoomCamSpeed = 0.2f;
 
-        [Header("Input Action")]
-        [SerializeField] InputActionReference mouseAxisX;
-        [SerializeField] InputActionReference leftClick;
-        [SerializeField] InputActionReference rightClick;
-        [SerializeField] InputActionReference secondTouchContact;
-        [SerializeField] InputActionReference primaryFingerPosition;
-        [SerializeField] InputActionReference secondaryFingerPosition;
-
         Coroutine _zoomCoroutine;
-
-        GameSettings gameSettings;
-        Camera _cam => Camera.main;
-        PlayerCtrl _playerCtrl => PlayerCtrl.Instance;
+        GameSettings m_GameSettings;
+        PlayerCtrl m_PlayerCtrl;
+        RaycastCursor m_RaycastCursor;
+        GameSystem m_GameSystem;
+        InputImprove m_InputImprove;
+        Camera m_Cam;
 
         public bool IsMoveStick { get => _isMoveStick; set => _isMoveStick = value; }
-        public bool IsTouchRotationArea { get => _isTouchRotationArea; set => _isTouchRotationArea = value; }
 
         private void Start()
         {
-            gameSettings = FindFirstObjectByType<GameSettings>();
-            GameSettings.ActionDataChange += OnGameSettingChange;
+            m_RaycastCursor = FindFirstObjectByType<RaycastCursor>();
+            m_PlayerCtrl = FindFirstObjectByType<PlayerCtrl>();
+            m_GameSettings = FindFirstObjectByType<GameSettings>();
+            m_GameSystem = FindFirstObjectByType<GameSystem>();
+            m_InputImprove = FindFirstObjectByType<InputImprove>();
 
-            RaycastCursor.ActionEditItem += OnEditItem;
-            RaycastCursor.ActionFollowItem += SetFollowItem;
+            m_GameSettings.ActionDataChange += OnGameSettingChange;
+            m_RaycastCursor.ActionEditItem += OnEditItem;
+            m_RaycastCursor.ActionFollowItem += SetFollowItem;
+            m_InputImprove.SecondTouchContact.action.started += ctx => PinchStart();
+            m_InputImprove.SecondTouchContact.action.canceled += ctx => PinchEnd();
 
-            secondTouchContact.action.started += ctx => PinchStart();
-            secondTouchContact.action.canceled += ctx => PinchEnd();
+            m_Cam = Camera.main;
 
             // chỉnh lại góc xoay theo setting
-            transform.rotation = gameSettings.CamRotation;
+            transform.rotation = m_GameSettings.CamRotation;
         }
 
         private void FixedUpdate()
         {
             // save cam rotation
-            gameSettings.CamRotation = transform.rotation;
+            m_GameSettings.CamRotation = transform.rotation;
+
+            FollowObjectTarget();
         }
 
-        private void Update()
+        public void FollowObjectTarget()
         {
-            CamController();
-        }
-
-        /// <summary> Điều khiển cam </summary>
-        private void CamController()
-        {
-            if (_itemEdit) return;
-
+            if (ItemEdit) return;
             if (_objectFollow)
             {
                 // cam follow Object
                 transform.position = Vector3.MoveTowards(transform.position, _objectFollow.position, _moveSpeed * Time.deltaTime);
-                _cam.transform.position = _cameraHolder.position;
-                _cam.transform.rotation = _cameraHolder.rotation;
-
-                bool rightClick = this.rightClick.action.IsPressed();
-                bool leftClick = this.leftClick.action.IsPressed();
-                float mouseAxisX = this.mouseAxisX.action.ReadValue<float>();
-
-                // Xoay cam  
-                if (GameSystem.CurrentPlatform == Platform.Standalone && rightClick)
-                {
-                    transform.Rotate(Vector3.up, mouseAxisX * _rotationSpeed, Space.Self);
-                }
-                else if (GameSystem.CurrentPlatform == Platform.Android && _isTouchRotationArea && leftClick)
-                {
-                    transform.Rotate(Vector3.up, mouseAxisX * _rotationSpeed, Space.Self);
-                }
+                m_Cam.transform.position = _cameraHolder.position;
+                m_Cam.transform.rotation = _cameraHolder.rotation;
             }
             else
             {
-                _objectFollow = _playerCtrl.transform;
+                _objectFollow = m_PlayerCtrl.transform;
+            }
+        }
+
+        /// <summary> Điều khiển cam </summary>
+        public void CamRotation()
+        {
+            if (ItemEdit) return;
+
+            bool rightClick = m_InputImprove.RightClick.action.IsPressed();
+            bool leftClick = m_InputImprove.LeftClick.action.IsPressed();
+            float mouseAxisX = m_InputImprove.MouseMoveX.action.ReadValue<float>();
+
+            if (m_GameSystem.CurrentPlatform == Platform.Standalone && rightClick)
+            {
+                transform.Rotate(Vector3.up, mouseAxisX * _rotationSpeed, Space.Self);
+            }
+            else if (m_GameSystem.CurrentPlatform == Platform.Android && leftClick)
+            {
+                transform.Rotate(Vector3.up, mouseAxisX * _rotationSpeed, Space.Self);
             }
         }
 
@@ -108,10 +107,10 @@ namespace CuaHang
             float previousDistance = 0f, distance = 0f;
             while (true)
             {
-                if (_isMoveStick || _itemEdit) break;
+                if (_isMoveStick || ItemEdit) break;
 
-                Vector2 primaryFingerPosition = this.primaryFingerPosition.action.ReadValue<Vector2>();
-                Vector2 secondaryFingerPosition = this.secondaryFingerPosition.action.ReadValue<Vector2>();
+                Vector2 primaryFingerPosition = m_InputImprove.PrimaryFingerPosition.action.ReadValue<Vector2>();
+                Vector2 secondaryFingerPosition = m_InputImprove.PrimaryFingerPosition.action.ReadValue<Vector2>();
 
                 distance = Vector2.Distance(primaryFingerPosition, secondaryFingerPosition);
 
@@ -120,20 +119,20 @@ namespace CuaHang
                 if (distance > previousDistance)
                 {
                     // Thực hiện hành động zoom out
-                    float newSize = _cam.orthographicSize - _zoomCamSpeed;
+                    float newSize = m_Cam.orthographicSize - _zoomCamSpeed;
                     if (newSize < 1) newSize = 1;
 
-                    _cam.orthographicSize = newSize;
+                    m_Cam.orthographicSize = newSize;
 
                 }
                 // Zoom in
                 else if (distance < previousDistance)
                 {
                     // Thực hiện hành động zoom in
-                    float newSize = _cam.orthographicSize + _zoomCamSpeed;
+                    float newSize = m_Cam.orthographicSize + _zoomCamSpeed;
                     if (newSize > 5) newSize = 5;
 
-                    _cam.orthographicSize = newSize;
+                    m_Cam.orthographicSize = newSize;
                 }
 
                 // Keep track of previous distance for next loop
@@ -156,23 +155,23 @@ namespace CuaHang
         private void SetFollowItem(Item item)
         {
             _objectFollow = item.transform;
-            _cam.orthographicSize = _camSizeDefault;
+            m_Cam.orthographicSize = _camSizeDefault;
         }
 
         private void OnEditItem(Item item)
         {
-            _itemEdit = item;
+            ItemEdit = item;
             if (item && item.CamHere)
             {
-                _itemEdit = item;
-                _cam.orthographicSize = item.CamHere._camSize;
-                _cam.transform.position = item.CamHere.transform.position;
-                _cam.transform.rotation = item.CamHere.transform.rotation;
+                ItemEdit = item;
+                m_Cam.orthographicSize = item.CamHere._camSize;
+                m_Cam.transform.position = item.CamHere.transform.position;
+                m_Cam.transform.rotation = item.CamHere.transform.rotation;
             }
             else
             {
                 _objectFollow = null;
-                _cam.orthographicSize = _camSizeDefault;
+                m_Cam.orthographicSize = _camSizeDefault;
             }
         }
     }

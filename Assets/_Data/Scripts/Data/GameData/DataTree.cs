@@ -5,12 +5,12 @@ using UnityEngine;
 [Serializable]
 public class EntityData
 {
-    [SerializeField] string id;
-    [SerializeField] string name;
-    [SerializeField] bool isDestroyed;
-    [SerializeField] TypeID typeID;
-    [SerializeField] Vector3 position;
-    [SerializeField] Quaternion rotation;
+    public string Id;
+    public string Name;
+    public bool IsDestroyed;
+    public TypeID TypeID;
+    public Vector3 Position;
+    public Quaternion Rotation;
 
     public EntityData(string id, string name, bool isDestroyed, TypeID typeID, Vector3 position, Quaternion rotation)
     {
@@ -21,13 +21,6 @@ public class EntityData
         Position = position;
         Rotation = rotation;
     }
-
-    public string Id { get => id; set => id = value; }
-    public string Name { get => name; set => name = value; }
-    public TypeID TypeID { get => typeID; set => typeID = value; }
-    public Vector3 Position { get => position; set => position = value; }
-    public Quaternion Rotation { get => rotation; set => rotation = value; }
-    public bool IsDestroyed { get => isDestroyed; set => isDestroyed = value; }
 }
 
 [Serializable]

@@ -15,7 +15,7 @@ public class GameSettings : GameBehavior, ISaveData
     GameSettingsData _gameSettingsData;
     CameraControl _cameraControl;
     
-    public static UnityAction<GameSettings> ActionDataChange;
+    public UnityAction<GameSettings> ActionDataChange;
 
     public bool IsFullScreen { get => _isFullScreen; set => _isFullScreen = value; }
     public int QualityIndex { get => _qualityIndex; set => _qualityIndex = value; }

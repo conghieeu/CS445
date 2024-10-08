@@ -25,14 +25,9 @@ namespace CuaHang
 
         RaycastCursor m_raycastCursor;
         NavMeshManager m_navMeshManager;
-
-        [Header("Input Action")]
-        [SerializeField] InputActionReference inputMousePosition;
-        [SerializeField] InputActionReference inputLeftClick;
-        [SerializeField] InputActionReference inputSnap;
-        [SerializeField] InputActionReference inputMouseScrollX;
-
-        GameSystem m_gameSystem;
+        InputImprove m_inputImprove;
+        PlayerCtrl m_PlayerCtrl;
+        GameSystem m_GameSystem;
 
         public bool IsDragging { get => _isDragging; set => _isDragging = value; }
         public Item ItemDragging { get => itemDragging; set => itemDragging = value; }
@@ -42,15 +37,17 @@ namespace CuaHang
 
         private void Awake()
         {
-            m_gameSystem = FindFirstObjectByType<GameSystem>();
+            m_inputImprove = FindAnyObjectByType<InputImprove>();
+            m_GameSystem = FindFirstObjectByType<GameSystem>();
             m_raycastCursor = FindFirstObjectByType<RaycastCursor>();
             m_navMeshManager = FindFirstObjectByType<NavMeshManager>();
+            m_PlayerCtrl = FindFirstObjectByType<PlayerCtrl>();
         }
 
         private void Start()
         {
-            inputLeftClick.action.performed += ctx =>  OnInputLeftClick(); 
-            inputSnap.action.performed += ctx => OnInputActiveSnap(); 
+            m_inputImprove.LeftClick.action.performed += ctx => OnInputLeftClick();
+            m_inputImprove.SnapItem.action.performed += ctx => OnInputActiveSnap();
         }
 
         private void Update()
@@ -58,19 +55,24 @@ namespace CuaHang
             SetMaterial();
 
             RaycastHit hit = m_raycastCursor.GetRaycastHit();
+            if (m_GameSystem.CurrentPlatform == Platform.Android)
+            {
+                hit = m_raycastCursor.GetRaycastHitByScreenPoint();
+            }
             DragItem(hit.point);
             RotationItemDrag(hit);
         }
 
         /// <summary> để model temp đang dragging nó hiện giống model đang di chuyển ở thằng Player </summary>
-        public void PickUpItem(Item item)
+        public void PlayerPickUpItem(Item item)
         {
             SetActive(true);
             // Tạo model giống otherModel ở vị trí 
             ModelsHolding = Instantiate(item.Models, _modelsHolder);
             _modelsHolder.localRotation = item.transform.rotation;
+
             // Cho item này lênh tay player
-            item.SetParent(PlayerCtrl.Instance.PosHoldParcel, null, false);
+            item.SetParent(m_PlayerCtrl.PosHoldParcel, null, false);
             IsDragging = true;
             ItemDragging = item;
         }
@@ -96,7 +98,7 @@ namespace CuaHang
         /// <summary> Action Event </summary>
         private void OnInputLeftClick()
         {
-            if (this && GameSystem.CurrentPlatform == Platform.Standalone)
+            if (this && m_GameSystem.CurrentPlatform == Platform.Standalone)
             {
                 TryDropItem();
             }
@@ -146,7 +148,7 @@ namespace CuaHang
 
             // Model holder: lấy góc xoay mới
             float currentAngle = Mathf.Round(_modelsHolder.localEulerAngles.y);
-            float newAngle = currentAngle + (inputMouseScrollX.action.ReadValue<float>() * _rotationSpeed);
+            float newAngle = currentAngle + (m_inputImprove.MouseScrollX.action.ReadValue<float>() * _rotationSpeed);
 
             _modelsHolder.localRotation = Quaternion.Euler(0, newAngle, 0);
         }

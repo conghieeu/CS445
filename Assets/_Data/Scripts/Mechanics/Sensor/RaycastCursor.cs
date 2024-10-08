@@ -1,6 +1,7 @@
 using System;
 using CuaHang.UI;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 namespace CuaHang
@@ -14,13 +15,6 @@ namespace CuaHang
         [SerializeField] bool _enableRaycast = true;
         public Transform PointDrag;
 
-        [Header("Input Action")]
-        [SerializeField] InputActionReference _inputEditItem;
-        [SerializeField] InputActionReference _inputDragItem;
-        [SerializeField] InputActionReference _inputClick;
-        [SerializeField] InputActionReference _inputFollowItem;
-        [SerializeField] InputActionReference _inputCancel;
-        [SerializeField] InputActionReference _inputMousePos;
 
         Item _itemEdit;
         Item _itemFollow;
@@ -28,6 +22,8 @@ namespace CuaHang
 
         ModuleDragItem m_ModuleDragItem;
         Camera _cam;
+        GameSystem m_GameSystem;
+        InputImprove m_InputImprove;
 
         public Item ItemSelect
         {
@@ -48,6 +44,7 @@ namespace CuaHang
                 ActionSelectItem?.Invoke(value);
             }
         }
+
         public Item ItemEdit
         {
             get => _itemEdit;
@@ -76,21 +73,24 @@ namespace CuaHang
             }
         }
 
-        public static event Action<Item> ActionDragItem;
-        public static event Action<Item> ActionSelectItem;
-        public static event Action<Item> ActionEditItem;
-        public static event Action<Item> ActionFollowItem;
+        public UnityAction<Item> ActionDragItem;
+        public UnityAction<Item> ActionSelectItem;
+        public UnityAction<Item> ActionEditItem;
+        public UnityAction<Item> ActionFollowItem;
+
 
         private void Awake()
         {
+            m_InputImprove = FindFirstObjectByType<InputImprove>();
             m_ModuleDragItem = FindFirstObjectByType<ModuleDragItem>();
+            m_GameSystem = FindFirstObjectByType<GameSystem>();
             _cam = Camera.main;
 
-            _inputEditItem.action.performed += ctx => SetItemEdit();
-            _inputDragItem.action.performed += ctx => SetItemDrag();
-            _inputClick.action.performed += ctx => SetItemSelect();
-            _inputFollowItem.action.performed += ctx => SetFollowItem();
-            _inputCancel.action.performed += ctx => ExitFollowItem();
+            m_InputImprove.EditItem.action.performed += ctx => SetItemEdit();
+            m_InputImprove.DragItem.action.performed += ctx => SetItemDrag();
+            m_InputImprove.LeftClick.action.performed += ctx => SetItemSelect();
+            m_InputImprove.FollowItem.action.performed += ctx => SetFollowItem();
+            m_InputImprove.Cancel.action.performed += ctx => ExitFollowItem();
         }
 
         /// <summary> Lấy thông tin va chạm của tia ray từ vị trí chuột trên màn hình </summary>
@@ -99,18 +99,20 @@ namespace CuaHang
             RaycastHit hit = new();
             if (_enableRaycast == false) return hit;
 
-            Vector2 screenPoint = _inputMousePos.action.ReadValue<Vector2>();
+            Vector2 screenPoint = m_InputImprove.MousePosition.action.ReadValue<Vector2>();
+            Ray ray = _cam.ScreenPointToRay(screenPoint);
+            Physics.Raycast(ray, out hit, 100, _layerMask);
 
-            if (GameSystem.CurrentPlatform == Platform.Android)
-            {
-                screenPoint = PointDrag.position;
-            }
+            return hit;
+        }
 
-            if (_enableRaycast)
-            {
-                Ray ray = _cam.ScreenPointToRay(screenPoint);
-                Physics.Raycast(ray, out hit, 100, _layerMask);
-            }
+        public RaycastHit GetRaycastHitByScreenPoint()
+        {
+            RaycastHit hit = new();
+            if (m_GameSystem.CurrentPlatform != Platform.Android || _enableRaycast == false) return hit;
+            Vector2 screenPoint = PointDrag.position;
+            Ray ray = _cam.ScreenPointToRay(screenPoint);
+            Physics.Raycast(ray, out hit, 100, _layerMask);
             return hit;
         }
 
@@ -140,7 +142,7 @@ namespace CuaHang
             {
                 ItemEdit = null;
                 ItemSelect.SetDragState(true);
-                m_ModuleDragItem.PickUpItem(ItemSelect);
+                m_ModuleDragItem.PlayerPickUpItem(ItemSelect);
                 ActionDragItem?.Invoke(ItemSelect);
             }
         }
@@ -148,8 +150,8 @@ namespace CuaHang
         /// <summary> Tạo viền khi click vào item de select </summary>
         private void SetItemSelect()
         {
-            if (!this) return;
-            if (!_uIRaycastChecker.IsPointerOverUI() && !m_ModuleDragItem.ItemDragging)
+            if (!this) return; 
+            if (_uIRaycastChecker.IsPointerOverCanvas() && !m_ModuleDragItem.ItemDragging)
             {
                 Transform hit = GetRaycastHit().transform;
                 if (hit)

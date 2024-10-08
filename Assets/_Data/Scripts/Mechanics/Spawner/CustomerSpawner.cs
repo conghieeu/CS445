@@ -26,9 +26,12 @@ namespace CuaHang.Core
         [SerializeField] float _spawnTimerLounger;
 
         CustomerPooler m_customerPooler;
+        PlayerCtrl m_playerCtrl; 
+            
 
         private void Awake()
         {
+            m_playerCtrl = FindFirstObjectByType<PlayerCtrl>();
             m_customerPooler = FindFirstObjectByType<CustomerPooler>();
 
             _spawnTimer = _currentSpawnInterval;
@@ -39,7 +42,7 @@ namespace CuaHang.Core
         {
             SpawnLoungerOverTime();
             SpawnCustomerOverTime();
-            AdjustSpawnRate(PlayerCtrl.Instance.Reputation);
+            AdjustSpawnRate(m_playerCtrl.Reputation);
         }
 
         /// <summary> Lấy một điểm ngẫu nhiên từ danh sách điểm thoát </summary>

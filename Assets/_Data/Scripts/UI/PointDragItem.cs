@@ -5,28 +5,35 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class PointDragItem : UIPanel
+public class PointDragItem : GameBehavior, IPointerDownHandler, IPointerUpHandler
 {
     [Header("POINT DRAG ITEM")]
-    [SerializeField] bool _isPointerDown = false;
-    [SerializeField] InputActionReference _inputMousePos; 
+    [SerializeField] bool isPointerDown = false;
     
+    InputImprove m_InputImprove;
+
+    private void Awake()
+    {
+        m_InputImprove = FindAnyObjectByType<InputImprove>();
+
+    }
+
     private void Update()
     {
-        if (_isPointerDown)
+        if (isPointerDown)
         {
-            transform.position = _inputMousePos.action.ReadValue<Vector2>();
+            transform.position = m_InputImprove.MousePosition.action.ReadValue<Vector2>();
         }
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        _isPointerDown = true;
+        isPointerDown = true;
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        _isPointerDown = false;
+        isPointerDown = false;
     }
 }
 

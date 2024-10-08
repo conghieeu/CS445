@@ -15,16 +15,18 @@ namespace CuaHang.UI
         [SerializeField] string _describe;
         [SerializeField] List<ItemSO> _items;
         [SerializeField] ItemSO _parcel; // nếu khi tạo cần parcel thì bỏ parcel vào đây
-        
-        
+
+
         ItemSpawner m_ItemSpawner;
         StaffSpawner m_StaffSpawner;
         Button _btnBuy;
         ItemPooler m_itemPooler;
-        StaffPooler m_staffPooler; 
+        StaffPooler m_staffPooler;
+        PlayerCtrl m_PlayerCtrl;
 
         private void Start()
         {
+            m_PlayerCtrl = FindAnyObjectByType<PlayerCtrl>();
             m_itemPooler = FindFirstObjectByType<ItemPooler>();
             m_staffPooler = FindFirstObjectByType<StaffPooler>();
             m_ItemSpawner = FindFirstObjectByType<ItemSpawner>();
@@ -33,7 +35,7 @@ namespace CuaHang.UI
             _btnBuy = GetComponent<Button>();
             _btnBuy.onClick.AddListener(BuyItem);
             _txtDescribe = GetChild<TMP_Text>("txtDescribe");
-            _txtPrice = GetChild<TMP_Text>("txtPrice"); 
+            _txtPrice = GetChild<TMP_Text>("txtPrice");
 
             // set mota
             _txtDescribe.text = _describe;
@@ -59,10 +61,20 @@ namespace CuaHang.UI
                 Debug.LogWarning("btnButton mua này thiếu item SO yêu cầu", transform);
                 return;
             }
+ 
+            if (GetTotalPrice() <= m_PlayerCtrl.Money)
+            {
+                m_PlayerCtrl.Money -= GetTotalPrice();
+            }
+            else
+            {
+                Debug.Log($"Bạn không đủ tiền mua");
+                return;
+            }
 
             if (_items[0]._typeID == TypeID.StaffA)
             {
-                Debug.Log(GetStaffSpawnPos()); 
+                Debug.Log(GetStaffSpawnPos());
                 Transform entity = m_staffPooler.GetOrCreateObjectPool(TypeID.StaffA, GetStaffSpawnPos()).transform;
                 return;
             }

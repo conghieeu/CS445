@@ -22,7 +22,7 @@ namespace CuaHang.AI
         CustomerPooler m_CustomerPooler;
         CustomerSpawner m_CustomerSpawner;
 
-        PlayerCtrl _playerCtrl => PlayerCtrl.Instance;
+        PlayerCtrl m_PlayerCtrl;
 
         public float TotalPay { get => _totalPay; set => _totalPay = value; }
         public Transform SlotWaiting { get => _slotWaiting; set => _slotWaiting = value; }
@@ -32,6 +32,8 @@ namespace CuaHang.AI
         protected override void Awake()
         {
             base.Awake();
+
+            m_PlayerCtrl = FindFirstObjectByType<PlayerCtrl>();
             m_CustomerPooler = FindFirstObjectByType<CustomerPooler>();
             m_CustomerSpawner = FindFirstObjectByType<CustomerSpawner>();
 
@@ -89,7 +91,7 @@ namespace CuaHang.AI
                 {
                     In($"Giá quá cao");
                     ListItemBuy.Clear();
-                    _playerCtrl.UpdateReputation(CustomerAction.Complain);
+                    m_PlayerCtrl.UpdateReputation(CustomerAction.Complain);
                 }
             }
 
@@ -226,8 +228,15 @@ namespace CuaHang.AI
 
         public override T GetData<T, D>()
         {
-            CustomerData data = new CustomerData(GetEntityData(), TotalPay, ListItemBuy, IsPlayerConfirmPay);
-            return (T)(object)(data);
+            if (ID != "")
+            {
+                CustomerData data = new CustomerData(GetEntityData(), TotalPay, ListItemBuy, IsPlayerConfirmPay);
+                return (T)(object)data;
+            }
+            else
+            {
+                return (T)(object)null;
+            } 
         }
         #endregion
     }

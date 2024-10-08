@@ -1,12 +1,11 @@
 using UnityEngine;
-using CuaHang.Pooler;
 
 namespace CuaHang.AI
 {
     public class Staff : AIBehavior, ISaveData
     {
         [Header("STAFF")]
-        [SerializeField] Item _heldItem; // item đã nhặt và đang giữ trong người
+        [SerializeField] Item itemHolding; // item đã nhặt và đang giữ trong người
         [SerializeField] Transform _itemHoldPos; // là vị trí mà nhân viên này đang giữ ObjectPlant trong người  
 
         Item _heldItemCurrent; // trigger của animation ngăn animation được gọi liên tục từ fixed Update 
@@ -17,72 +16,78 @@ namespace CuaHang.AI
             PlayAnimation();
         }
 
+        public override void PickUpEntity(Entity entity)
+        {
+            base.PickUpEntity(entity);
+            PickupItem(entity.GetComponent<Item>());
+        }
+
         /// <summary>  Khi đáp ứng sự kiện hãy gọi vào đây nên nó đưa phán đoán hành vi tiếp theo nhân viên cần làm </summary>
         private void Behavior()
         {
             // Find the parcel
             Item itemCarry = null;
-            if (!_heldItem) itemCarry = FindCarryItem();
+            if (!itemHolding) itemCarry = FindCarryItem();
 
             // Nhặt parcel
             if (itemCarry && MoveToTarget(itemCarry.transform))
             {
-                SetHeldItem(itemCarry);
+                PickupItem(itemCarry);
                 return;
             }
 
             // Parcel có item không
-            bool parcelHasItem = false;
-            if (_heldItem)
+            bool isHasItemInItemPickUp = false;
+            if (itemHolding)
             {
-                parcelHasItem = _heldItem.ItemSlot.IsAnyItem();
+                isHasItemInItemPickUp = itemHolding.ItemSlot.IsAnyItem();
             }
 
-            if (_heldItem == null) return;
+            if (itemHolding == null) return;
 
             // Đưa item lênh kệ
             Item shelf = m_ItemPooler.GetItemEmptySlot(Type.Shelf);
-            if (shelf && parcelHasItem)
+            if (shelf && isHasItemInItemPickUp)
             {
                 if (MoveToTarget(shelf.WaitingPoint.transform))
                 {
-                    shelf.ItemSlot.ReceiverItems(_heldItem.ItemSlot, true);
+                    shelf.ItemSlot.ReceiverItems(itemHolding.ItemSlot, true);
                 }
                 return;
             }
 
             // Đặt ObjectPlant vào kho
             Item storage = m_ItemPooler.GetItemEmptySlot(Type.Storage);
-            if (storage && parcelHasItem)
+            if (storage && isHasItemInItemPickUp)
             {
                 if (MoveToTarget(storage.transform))
                 {
-                    storage.ItemSlot.TryAddItemToItemSlot(_heldItem, true);
-                    _heldItem.IsCanDrag = true;
-                    _heldItem = null;
+                    storage.ItemSlot.TryAddItemToItemSlot(itemHolding);
+                    itemHolding.IsCanDrag = true;
+                    itemHolding = null;
                 }
                 return;
             }
 
             // Đặt ObjectPlant vào thùng rác 
-            Trash trash = m_ItemPooler.GetItemEmptySlot(Type.Trash).GetComponent<Trash>();
-            if (!parcelHasItem && trash)
+            Item trash = m_ItemPooler.GetItemEmptySlot(Type.Trash);
+            if (trash && !isHasItemInItemPickUp)
             {
                 if (MoveToTarget(trash.transform))
                 {
-                    trash.ItemSlot.TryAddItemToItemSlot(_heldItem, true);
-                    _heldItem = null;
+                    trash.PickUpEntity(itemHolding);
+                    itemHolding = null;
                 }
                 return;
             }
         }
 
         /// <summary> nhặt item carry lênh </summary>
-        public void SetHeldItem(Item itemCarry)
+        public void PickupItem(Item itemCarry)
         {
             itemCarry.SetParent(_itemHoldPos, this, false);
             itemCarry.IsCanDrag = false;
-            _heldItem = itemCarry;
+            itemHolding = itemCarry;
         }
 
         private void PlayAnimation()
@@ -90,9 +95,9 @@ namespace CuaHang.AI
             float velocity = m_NavMeshAgent.velocity.sqrMagnitude;
 
             // Idle
-            if (velocity == 0 && AnimationState != STATE_ANIM.Idle || velocity == 0 && _heldItemCurrent != _heldItem)
+            if (velocity == 0 && AnimationState != STATE_ANIM.Idle || velocity == 0 && _heldItemCurrent != itemHolding)
             {
-                if (_heldItem)
+                if (itemHolding)
                 {
                     AnimationState = STATE_ANIM.Idle_Carrying;
                 }
@@ -101,15 +106,15 @@ namespace CuaHang.AI
                     AnimationState = STATE_ANIM.Idle;
                 }
 
-                _heldItemCurrent = _heldItem;
+                _heldItemCurrent = itemHolding;
                 SetAnim();
                 return;
             }
 
             // Walk
-            if (velocity > 0.1f && AnimationState != STATE_ANIM.Walk || velocity > 0.1f && _heldItemCurrent != _heldItem)
+            if (velocity > 0.1f && AnimationState != STATE_ANIM.Walk || velocity > 0.1f && _heldItemCurrent != itemHolding)
             {
-                if (_heldItem)
+                if (itemHolding)
                 {
                     AnimationState = STATE_ANIM.Walk_Carrying;
                 }
@@ -118,7 +123,7 @@ namespace CuaHang.AI
                     AnimationState = STATE_ANIM.Walk;
                 }
 
-                _heldItemCurrent = _heldItem;
+                _heldItemCurrent = itemHolding;
                 SetAnim();
                 return;
             }
@@ -142,8 +147,15 @@ namespace CuaHang.AI
 
         public override T GetData<T, D>()
         {
-            StaffData data = new StaffData(GetEntityData());
-            return (T)(object)(data);
+            if (ID != "")
+            {
+                StaffData data = new StaffData(GetEntityData());
+                return (T)(object)data;
+            }
+            else
+            {
+                return (T)(object)null;
+            }
         }
     }
 }

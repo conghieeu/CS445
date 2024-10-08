@@ -44,7 +44,7 @@ namespace Core
 
             _panelContents.gameObject.SetActive(false);
 
-            GameSettings.ActionDataChange += OnGameSettingChange;
+            m_GameSettings.ActionDataChange += OnGameSettingChange;
             m_User.OnDataChange += OnUserDataChange;
 
             // Set value 
