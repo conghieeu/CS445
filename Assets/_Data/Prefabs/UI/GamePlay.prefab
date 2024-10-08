@@ -188,6 +188,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 974b5fd836870f743aeaec188d5c82e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableDebugLog: 0
   _txtMoney: {fileID: 7749767678197471840}
   _txtReputation: {fileID: 6415217881666270079}
 --- !u!1 &2793124333732018935
@@ -476,10 +477,10 @@ GameObject:
   - component: {fileID: 3109237714502789663}
   - component: {fileID: 854624330798840612}
   - component: {fileID: 2255933153662960100}
-  - component: {fileID: 6903997744044908312}
-  - component: {fileID: 7907076345816300793}
+  - component: {fileID: 772215151127140572}
+  - component: {fileID: 666712682484165231}
   m_Layer: 5
-  m_Name: btnStick
+  m_Name: OnButtonStick
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -497,11 +498,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4538941318879753253}
+  m_Father: {fileID: 3103431298127958723}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 297, y: 261}
   m_SizeDelta: {x: 124, y: 136}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &854624330798840612
@@ -542,7 +543,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6903997744044908312
+--- !u!114 &772215151127140572
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -556,28 +557,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_MovementRange: 80
   m_DynamicOriginRange: 100
-  m_ControlPath: <AndroidJoystick>/stick
+  m_ControlPath: <Joystick>/stick
   m_Behaviour: 0
-  m_UseIsolatedInputActions: 0
+  m_UseIsolatedInputActions: 1
   m_PointerDownAction:
-    m_Name: 
+    m_Name: Pointer Down
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: faa13fd8-ad51-4621-8319-45ff80513135
+    m_Id: ff05ba28-1a7e-4e6d-a7d0-9230bd3dbf2a
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
   m_PointerMoveAction:
-    m_Name: 
+    m_Name: Pointer Move
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 35753cd3-cc19-4c1a-b5c8-7d190d2f5a20
+    m_Id: bcffb990-00ec-4dee-9a3a-18c98ddd4da2
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
---- !u!114 &7907076345816300793
+--- !u!114 &666712682484165231
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -586,11 +587,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4914293077034047469}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 995799d9c4ad4204faa20a79f758ed9d, type: 3}
+  m_Script: {fileID: 11500000, guid: 2d7256fb79122dc409ad862660c4df0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   enableDebugLog: 0
-  cameraControl: {fileID: 0}
 --- !u!1 &5427270973607482391
 GameObject:
   m_ObjectHideFlags: 0
@@ -727,56 +727,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &5595538309097681423
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4538941318879753253}
-  - component: {fileID: 4555392786113779576}
-  m_Layer: 5
-  m_Name: BtnMovementStick
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &4538941318879753253
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5595538309097681423}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 3109237714502789663}
-  m_Father: {fileID: 3103431298127958723}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 318, y: 268}
-  m_SizeDelta: {x: 400, y: 400}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &4555392786113779576
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5595538309097681423}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81dec42e1ba9fdc4a91e81cb0894ae5f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enableDebugLog: 0
 --- !u!1 &5795341925173663519
 GameObject:
   m_ObjectHideFlags: 0
@@ -923,6 +873,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61c0ead4aa7088d488adb7eca745f7df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableDebugLog: 0
 --- !u!1 &6577949638388436407
 GameObject:
   m_ObjectHideFlags: 0
@@ -947,12 +898,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6577949638388436407}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4538941318879753253}
+  - {fileID: 3109237714502789663}
   - {fileID: 4241129451704800914}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

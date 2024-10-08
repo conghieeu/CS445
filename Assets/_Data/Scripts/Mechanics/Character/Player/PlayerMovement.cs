@@ -12,15 +12,16 @@ namespace CuaHang.Player
         [SerializeField] STATE_ANIM _stageAnim;
         [SerializeField] bool _triggerDragging; // trigger player đang drag item
         [SerializeField] Vector3 _moveDir;
-        [SerializeField] InputActionReference inputPlayerMove;
 
         Rigidbody _rb;
         Animator _animator;
         ModuleDragItem m_ModuleDragItem;
         PlayerCtrl m_PlayerCtrl;
+        InputImprove m_InputImprove;
 
         private void Awake()
         {
+            m_InputImprove = FindFirstObjectByType<InputImprove>();
             m_PlayerCtrl = FindFirstObjectByType<PlayerCtrl>();
             m_ModuleDragItem = FindFirstObjectByType<ModuleDragItem>();
 
@@ -33,13 +34,13 @@ namespace CuaHang.Player
         private void FixedUpdate()
         {
             SetAnimator();
-            Movement();
+            Movement(); 
         }
 
         private void Movement()
         {
             // Input
-            Vector2 moveD = inputPlayerMove.action.ReadValue<Vector2>(); ;
+            Vector2 moveD = m_InputImprove.GetInputMove();
 
             // camera dir
             Vector3 camForward = mainCamera.transform.forward;

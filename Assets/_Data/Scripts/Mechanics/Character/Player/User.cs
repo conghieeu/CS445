@@ -31,7 +31,8 @@ public class User : GameBehavior, ISaveData
 
     private void FixedUpdate()
     {
-        PlayTime += Time.fixedDeltaTime;
+        PlayTime += Time.fixedDeltaTime / 60; // Chuyển đổi giây thành phút
+        PlayTime = Mathf.Round(PlayTime); // Làm tròn kết quả
 
         if (m_PlayerCtrl)
         {

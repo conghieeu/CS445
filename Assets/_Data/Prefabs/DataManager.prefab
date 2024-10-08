@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8631029698449772827}
   - component: {fileID: 8087034384270931499}
+  - component: {fileID: 2040769097914179851}
+  - component: {fileID: 7279647878433172543}
   m_Layer: 0
   m_Name: DataManager
   m_TagString: Untagged
@@ -44,13 +46,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a09b8a23409b3234fa074aeecd31594d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableDebugLog: 1
-  _dontDestroyOnLoad: 0
-  _gameData:
+  enableDebugLog: 0
+  _dontDestroyOnLoad: 1
+  GameData:
     _playerProfileData:
-      _userName: 
-      _highestMoney: 0
-      _playTime: 0
+      UserID: 
+      UserName: 
+      HighestMoney: 0
+      PlayTime: 0
     _gameSettingsData:
       _isFullScreen: 0
       _qualityIndex: 0
@@ -60,20 +63,44 @@ MonoBehaviour:
     _gamePlayData:
       _isInitialized: 0
       _playerData:
-        id: 
-        name: 
-        isDestroyed: 0
-        typeID: 0
-        position: {x: 0, y: 0, z: 0}
-        rotation: {x: 0, y: 0, z: 0, w: 0}
+        Id: 
+        Name: 
+        IsDestroyed: 0
+        TypeID: 0
+        Position: {x: 0, y: 0, z: 0}
+        Rotation: {x: 0, y: 0, z: 0, w: 0}
         _currentMoney: 0
         _reputation: 0
       _customersData: []
       _staffsData: []
       _itemsData: []
-  _isSaveFileExists: 0
   _saveName: /gameData.json
   _filePath: 
   _serialize: 1
   _usingXML: 0
   _encrypt: 0
+--- !u!114 &2040769097914179851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3227177257258704494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba66134d18cb9684eaae722ceb1b79e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableDebugLog: 0
+--- !u!114 &7279647878433172543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3227177257258704494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60a63779921fd964fa6869b27a6e44d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

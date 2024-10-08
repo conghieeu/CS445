@@ -9,12 +9,13 @@ namespace CuaHang.UI
 {
     public class UIRaycastChecker : GameBehavior
     {
-        public  InputActionReference leftMousePointer;
+       
         GraphicRaycaster graphicRaycaster;
+        InputImprove m_InputImprove;
 
-
-        private void Start()
+        private void Awake()
         {
+            m_InputImprove = FindAnyObjectByType<InputImprove>();
             graphicRaycaster = GetComponent<GraphicRaycaster>();
         }
 
@@ -25,7 +26,7 @@ namespace CuaHang.UI
 
             PointerEventData eventData = new PointerEventData(EventSystem.current);
 
-            eventData.position = leftMousePointer.action.ReadValue<Vector2>();
+            eventData.position = m_InputImprove.MousePosition.action.ReadValue<Vector2>();
 
             List<RaycastResult> results = new List<RaycastResult>();
             graphicRaycaster.Raycast(eventData, results);

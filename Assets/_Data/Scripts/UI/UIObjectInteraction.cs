@@ -1,8 +1,5 @@
-using System;
-using QFSW.QC.Actions;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace CuaHang.UI
@@ -79,6 +76,11 @@ namespace CuaHang.UI
             }
         }
 
+        public void DoDragItem()
+        {
+            
+        }
+        
         public void IncreasePrice()
         {
             if (_itemSelect) _itemSelect.SetPrice(0.1f);

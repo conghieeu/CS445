@@ -101,6 +101,7 @@ public class UIEmailPassLogin : GameBehavior
         }
 
         // login success
+        Debug.Log($"Login success");
         PanelLoading.SetActive(false);
         PanelLoginSuccess.SetActive(true);
 

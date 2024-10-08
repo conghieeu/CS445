@@ -450,7 +450,6 @@ GameObject:
   - component: {fileID: 5957027788289241984}
   - component: {fileID: 3613822250049624271}
   - component: {fileID: 671079396626781694}
-  - component: {fileID: 3781204400150745098}
   - component: {fileID: 6460283022164424949}
   m_Layer: 5
   m_Name: btnOnDrag
@@ -566,18 +565,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!225 &3781204400150745098
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 927338920124450628}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!114 &6460283022164424949
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -592,7 +579,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enableDebugLog: 0
   _isPointerDown: 0
-  _inputMousePos: {fileID: 0}
 --- !u!1 &1008765365156899116
 GameObject:
   m_ObjectHideFlags: 0
@@ -741,7 +727,6 @@ GameObject:
   - component: {fileID: 4931926239023536139}
   - component: {fileID: 5230517008443188444}
   - component: {fileID: 9086994181786800024}
-  - component: {fileID: 4983142520029098500}
   m_Layer: 5
   m_Name: btnRotationLeft
   m_TagString: Untagged
@@ -862,19 +847,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &4983142520029098500
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2092951883660124034}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d54531977ecb194c95e2d3aa7a5d72a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ControlPath: <Keyboard>/slash
 --- !u!1 &2569883141041685705
 GameObject:
   m_ObjectHideFlags: 0
@@ -2203,7 +2175,6 @@ GameObject:
   - component: {fileID: 2794829265506743535}
   - component: {fileID: 5757842006384298451}
   - component: {fileID: 625618999862835868}
-  - component: {fileID: 1958767557301413712}
   m_Layer: 5
   m_Name: btnRotationRight
   m_TagString: Untagged
@@ -2324,16 +2295,3 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &1958767557301413712
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9127872334333803140}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d54531977ecb194c95e2d3aa7a5d72a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ControlPath: <Keyboard>/slash

@@ -1,4 +1,5 @@
 using System;
+using Mono.CSharp;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -9,18 +10,20 @@ namespace CuaHang
     {
         [Header("PLAYER PLANTING")]
         [Header("Input Action")]
-        [SerializeField] InputActionReference inputActionSendItem;
+
         PlayerCtrl m_PlayerCtrl;
         ModuleDragItem m_ModuleDragItem;
+        InputImprove m_InputImprove;
 
         public UnityAction ActionSenderItem;
 
-        private void Start()
+        private void Awake()
         {
             m_PlayerCtrl = GetComponent<PlayerCtrl>();
             m_ModuleDragItem = FindFirstObjectByType<ModuleDragItem>();
 
-            inputActionSendItem.action.performed += _ => SendItem();
+            m_InputImprove = FindAnyObjectByType<InputImprove>();
+            m_InputImprove.SendItem.action.performed += ctx => SendItem();
         }
 
         private void FixedUpdate()
@@ -31,7 +34,7 @@ namespace CuaHang
         /// <summary> chạm vào kệ, người chơi có thể truyền item từ parcel sang table đó </summary>
         private void SendItem()
         {
-            Debug.Log($"Try send item");
+            if (this == null) return;
 
             // có item ở cảm biến
             Item shelf = m_PlayerCtrl._sensorForward.GetItemTypeHit(Type.Shelf);

@@ -1,0 +1,26 @@
+fileFormatVersion: 2
+guid: d65cf5ff42e84464190717668848c9fb
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - PlayerMove: {fileID: -1384990163658863094, guid: a7f0447c51be8e4499f7754249b609f5, type: 3}
+  - MouseScrollX: {fileID: 8271768400151408532, guid: a7f0447c51be8e4499f7754249b609f5, type: 3}
+  - MouseMoveX: {fileID: 7623172773415746066, guid: a7f0447c51be8e4499f7754249b609f5, type: 3}
+  - LeftClick: {fileID: 537494220931349604, guid: a7f0447c51be8e4499f7754249b609f5, type: 3}
+  - RightClick: {fileID: -4882609650121733256, guid: a7f0447c51be8e4499f7754249b609f5, type: 3}
+  - SecondTouchContact: {fileID: -1286614760100361218, guid: a7f0447c51be8e4499f7754249b609f5, type: 3}
+  - PrimaryFingerPosition: {fileID: 2668218296394528414, guid: a7f0447c51be8e4499f7754249b609f5, type: 3}
+  - SecondaryFingerPosition: {fileID: 774196735472294759, guid: a7f0447c51be8e4499f7754249b609f5, type: 3}
+  - SendItem: {fileID: -2688481953129509308, guid: a7f0447c51be8e4499f7754249b609f5, type: 3}
+  - MousePosition: {fileID: 1437703668932777159, guid: a7f0447c51be8e4499f7754249b609f5, type: 3}
+  - SnapItem: {fileID: -4704603465907562215, guid: a7f0447c51be8e4499f7754249b609f5, type: 3}
+  - EditItem: {fileID: 8215399362373910080, guid: a7f0447c51be8e4499f7754249b609f5, type: 3}
+  - DragItem: {fileID: -2428519981496608355, guid: a7f0447c51be8e4499f7754249b609f5, type: 3}
+  - FollowItem: {fileID: -2967077453156658487, guid: a7f0447c51be8e4499f7754249b609f5, type: 3}
+  - Cancel: {fileID: 6575673957253812127, guid: a7f0447c51be8e4499f7754249b609f5, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
