@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Firebase.Auth;
@@ -16,6 +15,7 @@ namespace Core
         public Button ButtonLogin;
         public Button ButtonLogOut;
 
+        [SerializeField] GameObject PanelNotifyLogOut;
         [SerializeField] RectTransform _panelContents;
         [SerializeField] AudioMixer _audioMixer;
         [SerializeField] bool _enableMenuSettings;
@@ -23,44 +23,70 @@ namespace Core
         [SerializeField] TMP_Dropdown _dropDownGraphics;
         [SerializeField] Toggle _toggleFullScreen;
         [SerializeField] Slider _sliderVolume;
-
         [SerializeField] Resolution[] _resolutions; // Array to store available screen resolutions
 
         bool isFullScreen;
-        GameSettings m_GameSettings;
-        EmailPassLogin m_EmailPassLogin;
-        User m_User;
-        UIEmailPassLogin m_UIEmailPassLogin;
+        GameSettings gameSettings; 
+        User user;
+        UIEmailPassLogin uIEmailPassLogin;
+        DataManager dataManager;
+        EmailPassLogin emailPassLogin;
+        SceneLoader sceneManager;
+        FirebaseDataSaver firebaseDataSaver;
 
         private void Start()
         {
-            m_GameSettings = FindFirstObjectByType<GameSettings>();
-            m_EmailPassLogin = FindFirstObjectByType<EmailPassLogin>();
-            m_User = FindFirstObjectByType<User>();
-            m_UIEmailPassLogin = FindFirstObjectByType<UIEmailPassLogin>();
+            sceneManager = FindFirstObjectByType<SceneLoader>();
+            firebaseDataSaver = FindFirstObjectByType<FirebaseDataSaver>();
+            emailPassLogin = FindFirstObjectByType<EmailPassLogin>();
+            dataManager = FindFirstObjectByType<DataManager>();
+            gameSettings = FindFirstObjectByType<GameSettings>();
+            emailPassLogin = FindFirstObjectByType<EmailPassLogin>();
+            user = FindFirstObjectByType<User>();
+            uIEmailPassLogin = FindFirstObjectByType<UIEmailPassLogin>();
 
             _enableMenuSettings = false;
             SetDropDownResolution();
 
             _panelContents.gameObject.SetActive(false);
 
-            m_GameSettings.ActionDataChange += OnGameSettingChange;
-            m_User.OnDataChange += OnUserDataChange;
+            gameSettings.ActionDataChange += OnGameSettingChange;
+            user.OnDataChange += OnUserDataChange;
 
             // Set value 
-            OnUserDataChange(m_User);
-            OnGameSettingChange(m_GameSettings);
+            OnUserDataChange(user);
+            OnGameSettingChange(gameSettings);
 
             // listen button
             if (ButtonLogOut)
             {
-                ButtonLogOut.onClick.AddListener(OnLogOut);
+                ButtonLogOut.onClick.AddListener(OnClickLogOut);
             }
+
+            // catch event 
+            emailPassLogin.OnLogIn += OnClickLogin;
+            emailPassLogin.OnSignUp += OnClickSignUp;
         }
 
-        private void OnLogOut()
+        private void OnClickLogOut()
         {
-            m_UIEmailPassLogin.LogOutAccount();
+            user.UserID = "";
+            PanelNotifyLogOut.SetActive(true);
+            emailPassLogin.SignOut();
+            dataManager.SaveData();
+        }
+
+        // do warning this data to be destroy
+        private void OnClickLogin(Task<AuthResult> task)
+        {
+            firebaseDataSaver.LoadDataFn(task.Result.User.UserId); // tải data trên firebase về đè lênh data local
+            sceneManager.LoadGameScene(GameScene.Loading);
+        }
+
+        private void OnClickSignUp(Task<AuthResult> task)
+        {
+            // create user id in database
+            firebaseDataSaver.SaveDataFn(task.Result.User.UserId);
         }
 
         private void OnUserDataChange(User user)
@@ -83,7 +109,6 @@ namespace Core
         {
             isFullScreen = gameSettings.IsFullScreen;
 
-            // Load UI 
             _toggleFullScreen.isOn = gameSettings.IsFullScreen;
             _sliderVolume.value = gameSettings.MasterVolume;
             _dropDownGraphics.value = gameSettings.QualityIndex;
@@ -119,25 +144,25 @@ namespace Core
         public void SetResolutionCurrent(int current)
         {
             // Screen.SetResolution(_resolutions[current].width, _resolutions[current].height, _isFullScreen);
-            m_GameSettings.CurrentResolutionIndex = current;
+            gameSettings.CurrentResolutionIndex = current;
         }
 
         public void SetVolume(float volume)
         {
             _audioMixer.SetFloat("volume", volume);
-            m_GameSettings.MasterVolume = volume;
+            gameSettings.MasterVolume = volume;
         }
 
         public void SetQuality(int qualityIndex)
         {
             QualitySettings.SetQualityLevel(qualityIndex);
-            m_GameSettings.QualityIndex = qualityIndex;
+            gameSettings.QualityIndex = qualityIndex;
         }
 
         public void SetFullscreen(bool isFullscreen)
         {
             Screen.fullScreen = isFullscreen;
-            m_GameSettings.IsFullScreen = isFullscreen;
+            gameSettings.IsFullScreen = isFullscreen;
         }
 
 

@@ -18,7 +18,12 @@ public class UIPlayerProfile : MonoBehaviour
 
         SetVariables(m_User);
     }
-    
+
+    private void FixedUpdate()
+    {
+        m_User.UserName = InfUserName.text;
+    }
+
     private void SetVariables(User user)
     {
         InfUserName.text = user.UserName;

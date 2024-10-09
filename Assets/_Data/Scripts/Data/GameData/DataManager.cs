@@ -7,36 +7,53 @@ using System.Text;
 using System.Xml;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
+using System.Threading.Tasks;
+using Firebase.Auth;
 
 /// <summary> Là GAMEDATA, chuỗi hoá và mã hoá lưu được nhiều loại dữ liệu của đối tượng </summary>
 public class DataManager : Singleton<DataManager>
 {
     [Header("DATA MANAGER")]
-    public GameData GameData; 
+    [SerializeField] private GameData gameData;
 
-    [SerializeField] string _saveName = "/gameData.save";
-    [SerializeField] string _filePath; 
-    [SerializeField] bool _serialize;
-    [SerializeField] bool _usingXML;
-    [SerializeField] bool _encrypt;
+    [SerializeField] string saveName = "/gameData.save";
+    [SerializeField] string filePath;
+    [SerializeField] bool serialize;
+    [SerializeField] bool usingXML;
+    [SerializeField] bool encrypt;
 
-    public bool IsSaveFileExists {get; private set; } 
+    FirebaseDataSaver firebaseDataSaver;
 
+    public bool IsSaveFileExists { get; private set; }
+    public GameData GameData { get => gameData; set => gameData = value; }
+    public string PlayerID
+    {
+        get
+        {
+            return PlayerPrefs.GetString("PlayerID");
+        }
+        set
+        {
+            PlayerPrefs.SetString("PlayerID", value);
+            GameData._playerProfileData.UserID = value;
+        }
+    }
+
+    public static UnityAction<GameData> ActionSetData;
     public static UnityAction ActionSaveData;
     public static UnityAction ActionGameSaved;
-    public static UnityAction<GameData> ActionSetData;
     public static UnityAction ActionDataLoad;
     public static UnityAction ActionDataLoaded;
 
     protected override void Awake()
     {
         base.Awake();
+        firebaseDataSaver = FindFirstObjectByType<FirebaseDataSaver>();
 
         SetDontDestroyOnLoad(true);
 
-        _filePath = Application.persistentDataPath + _saveName;
-
-        IsSaveFileExists = File.Exists(_filePath);
+        filePath = Application.persistentDataPath + saveName;
+        IsSaveFileExists = File.Exists(filePath);
 
         if (!IsSaveFileExists)
         {
@@ -46,22 +63,7 @@ public class DataManager : Singleton<DataManager>
         {
             LoadFileData();
         }
-    }
-
-    private void OnEnable()
-    {
-        SceneManager.sceneLoaded += (scene, mode) =>
-        {
-            InitializeData();
-        };
-    }
-
-    private void OnDisable()
-    {
-        SceneManager.sceneLoaded -= (scene, mode) =>
-        {
-            InitializeData();
-        };
+        SceneManager.sceneLoaded += (scene, mode) => InitializeData();
     }
 
     /// <summary> Kiểm tra xem trò chơi có phải là trò chơi mới hay không </summary>
@@ -79,16 +81,24 @@ public class DataManager : Singleton<DataManager>
     public void OnStartNewGame()
     {
         GameData._gamePlayData = new();
-        File.WriteAllText(_filePath, SerializeAndEncrypt(GameData));
+        File.WriteAllText(filePath, SerializeAndEncrypt(GameData));
     }
 
     public void SaveData()
     {
         ActionSaveData?.Invoke();
-        File.WriteAllText(_filePath, SerializeAndEncrypt(GameData)); // luu _gameData
-        Debug.Log("Game data saved to: " + _filePath);
+        SaveGameData();
+        
+        // save to firebase
+        firebaseDataSaver.SaveDataFn(PlayerID);
+    }
+
+    public void SaveGameData()
+    {
+        File.WriteAllText(filePath, SerializeAndEncrypt(GameData)); // luu _gameData
+        Debug.Log("Game data saved to: " + filePath);
+
         GameData._gamePlayData.IsInitialized = true;
-        ActionGameSaved?.Invoke();
     }
 
     public void InitializeData()
@@ -100,17 +110,16 @@ public class DataManager : Singleton<DataManager>
 
     public void LoadFileData()
     {
-        if (File.Exists(_filePath))
+        if (File.Exists(filePath))
         {
-            string stringData = File.ReadAllText(_filePath);
-
+            string stringData = File.ReadAllText(filePath);
             GameData = Deserialized(stringData);
             InitializeData();
-            Debug.Log("Game data loaded from: " + _filePath);
+            Debug.Log("Game data loaded from: " + filePath);
         }
         else
         {
-            Debug.LogWarning("Save file not found in: " + _filePath);
+            Debug.LogWarning("Save file not found in: " + filePath);
         }
     }
 
@@ -119,15 +128,15 @@ public class DataManager : Singleton<DataManager>
     {
         string stringData = "";
 
-        if (_serialize)
+        if (serialize)
         {
-            if (_usingXML)
+            if (usingXML)
                 stringData = Utils.SerializeXML<GameData>(gameData);
             else
                 stringData = JsonUtility.ToJson(gameData);
         }
 
-        if (_encrypt)
+        if (encrypt)
         {
             stringData = Utils.EncryptAES(stringData);
         }
@@ -139,7 +148,7 @@ public class DataManager : Singleton<DataManager>
     private GameData Deserialized(string stringData)
     {
         // giải mã hoá
-        if (_encrypt)
+        if (encrypt)
         {
             stringData = Utils.DecryptAES(stringData);
         }
@@ -147,9 +156,9 @@ public class DataManager : Singleton<DataManager>
         GameData gameData = new GameData();
 
         // đọc tuần tự hoá json hoặc xml
-        if (_serialize)
+        if (serialize)
         {
-            if (_usingXML)
+            if (usingXML)
                 gameData = Utils.DeserializeXML<GameData>(stringData);
             else
                 gameData = JsonUtility.FromJson<GameData>(stringData);
@@ -157,91 +166,89 @@ public class DataManager : Singleton<DataManager>
         return gameData;
     }
 
-
-}
-
-public static class Utils
-{
-    public static string SerializeXML<T>(System.Object inputData)
+    public static class Utils
     {
-        XmlSerializer serializer = new XmlSerializer(typeof(T));
-        using (var sww = new StringWriter())
+        public static string SerializeXML<T>(System.Object inputData)
         {
-            using (XmlWriter writer = XmlWriter.Create(sww))
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            using (var sww = new StringWriter())
             {
-                serializer.Serialize(writer, inputData);
-                return sww.ToString();
+                using (XmlWriter writer = XmlWriter.Create(sww))
+                {
+                    serializer.Serialize(writer, inputData);
+                    return sww.ToString();
+                }
             }
         }
-    }
 
-    public static T DeserializeXML<T>(string data)
-    {
-        XmlSerializer serializer = new XmlSerializer(typeof(T));
-        using (var sww = new StringReader(data))
+        public static T DeserializeXML<T>(string data)
         {
-            using (XmlReader reader = XmlReader.Create(sww))
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
+            using (var sww = new StringReader(data))
             {
-                return (T)serializer.Deserialize(reader);
+                using (XmlReader reader = XmlReader.Create(sww))
+                {
+                    return (T)serializer.Deserialize(reader);
+                }
             }
         }
-    }
 
-    static byte[] ivBytes = new byte[16]; // Generate the iv randomly and send it along with the data, to later parse out
-    static byte[] keyBytes = new byte[16]; // Generate the key using a deterministic algorithm rather than storing here as a variable
+        static byte[] ivBytes = new byte[16]; // Generate the iv randomly and send it along with the data, to later parse out
+        static byte[] keyBytes = new byte[16]; // Generate the key using a deterministic algorithm rather than storing here as a variable
 
-    static void GenerateIVBytes()
-    {
-        System.Random rnd = new System.Random();
-        rnd.NextBytes(ivBytes);
-    }
+        static void GenerateIVBytes()
+        {
+            System.Random rnd = new System.Random();
+            rnd.NextBytes(ivBytes);
+        }
 
-    const string nameOfGame = "HieuDev";
-    static void GenerateKeyBytes()
-    {
-        int sum = 0;
-        foreach (char curChar in nameOfGame)
-            sum += curChar;
+        const string nameOfGame = "HieuDev";
+        static void GenerateKeyBytes()
+        {
+            int sum = 0;
+            foreach (char curChar in nameOfGame)
+                sum += curChar;
 
-        System.Random rnd = new System.Random(sum);
-        rnd.NextBytes(keyBytes);
-    }
+            System.Random rnd = new System.Random(sum);
+            rnd.NextBytes(keyBytes);
+        }
 
-    public static string EncryptAES(string data)
-    {
-        GenerateIVBytes();
-        GenerateKeyBytes();
+        public static string EncryptAES(string data)
+        {
+            GenerateIVBytes();
+            GenerateKeyBytes();
 
-        SymmetricAlgorithm algorithm = Aes.Create();
-        ICryptoTransform transform = algorithm.CreateEncryptor(keyBytes, ivBytes);
-        byte[] inputBuffer = Encoding.Unicode.GetBytes(data);
-        byte[] outputBuffer = transform.TransformFinalBlock(inputBuffer, 0, inputBuffer.Length);
+            SymmetricAlgorithm algorithm = Aes.Create();
+            ICryptoTransform transform = algorithm.CreateEncryptor(keyBytes, ivBytes);
+            byte[] inputBuffer = Encoding.Unicode.GetBytes(data);
+            byte[] outputBuffer = transform.TransformFinalBlock(inputBuffer, 0, inputBuffer.Length);
 
-        string ivString = Encoding.Unicode.GetString(ivBytes);
-        string encryptedString = Convert.ToBase64String(outputBuffer);
+            string ivString = Encoding.Unicode.GetString(ivBytes);
+            string encryptedString = Convert.ToBase64String(outputBuffer);
 
-        return ivString + encryptedString;
-    }
+            return ivString + encryptedString;
+        }
 
-    public static string DecryptAES(this string text)
-    {
-        GenerateIVBytes();
-        GenerateKeyBytes();
+        public static string DecryptAES(string text)
+        {
+            GenerateIVBytes();
+            GenerateKeyBytes();
 
-        int endOfIVBytes = ivBytes.Length / 2;  // Half length because unicode characters are 64-bit width
+            int endOfIVBytes = ivBytes.Length / 2;  // Half length because unicode characters are 64-bit width
 
-        string ivString = text.Substring(0, endOfIVBytes);
-        byte[] extractedivBytes = Encoding.Unicode.GetBytes(ivString);
+            string ivString = text.Substring(0, endOfIVBytes);
+            byte[] extractedivBytes = Encoding.Unicode.GetBytes(ivString);
 
-        string encryptedString = text.Substring(endOfIVBytes);
+            string encryptedString = text.Substring(endOfIVBytes);
 
-        SymmetricAlgorithm algorithm = Aes.Create();
-        ICryptoTransform transform = algorithm.CreateDecryptor(keyBytes, extractedivBytes);
-        byte[] inputBuffer = Convert.FromBase64String(encryptedString);
-        byte[] outputBuffer = transform.TransformFinalBlock(inputBuffer, 0, inputBuffer.Length);
+            SymmetricAlgorithm algorithm = Aes.Create();
+            ICryptoTransform transform = algorithm.CreateDecryptor(keyBytes, extractedivBytes);
+            byte[] inputBuffer = Convert.FromBase64String(encryptedString);
+            byte[] outputBuffer = transform.TransformFinalBlock(inputBuffer, 0, inputBuffer.Length);
 
-        string decryptedString = Encoding.Unicode.GetString(outputBuffer);
+            string decryptedString = Encoding.Unicode.GetString(outputBuffer);
 
-        return decryptedString;
+            return decryptedString;
+        }
     }
 }

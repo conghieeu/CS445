@@ -12,9 +12,9 @@ public class GameSettings : GameBehavior, ISaveData
     [SerializeField] int _currentResolutionIndex;
     [SerializeField] Quaternion _camRotation;
 
-    GameSettingsData _gameSettingsData;
+    public GameSettingsData GameSettingsData;
     CameraControl _cameraControl;
-    
+
     public UnityAction<GameSettings> ActionDataChange;
 
     public bool IsFullScreen { get => _isFullScreen; set => _isFullScreen = value; }
@@ -22,7 +22,6 @@ public class GameSettings : GameBehavior, ISaveData
     public float MasterVolume { get => _masterVolume; set => _masterVolume = value; }
     public int CurrentResolutionIndex { get => _currentResolutionIndex; set => _currentResolutionIndex = value; }
     public Quaternion CamRotation { get => _camRotation; set => _camRotation = value; }
-
 
     private void Awake()
     {
@@ -39,7 +38,7 @@ public class GameSettings : GameBehavior, ISaveData
             MasterVolume = gsData.MasterVolume;
             CurrentResolutionIndex = gsData.CurrentResolutionIndex;
             CamRotation = gsData.CamRotation;
-            _gameSettingsData = gsData;
+            GameSettingsData = gsData;
         }
     }
 
@@ -60,7 +59,7 @@ public class GameSettings : GameBehavior, ISaveData
             QualityIndex,
             MasterVolume,
             CurrentResolutionIndex,
-            _cameraControl ? _cameraControl.transform.rotation : _gameSettingsData.CamRotation);
+            _cameraControl ? _cameraControl.transform.rotation : GameSettingsData.CamRotation);
         return (T)(object)(data);
     }
     #endregion

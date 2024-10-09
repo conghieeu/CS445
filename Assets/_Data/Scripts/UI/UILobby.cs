@@ -8,11 +8,11 @@ public class UILobby : GameBehavior
     [SerializeField] Button _btnThoatGame; // Thêm biến _btnThoatGame
 
     DataManager dataManager => DataManager.Instance;
-    ScenesManager scenesManager;
+    SceneLoader scenesManager;
 
     private void Awake()
     {
-        scenesManager = FindFirstObjectByType<ScenesManager>();
+        scenesManager = FindFirstObjectByType<SceneLoader>();
     }
 
     private void Start()
@@ -26,7 +26,7 @@ public class UILobby : GameBehavior
     public void OnClickNewGame()
     {
         dataManager.OnStartNewGame();
-        scenesManager.LoadSceneDemo();
+        scenesManager.LoadGameScene(GameScene.Demo);
     }
 
     public void OnClickThoatGame() // Thêm hàm OnClickThoatGame
