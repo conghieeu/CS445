@@ -17,26 +17,24 @@ public class FirebaseDataSaver : MonoBehaviour
         m_User = FindFirstObjectByType<User>();
 
         dbRef = FirebaseDatabase.DefaultInstance.RootReference;
-
-        DataManager.ActionGameSaved += SaveDataFn;
     }
 
-    public void SaveDataFn()
+    public void SaveDataFn(string UserID)
     {
-        if(this == null)  return;
+        if(this == null || UserID == "")  return;
         
         string json = JsonUtility.ToJson(GameData);
-        dbRef.Child("users").Child(GetUserID()).SetRawJsonValueAsync(json);
+        dbRef.Child("users").Child(UserID).SetRawJsonValueAsync(json);
     }
 
-    public void LoadDataFn()
+    public void LoadDataFn(string UserID)
     {
-        StartCoroutine(LoadDataEnum());
+        StartCoroutine(LoadDataEnum(UserID));
     }
 
-    IEnumerator LoadDataEnum()
+    IEnumerator LoadDataEnum(string UserID)
     {
-        var serverData = dbRef.Child("users").Child(GetUserID()).GetValueAsync();
+        var serverData = dbRef.Child("users").Child(UserID).GetValueAsync();
         yield return new WaitUntil(predicate: () => serverData.IsCompleted);
 
         print("process is complete");
@@ -49,15 +47,11 @@ public class FirebaseDataSaver : MonoBehaviour
             print("server data found");
 
             m_DataManager.GameData = JsonUtility.FromJson<GameData>(jsonData);
+            m_DataManager.SaveGameData();
         }
         else
         {
             print("no data found");
         }
-    }
-
-    public string GetUserID()
-    {
-        return m_User.UserID;
     }
 }

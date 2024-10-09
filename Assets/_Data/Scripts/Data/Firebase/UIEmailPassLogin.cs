@@ -27,38 +27,29 @@ public class UIEmailPassLogin : GameBehavior
     public GameObject PanelLoginSuccess;
     public GameObject PanelSignUpSuccess;
     public GameObject PanelNotifyAccountExist;
-    public GameObject PanelNotifyLogOutSuccess;
+    public GameObject PanelNotifyAccountNotExistToLogin;
 
     EmailPassLogin m_EmailPassLogin;
+    DataManager m_DataManager;
 
     private void Start()
     {
         m_EmailPassLogin = FindFirstObjectByType<EmailPassLogin>();
+        m_DataManager = FindFirstObjectByType<DataManager>();
 
         // button listener
-        BtnLogin.onClick.AddListener(OnLogin);
-        BtnSignUp.onClick.AddListener(OnSignUp);
+        BtnLogin.onClick.AddListener(OnClickLogin);
+        BtnSignUp.onClick.AddListener(OnClickSignUp);
 
-        // băt sự kiện lấy kết quả của firebase
+        // băt sự kiện lấy kết quả của auth firebase  
+        m_EmailPassLogin.OnEmailExist += OnEmailExist;
+        m_EmailPassLogin.OnLogIn += OnLogIn;
+        m_EmailPassLogin.OnSignUp += OnSignUp;
         m_EmailPassLogin.OnAuthResult += OnAuthResult;
-        m_EmailPassLogin.OnAccountExists += OnAccountExist;
     }
 
-    public void LogOutAccount()
-    {
-        m_EmailPassLogin.LogOutAccount();
-        PanelNotifyLogOutSuccess.SetActive(true);
-    }
 
-    private void OnAccountExist(bool arg0)
-    {
-        if (arg0)
-        {
-            PanelNotifyAccountExist.SetActive(true);
-        }
-    }
-
-    private void OnLogin()
+    private void OnClickLogin()
     {
         if (TryFirebaseConnection())
         {
@@ -66,7 +57,7 @@ public class UIEmailPassLogin : GameBehavior
         }
     }
 
-    private void OnSignUp()
+    private void OnClickSignUp()
     {
         if (TryFirebaseConnection())
         {
@@ -87,24 +78,39 @@ public class UIEmailPassLogin : GameBehavior
         }
     }
 
-    private void OnAuthResult(Task<AuthResult> task)
-    {
-        PanelLoading.SetActive(true);
-
-        if (task.IsCanceled || task.IsFaulted) return;
-
-        if (task.Result.User.IsEmailVerified)
-        {
-            PanelLoading.SetActive(false);
-            PanelSignUpSuccess.SetActive(true);
-            return;
-        }
-
-        // login success
-        Debug.Log($"Login success");
-        PanelLoading.SetActive(false);
-        PanelLoginSuccess.SetActive(true);
-
+    /// <summary> Khi có phản hồi từ EmailPassLogin </summary>
+    private void OnEmailExist(bool isExist)
+    { 
+        if (PanelNotifyAccountExist) PanelNotifyAccountExist.SetActive(isExist);
     }
 
+    private void OnSignUp(Task<AuthResult> task)
+    {
+        if (task.Result.User.IsEmailVerified) // the account is exist
+        {
+            PanelNotifyAccountExist.SetActive(true);
+        }
+        else
+        {
+            PanelSignUpSuccess.SetActive(true);
+        }
+    }
+
+    private void OnLogIn(Task<AuthResult> task)
+    {
+        if (task.Result.User != null) // sign in successful
+        {
+            PanelLoginSuccess.SetActive(true);
+        }
+    }
+
+
+    private void OnAuthResult(Task<AuthResult> task)
+    {
+        // login fail
+        if (task.IsFaulted)
+        {
+            PanelNotifyAccountNotExistToLogin.SetActive(true);
+        }
+    }
 }

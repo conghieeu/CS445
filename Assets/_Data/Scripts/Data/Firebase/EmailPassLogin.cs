@@ -7,35 +7,27 @@ using Firebase;
 using Firebase.Database;
 using UnityEngine.Events;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
 
 public class EmailPassLogin : GameBehavior
 {
     [Header("Email Pass Login")]
     DatabaseReference connectedRef;
-    User m_User;
-
-    public UnityAction<bool> OnInternetConnection;
-    public UnityAction<bool> OnAccountExists;
-    public UnityAction<System.Threading.Tasks.Task<AuthResult>> OnAuthResult; // sign up vs log in
 
     public bool IsFirebaseConnection { get; private set; }
+    public UnityAction<Task<AuthResult>> OnAuthResult;
+    public UnityAction<Task<AuthResult>> OnLogIn;
+    public UnityAction<Task<AuthResult>> OnSignUp;
+    public UnityAction<bool> OnEmailExist;
 
-    void Start()
+    private void Start()
     {
-        m_User = FindFirstObjectByType<User>();
-
         // Trỏ đến nút đặc biệt `.info/connected`
         connectedRef = FirebaseDatabase.DefaultInstance.GetReference(".info/connected");
 
         // Lắng nghe thay đổi trạng thái kết nối với Firebase
         connectedRef.ValueChanged += HandleFirebaseConnectionChanged;
-
-        ResetPassword("conghieu2xgamer@gmail.com");
-    }
-
-    public void LogOutAccount()
-    {
-        m_User.UserID = "";
     }
 
     private void HandleFirebaseConnectionChanged(object sender, ValueChangedEventArgs args)
@@ -58,24 +50,22 @@ public class EmailPassLogin : GameBehavior
         }
     }
 
-    bool CheckInternetConnection()
-    {
-        bool isConnectedInternet = Application.internetReachability != NetworkReachability.NotReachable;
-        OnInternetConnection?.Invoke(isConnectedInternet);
+    // bool CheckInternetConnection()
+    // {
+    //     bool isConnectedInternet = Application.internetReachability != NetworkReachability.NotReachable;
+    //     OnInternetConnection?.Invoke(isConnectedInternet);
 
-        return isConnectedInternet;
-    }
+    //     return isConnectedInternet;
+    // }
 
     public void SignUp(string email, string password)
     {
         FirebaseAuth auth = FirebaseAuth.DefaultInstance;
-        bool isAccountExists = true;
+        OnEmailExist?.Invoke(true);
 
-        // Tiếp tục tạo tài khoản nếu email chưa được đăng ký
+        // tạo tài khoản
         auth.CreateUserWithEmailAndPasswordAsync(email, password).ContinueWithOnMainThread(createTask =>
         {
-            OnAuthResult?.Invoke(createTask);
-
             if (createTask.IsCanceled)
             {
                 In($"Error: CreateUserWithEmailAndPasswordAsync was canceled.");
@@ -87,15 +77,16 @@ public class EmailPassLogin : GameBehavior
                 return;
             }
 
+            OnEmailExist?.Invoke(false);
+            OnSignUp?.Invoke(createTask);
+
             AuthResult result = createTask.Result;
             Debug.LogFormat("Firebase user created successfully: {0} ({1})", result.User.DisplayName, result.User.UserId);
-
-            m_User.UserID = result.User.UserId;
-
             if (result.User.IsEmailVerified)
             {
+
                 In($"Sign up Successful");
-                isAccountExists = false;
+                return;
             }
             else
             {
@@ -103,8 +94,13 @@ public class EmailPassLogin : GameBehavior
                 StartCoroutine(SendEmailForVerificationAsync());
             }
         });
+    }
 
-        OnAccountExists?.Invoke(isAccountExists);
+    public void SignOut()
+    {
+        FirebaseAuth auth = FirebaseAuth.DefaultInstance;
+        auth.SignOut();
+        Debug.Log("User signed out successfully.");
     }
 
     public void Login(string email, string password)
@@ -124,13 +120,13 @@ public class EmailPassLogin : GameBehavior
             if (task.IsFaulted)
             {
                 Debug.LogError("SignInAndRetrieveDataWithCredentialAsync encountered an error: " + task.Exception);
+
                 return;
             }
 
+            OnLogIn?.Invoke(task);
             AuthResult result = task.Result;
             Debug.LogFormat("User signed in successfully: {0} ({1})", result.User.DisplayName, result.User.UserId);
-
-            m_User.UserID = result.User.UserId;
         });
     }
 
