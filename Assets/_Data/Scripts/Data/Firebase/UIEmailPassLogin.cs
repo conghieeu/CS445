@@ -80,31 +80,20 @@ public class UIEmailPassLogin : GameBehavior
 
     /// <summary> Khi có phản hồi từ EmailPassLogin </summary>
     private void OnEmailExist(bool isExist)
-    { 
+    {
         if (PanelNotifyAccountExist) PanelNotifyAccountExist.SetActive(isExist);
     }
 
     private void OnSignUp(Task<AuthResult> task)
     {
-        if (task.Result.User.IsEmailVerified) // the account is exist
-        {
-            PanelNotifyAccountExist.SetActive(true);
-        }
-        else
-        {
-            PanelSignUpSuccess.SetActive(true);
-        }
+        PanelSignUpSuccess.SetActive(true);
     }
 
     private void OnLogIn(Task<AuthResult> task)
     {
-        if (task.Result.User != null) // sign in successful
-        {
-            PanelLoginSuccess.SetActive(true);
-        }
+        PanelLoginSuccess.SetActive(true);
     }
-
-
+    
     private void OnAuthResult(Task<AuthResult> task)
     {
         // login fail

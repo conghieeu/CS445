@@ -103,6 +103,15 @@ public class GameSettingsData
     [SerializeField] int _currentResolutionIndex;
     [SerializeField] Quaternion _camRotation;
 
+    public GameSettingsData()
+    {
+        IsFullScreen = new();
+        QualityIndex = new();
+        MasterVolume = new();
+        CurrentResolutionIndex = new();
+        CamRotation = new();
+    }
+
     public GameSettingsData(bool isFullScreen, int qualityIndex, float masterVolume, int currentResolutionIndex, Quaternion camRotation)
     {
         IsFullScreen = isFullScreen;
@@ -152,13 +161,21 @@ public class PlayerProfileData
     public float HighestMoney;
     public float PlayTime;
 
+        public PlayerProfileData()
+    {
+        UserID = "";
+        UserName = "";
+        HighestMoney = new();
+        PlayTime = new();
+    }
+
     public PlayerProfileData(string userId, string userName, float highestMoney, float playTime)
     {
         UserID = userId;
-        UserName = userName;    
+        UserName = userName;
         HighestMoney = highestMoney;
         PlayTime = playTime;
-    } 
+    }
 }
 
 [Serializable]
@@ -167,4 +184,11 @@ public class GameData
     public PlayerProfileData _playerProfileData;
     public GameSettingsData _gameSettingsData;
     public GamePlayData _gamePlayData;
+
+    public GameData()
+    {
+        _playerProfileData = new PlayerProfileData();
+        _gameSettingsData = new GameSettingsData();
+        _gamePlayData = null;
+    }
 }

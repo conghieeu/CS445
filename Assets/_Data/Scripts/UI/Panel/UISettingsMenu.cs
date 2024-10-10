@@ -26,7 +26,7 @@ namespace Core
         [SerializeField] Resolution[] _resolutions; // Array to store available screen resolutions
 
         bool isFullScreen;
-        GameSettings gameSettings; 
+        GameSettings gameSettings;
         User user;
         UIEmailPassLogin uIEmailPassLogin;
         DataManager dataManager;
@@ -62,31 +62,12 @@ namespace Core
             {
                 ButtonLogOut.onClick.AddListener(OnClickLogOut);
             }
-
-            // catch event 
-            emailPassLogin.OnLogIn += OnClickLogin;
-            emailPassLogin.OnSignUp += OnClickSignUp;
         }
 
         private void OnClickLogOut()
         {
-            user.UserID = "";
             PanelNotifyLogOut.SetActive(true);
             emailPassLogin.SignOut();
-            dataManager.SaveData();
-        }
-
-        // do warning this data to be destroy
-        private void OnClickLogin(Task<AuthResult> task)
-        {
-            firebaseDataSaver.LoadDataFn(task.Result.User.UserId); // tải data trên firebase về đè lênh data local
-            sceneManager.LoadGameScene(GameScene.Loading);
-        }
-
-        private void OnClickSignUp(Task<AuthResult> task)
-        {
-            // create user id in database
-            firebaseDataSaver.SaveDataFn(task.Result.User.UserId);
         }
 
         private void OnUserDataChange(User user)
