@@ -95,6 +95,9 @@ namespace CuaHang
             {
                 PlayerData playerData = gamePlayData.PlayerData;
                 base.SetVariables<PlayerData, object>(playerData);
+                
+                if(playerData == null) return;
+                
                 Money = playerData.CurrentMoney;
                 Reputation = playerData.Reputation;
             }

@@ -14,23 +14,9 @@ public class SceneLoader : GameBehavior
 
     public void LoadGameScene(GameScene gameScene)
     {
+        Debug.Log($"Load scene {gameScene}");
         StartCoroutine(LoadSceneByGameScene(gameScene));
-    }
-    
-    /// <summary> dùng khi đăng xuất </summary>
-    public void RestartGame()
-    {
-        // Đặt lại các biến toàn cục hoặc singleton nếu cần
-        ResetGlobalState();
-
-        // Tải lại cảnh khởi đầu, giả sử cảnh khởi đầu có tên là "MainScene"
-        LoadGameScene(GameScene.Loading);
-    }
-
-    private void ResetGlobalState()
-    {
-        throw new NotImplementedException();
-    }
+    } 
 
     // delay để hiện ứng chuyển scene chạy
     IEnumerator LoadSceneByGameScene(GameScene gameScene)

@@ -14,6 +14,7 @@ using Firebase.Auth;
 public class DataManager : Singleton<DataManager>
 {
     [Header("DATA MANAGER")]
+    public bool IsResetData;
     [SerializeField] private GameData gameData;
 
     [SerializeField] string saveName = "/gameData.save";
@@ -25,16 +26,23 @@ public class DataManager : Singleton<DataManager>
     FirebaseDataSaver firebaseDataSaver;
 
     public bool IsSaveFileExists { get; private set; }
-    public GameData GameData { get => gameData; set => gameData = value; }
+    public GameData GameData
+    {
+        get => gameData;
+        set
+        {
+            gameData = value;
+        }
+    }
+
     public string PlayerID
     {
         get
         {
-            return PlayerPrefs.GetString("PlayerID");
+            return GameData._playerProfileData.UserID;
         }
         set
         {
-            PlayerPrefs.SetString("PlayerID", value);
             GameData._playerProfileData.UserID = value;
         }
     }
@@ -69,8 +77,15 @@ public class DataManager : Singleton<DataManager>
     /// <summary> Kiểm tra xem trò chơi có phải là trò chơi mới hay không </summary>
     public bool IsNewGame()
     {
-        if (GameData._gamePlayData != null && GameData._gamePlayData.IsInitialized) return false;
-        return true;
+        if (GameData._gamePlayData == null || GameData._gamePlayData.IsInitialized == false) return true;
+        return false;
+    }
+
+    public void ResetGame()
+    {
+        IsResetData = true;
+        InitializeData();
+        SaveData();
     }
 
     private void OnApplicationQuit()
@@ -88,7 +103,7 @@ public class DataManager : Singleton<DataManager>
     {
         ActionSaveData?.Invoke();
         SaveGameData();
-        
+
         // save to firebase
         firebaseDataSaver.SaveDataFn(PlayerID);
     }
@@ -98,11 +113,18 @@ public class DataManager : Singleton<DataManager>
         File.WriteAllText(filePath, SerializeAndEncrypt(GameData)); // luu _gameData
         Debug.Log("Game data saved to: " + filePath);
 
-        GameData._gamePlayData.IsInitialized = true;
+        if (GameData._gamePlayData != null) GameData._gamePlayData.IsInitialized = true;
     }
 
+    /// <summary> keu goi cac thanh phan di cap nhap </summary>
     public void InitializeData()
     {
+        if (IsResetData)
+        {
+            GameData = new GameData();
+            IsResetData = false;
+        }
+
         ActionSetData?.Invoke(GameData);
         ActionDataLoad?.Invoke();
         ActionDataLoaded?.Invoke();

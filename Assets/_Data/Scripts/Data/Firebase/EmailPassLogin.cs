@@ -9,11 +9,14 @@ using UnityEngine.Events;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class EmailPassLogin : GameBehavior
 {
     [Header("Email Pass Login")]
     DatabaseReference connectedRef;
+    DataManager dataManager;
+    FirebaseDataSaver firebaseDataSaver;
 
     public bool IsFirebaseConnection { get; private set; }
     public UnityAction<Task<AuthResult>> OnAuthResult;
@@ -23,6 +26,9 @@ public class EmailPassLogin : GameBehavior
 
     private void Start()
     {
+        dataManager = GetComponent<DataManager>();
+        firebaseDataSaver = GetComponent<FirebaseDataSaver>();
+
         // Trỏ đến nút đặc biệt `.info/connected`
         connectedRef = FirebaseDatabase.DefaultInstance.GetReference(".info/connected");
 
@@ -64,27 +70,30 @@ public class EmailPassLogin : GameBehavior
         OnEmailExist?.Invoke(true);
 
         // tạo tài khoản
-        auth.CreateUserWithEmailAndPasswordAsync(email, password).ContinueWithOnMainThread(createTask =>
+        auth.CreateUserWithEmailAndPasswordAsync(email, password).ContinueWithOnMainThread(task =>
         {
-            if (createTask.IsCanceled)
+            if (task.IsCanceled)
             {
                 In($"Error: CreateUserWithEmailAndPasswordAsync was canceled.");
                 return;
             }
-            if (createTask.IsFaulted)
+            if (task.IsFaulted)
             {
-                In($"Error: CreateUserWithEmailAndPasswordAsync encountered an error: {createTask.Exception}");
+                In($"Error: CreateUserWithEmailAndPasswordAsync encountered an error: {task.Exception}");
                 return;
             }
 
             OnEmailExist?.Invoke(false);
-            OnSignUp?.Invoke(createTask);
+            OnSignUp?.Invoke(task);
 
-            AuthResult result = createTask.Result;
+            AuthResult result = task.Result;
             Debug.LogFormat("Firebase user created successfully: {0} ({1})", result.User.DisplayName, result.User.UserId);
+
+            // save new account to firebase
+            firebaseDataSaver.SaveDataFn(result.User.UserId);
+
             if (result.User.IsEmailVerified)
             {
-
                 In($"Sign up Successful");
                 return;
             }
@@ -98,9 +107,13 @@ public class EmailPassLogin : GameBehavior
 
     public void SignOut()
     {
+        dataManager = FindFirstObjectByType<DataManager>();
+
+        dataManager.ResetGame();
+        FindFirstObjectByType<SceneLoader>().LoadGameScene(GameScene.Loading);
+
         FirebaseAuth auth = FirebaseAuth.DefaultInstance;
         auth.SignOut();
-        Debug.Log("User signed out successfully.");
     }
 
     public void Login(string email, string password)
@@ -120,13 +133,17 @@ public class EmailPassLogin : GameBehavior
             if (task.IsFaulted)
             {
                 Debug.LogError("SignInAndRetrieveDataWithCredentialAsync encountered an error: " + task.Exception);
-
                 return;
             }
 
-            OnLogIn?.Invoke(task);
             AuthResult result = task.Result;
             Debug.LogFormat("User signed in successfully: {0} ({1})", result.User.DisplayName, result.User.UserId);
+
+            Debug.Log($"LOADING");
+            firebaseDataSaver.LoadDataFn(result.User.UserId); // tải data trên firebase về đè lênh data local 
+            FindFirstObjectByType<SceneLoader>().LoadGameScene(GameScene.Loading);
+
+            OnLogIn?.Invoke(task);
         });
     }
 
@@ -145,7 +162,6 @@ public class EmailPassLogin : GameBehavior
                 Debug.LogError("SendPasswordResetEmailAsync encountered an error: " + task.Exception);
                 return;
             }
-
             Debug.Log("Password reset email sent successfully.");
         });
     }

@@ -21,10 +21,21 @@ public class FirebaseDataSaver : MonoBehaviour
 
     public void SaveDataFn(string UserID)
     {
-        if(this == null || UserID == "")  return;
-        
-        string json = JsonUtility.ToJson(GameData);
-        dbRef.Child("users").Child(UserID).SetRawJsonValueAsync(json);
+        if (UserID != "")
+        {
+            string json = JsonUtility.ToJson(GameData);
+            dbRef.Child("users").Child(UserID).SetRawJsonValueAsync(json);
+        }
+    }
+
+    public void SignUpNewData(string UserID)
+    {
+        if (UserID != "")
+        {
+            GameData newGameData = new GameData();
+            string json = JsonUtility.ToJson(newGameData);
+            dbRef.Child("users").Child(UserID).SetRawJsonValueAsync(json);
+        }
     }
 
     public void LoadDataFn(string UserID)
@@ -37,17 +48,17 @@ public class FirebaseDataSaver : MonoBehaviour
         var serverData = dbRef.Child("users").Child(UserID).GetValueAsync();
         yield return new WaitUntil(predicate: () => serverData.IsCompleted);
 
-        print("process is complete");
-
         DataSnapshot snapshot = serverData.Result;
         string jsonData = snapshot.GetRawJsonValue();
 
         if (jsonData != null)
         {
-            print("server data found");
-
             m_DataManager.GameData = JsonUtility.FromJson<GameData>(jsonData);
-            m_DataManager.SaveGameData();
+            FindFirstObjectByType<User>().UserID = UserID;
+            FindFirstObjectByType<DataManager>().GameData._playerProfileData.UserID = UserID;
+            m_DataManager.PlayerID = UserID;
+            m_DataManager.InitializeData();
+            m_DataManager.SaveData();
         }
         else
         {

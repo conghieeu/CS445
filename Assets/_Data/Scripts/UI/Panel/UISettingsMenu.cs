@@ -26,24 +26,24 @@ namespace Core
         [SerializeField] Resolution[] _resolutions; // Array to store available screen resolutions
 
         bool isFullScreen;
-        GameSettings gameSettings; 
+        GameSettings gameSettings;
         User user;
         UIEmailPassLogin uIEmailPassLogin;
         DataManager dataManager;
         EmailPassLogin emailPassLogin;
         SceneLoader sceneManager;
-        FirebaseDataSaver firebaseDataSaver;
+        GameSystem gameSystem;
 
         private void Start()
         {
             sceneManager = FindFirstObjectByType<SceneLoader>();
-            firebaseDataSaver = FindFirstObjectByType<FirebaseDataSaver>();
             emailPassLogin = FindFirstObjectByType<EmailPassLogin>();
             dataManager = FindFirstObjectByType<DataManager>();
             gameSettings = FindFirstObjectByType<GameSettings>();
             emailPassLogin = FindFirstObjectByType<EmailPassLogin>();
             user = FindFirstObjectByType<User>();
             uIEmailPassLogin = FindFirstObjectByType<UIEmailPassLogin>();
+            gameSettings = FindFirstObjectByType<GameSettings>();
 
             _enableMenuSettings = false;
             SetDropDownResolution();
@@ -62,31 +62,12 @@ namespace Core
             {
                 ButtonLogOut.onClick.AddListener(OnClickLogOut);
             }
-
-            // catch event 
-            emailPassLogin.OnLogIn += OnClickLogin;
-            emailPassLogin.OnSignUp += OnClickSignUp;
         }
 
         private void OnClickLogOut()
         {
-            user.UserID = "";
             PanelNotifyLogOut.SetActive(true);
             emailPassLogin.SignOut();
-            dataManager.SaveData();
-        }
-
-        // do warning this data to be destroy
-        private void OnClickLogin(Task<AuthResult> task)
-        {
-            firebaseDataSaver.LoadDataFn(task.Result.User.UserId); // tải data trên firebase về đè lênh data local
-            sceneManager.LoadGameScene(GameScene.Loading);
-        }
-
-        private void OnClickSignUp(Task<AuthResult> task)
-        {
-            // create user id in database
-            firebaseDataSaver.SaveDataFn(task.Result.User.UserId);
         }
 
         private void OnUserDataChange(User user)
@@ -143,7 +124,11 @@ namespace Core
 
         public void SetResolutionCurrent(int current)
         {
-            // Screen.SetResolution(_resolutions[current].width, _resolutions[current].height, _isFullScreen);
+            gameSystem = FindFirstObjectByType<GameSystem>();
+            if (gameSystem.CurrentPlatform == Platform.Standalone)
+            {
+                Screen.SetResolution(_resolutions[current].width, _resolutions[current].height, _toggleFullScreen.isOn);
+            }
             gameSettings.CurrentResolutionIndex = current;
         }
 
