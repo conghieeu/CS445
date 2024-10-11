@@ -189,6 +189,7 @@ public class GameData
     {
         _playerProfileData = new PlayerProfileData();
         _gameSettingsData = new GameSettingsData();
-        _gamePlayData = null;
+        _gamePlayData = new GamePlayData();
+        _gamePlayData.IsInitialized = false;
     }
 }

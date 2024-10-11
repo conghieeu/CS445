@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "921049623330",
+    "firebase_url": "https://cuahangtaphoa-19913-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "cuahangtaphoa-19913",
+    "storage_bucket": "cuahangtaphoa-19913.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:921049623330:android:b6457fa7d346d8574e537b",
+        "android_client_info": {
+          "package_name": "com.HieuDev.CuaHangTapHoa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBca0-XY1p2al5PwNKJ7wMIUfKMum-TAl8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

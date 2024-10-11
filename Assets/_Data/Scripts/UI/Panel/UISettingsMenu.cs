@@ -32,18 +32,18 @@ namespace Core
         DataManager dataManager;
         EmailPassLogin emailPassLogin;
         SceneLoader sceneManager;
-        FirebaseDataSaver firebaseDataSaver;
+        GameSystem gameSystem;
 
         private void Start()
         {
             sceneManager = FindFirstObjectByType<SceneLoader>();
-            firebaseDataSaver = FindFirstObjectByType<FirebaseDataSaver>();
             emailPassLogin = FindFirstObjectByType<EmailPassLogin>();
             dataManager = FindFirstObjectByType<DataManager>();
             gameSettings = FindFirstObjectByType<GameSettings>();
             emailPassLogin = FindFirstObjectByType<EmailPassLogin>();
             user = FindFirstObjectByType<User>();
             uIEmailPassLogin = FindFirstObjectByType<UIEmailPassLogin>();
+            gameSettings = FindFirstObjectByType<GameSettings>();
 
             _enableMenuSettings = false;
             SetDropDownResolution();
@@ -124,7 +124,10 @@ namespace Core
 
         public void SetResolutionCurrent(int current)
         {
-            // Screen.SetResolution(_resolutions[current].width, _resolutions[current].height, _isFullScreen);
+            if (gameSystem.CurrentPlatform == Platform.Standalone)
+            {
+                Screen.SetResolution(_resolutions[current].width, _resolutions[current].height, _toggleFullScreen.isOn);
+            }
             gameSettings.CurrentResolutionIndex = current;
         }
 

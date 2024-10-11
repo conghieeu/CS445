@@ -77,8 +77,8 @@ public class DataManager : Singleton<DataManager>
     /// <summary> Kiểm tra xem trò chơi có phải là trò chơi mới hay không </summary>
     public bool IsNewGame()
     {
-        if (GameData._gamePlayData == null || GameData._gamePlayData.IsInitialized == false) return false;
-        return true;
+        if (GameData._gamePlayData == null || GameData._gamePlayData.IsInitialized == false) return true;
+        return false;
     }
 
     public void ResetGame()

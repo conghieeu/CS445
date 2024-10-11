@@ -54,6 +54,8 @@ public class FirebaseDataSaver : MonoBehaviour
         if (jsonData != null)
         {
             m_DataManager.GameData = JsonUtility.FromJson<GameData>(jsonData);
+            FindFirstObjectByType<User>().UserID = UserID;
+            FindFirstObjectByType<DataManager>().GameData._playerProfileData.UserID = UserID;
             m_DataManager.PlayerID = UserID;
             m_DataManager.InitializeData();
             m_DataManager.SaveData();

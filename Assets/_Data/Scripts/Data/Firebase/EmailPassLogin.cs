@@ -107,6 +107,8 @@ public class EmailPassLogin : GameBehavior
 
     public void SignOut()
     {
+        dataManager = FindFirstObjectByType<DataManager>();
+
         dataManager.ResetGame();
         FindFirstObjectByType<SceneLoader>().LoadGameScene(GameScene.Loading);
 
@@ -137,9 +139,11 @@ public class EmailPassLogin : GameBehavior
             AuthResult result = task.Result;
             Debug.LogFormat("User signed in successfully: {0} ({1})", result.User.DisplayName, result.User.UserId);
 
-            OnLogIn?.Invoke(task);
-            FindFirstObjectByType<SceneLoader>().LoadGameScene(GameScene.Loading);
+            Debug.Log($"LOADING");
             firebaseDataSaver.LoadDataFn(result.User.UserId); // tải data trên firebase về đè lênh data local 
+            FindFirstObjectByType<SceneLoader>().LoadGameScene(GameScene.Loading);
+
+            OnLogIn?.Invoke(task);
         });
     }
 
