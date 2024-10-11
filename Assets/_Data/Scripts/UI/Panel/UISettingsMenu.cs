@@ -124,6 +124,7 @@ namespace Core
 
         public void SetResolutionCurrent(int current)
         {
+            gameSystem = FindFirstObjectByType<GameSystem>();
             if (gameSystem.CurrentPlatform == Platform.Standalone)
             {
                 Screen.SetResolution(_resolutions[current].width, _resolutions[current].height, _toggleFullScreen.isOn);
