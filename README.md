@@ -1,5 +1,5 @@
 Trường đại học Duy Tân.
-Lớp CS455CK.
+Lớp CS455.
 Nhóm 3.
 Đề tài: Xây dựng trò chơi mô phỏng tạp hoá mini trên thiết bị máy tính và thiết bị di động.
 
