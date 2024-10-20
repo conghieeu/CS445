@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using System;
 
 public class EmailPassLogin : GameBehavior
 {
@@ -19,10 +20,10 @@ public class EmailPassLogin : GameBehavior
     FirebaseDataSaver firebaseDataSaver;
 
     public bool IsFirebaseConnection { get; private set; }
-    public UnityAction<Task<AuthResult>> OnAuthResult;
-    public UnityAction<Task<AuthResult>> OnLogIn;
-    public UnityAction<Task<AuthResult>> OnSignUp;
-    public UnityAction<bool> OnEmailExist;
+    public static UnityAction<Task<AuthResult>> OnAuthResult;
+    public static UnityAction<Task<AuthResult>> OnLogIn;
+    public static event Action OnSignUp;
+    public static event Action<bool> OnEmailExist;
 
     private void Start()
     {
@@ -72,36 +73,23 @@ public class EmailPassLogin : GameBehavior
         // tạo tài khoản
         auth.CreateUserWithEmailAndPasswordAsync(email, password).ContinueWithOnMainThread(task =>
         {
-            if (task.IsCanceled)
-            {
-                In($"Error: CreateUserWithEmailAndPasswordAsync was canceled.");
-                return;
-            }
-            if (task.IsFaulted)
-            {
-                In($"Error: CreateUserWithEmailAndPasswordAsync encountered an error: {task.Exception}");
-                return;
-            }
+            firebaseDataSaver.SaveDataFn(task.Result.User.UserId);  
 
             OnEmailExist?.Invoke(false);
-            OnSignUp?.Invoke(task);
-
-            AuthResult result = task.Result;
-            Debug.LogFormat("Firebase user created successfully: {0} ({1})", result.User.DisplayName, result.User.UserId);
+            OnSignUp?.Invoke();
 
             // save new account to firebase
-            firebaseDataSaver.SaveDataFn(result.User.UserId);
 
-            if (result.User.IsEmailVerified)
-            {
-                In($"Sign up Successful");
-                return;
-            }
-            else
-            {
-                In($"Please verify your email!!");
-                StartCoroutine(SendEmailForVerificationAsync());
-            }
+            // if (result.User.IsEmailVerified)
+            // {
+            //     In($"Sign up Successful");
+            //     return;
+            // }
+            // else
+            // {
+            //     In($"Please verify your email!!");
+            //     StartCoroutine(SendEmailForVerificationAsync());
+            // }
         });
     }
 
