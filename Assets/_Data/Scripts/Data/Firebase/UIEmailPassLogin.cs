@@ -29,8 +29,8 @@ public class UIEmailPassLogin : GameBehavior
     public GameObject PanelNotifyAccountExist;
     public GameObject PanelNotifyAccountNotExistToLogin;
 
-    EmailPassLogin m_EmailPassLogin;
-    DataManager m_DataManager;
+    public EmailPassLogin m_EmailPassLogin;
+    public DataManager m_DataManager;
 
     private void Start()
     {
@@ -42,15 +42,17 @@ public class UIEmailPassLogin : GameBehavior
         BtnSignUp.onClick.AddListener(OnClickSignUp);
 
         // băt sự kiện lấy kết quả của auth firebase  
-        m_EmailPassLogin.OnEmailExist += OnEmailExist;
-        m_EmailPassLogin.OnLogIn += OnLogIn;
-        m_EmailPassLogin.OnSignUp += OnSignUp;
-        m_EmailPassLogin.OnAuthResult += OnAuthResult;
+        EmailPassLogin.OnEmailExist += OnEmailExist;
+        EmailPassLogin.OnLogIn += OnLogIn;
+        EmailPassLogin.OnSignUp += OnSignUp;
+        EmailPassLogin.OnAuthResult += OnAuthResult;
     }
-
 
     private void OnClickLogin()
     {
+        m_EmailPassLogin = FindFirstObjectByType<EmailPassLogin>();
+        m_DataManager = FindFirstObjectByType<DataManager>();
+
         if (TryFirebaseConnection())
         {
             m_EmailPassLogin.Login(LoginEmail.text, loginPassword.text);
@@ -59,6 +61,9 @@ public class UIEmailPassLogin : GameBehavior
 
     private void OnClickSignUp()
     {
+        m_EmailPassLogin = FindFirstObjectByType<EmailPassLogin>();
+        m_DataManager = FindFirstObjectByType<DataManager>();
+
         if (TryFirebaseConnection())
         {
             m_EmailPassLogin.SignUp(SignUpEmail.text, SignUpPassword.text);
@@ -84,18 +89,19 @@ public class UIEmailPassLogin : GameBehavior
         if (PanelNotifyAccountExist) PanelNotifyAccountExist.SetActive(isExist);
     }
 
-    private void OnSignUp(Task<AuthResult> task)
+    private void OnSignUp()
     {
-        PanelSignUpSuccess.SetActive(true);
+        if (PanelSignUpSuccess) PanelSignUpSuccess.gameObject.SetActive(true);
     }
 
     private void OnLogIn(Task<AuthResult> task)
     {
         PanelLoginSuccess.SetActive(true);
     }
-    
+
     private void OnAuthResult(Task<AuthResult> task)
     {
+
         // login fail
         if (task.IsFaulted)
         {

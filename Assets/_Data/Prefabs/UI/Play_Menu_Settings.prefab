@@ -5209,7 +5209,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enableDebugLog: 0
   _panelOpen: {fileID: 0}
-  _panelClose: {fileID: 3569505733706114524}
+  _panelClose: {fileID: 0}
   _objectCloseHolder: {fileID: 0}
   _objectOpen: {fileID: 0}
   _listObjectClose: []
@@ -7601,7 +7601,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableDebugLog: 0
-  _panelContent: {fileID: 1968350937476337932}
+  ButtonLogin: {fileID: 0}
+  ButtonLogOut: {fileID: 0}
+  PanelNotifyLogOut: {fileID: 0}
+  _panelContents: {fileID: 0}
   _audioMixer: {fileID: 0}
   _enableMenuSettings: 0
   _resolutionDropdown: {fileID: 0}
