@@ -27,7 +27,7 @@ namespace CuaHang.Player
 
             _animator = GetComponentInChildren<Animator>();
             _rb = GetComponent<Rigidbody>();
-            _rb.angularDamping = 0.0f;
+            //_rb.angularDamping = 0.0f;
             mainCamera = Camera.main;
         }
 
@@ -56,16 +56,16 @@ namespace CuaHang.Player
             _moveDir = (forwardRelative + rightRelative).normalized;
 
             // movement 
-            Vector3 velocity = new Vector3(_moveDir.x, _rb.linearVelocity.y, _moveDir.z) * _moveSpeed;
+            //Vector3 velocity = new Vector3(_moveDir.x, _rb.linearVelocity.y, _moveDir.z) * _moveSpeed;
 
-            _rb.linearVelocity = velocity;
+            //_rb.linearVelocity = velocity;
 
             // Trường hợp đang kéo thả Item nào đó
-            if (_rb.linearVelocity.magnitude > 0 && !m_ModuleDragItem.IsDragging)
-            {
-                velocity.y = 0;
-                transform.forward = velocity;
-            }
+            //if (_rb.linearVelocity.magnitude > 0 && !m_ModuleDragItem.IsDragging)
+            //{
+            //    velocity.y = 0;
+            //    transform.forward = velocity;
+            //}
         }
 
         private void SetAnimator()
